@@ -39,8 +39,11 @@ namespace Aukcije.WebApi.Controllers
         [HttpPut]
         public void Put(int id, [FromBody] Oglas oglas)
         {
-            Oglas itemToUpdate = aukcije.List.Find(item => item.Id == id);
-            itemToUpdate = oglas;
+            Oglas itemToUpdate = aukcije.List.FirstOrDefault(item => item.Id == id);
+            itemToUpdate.ItemName = oglas.ItemName;
+            itemToUpdate.Price = oglas.Price;
+            itemToUpdate.Seller = oglas.Seller;
+            itemToUpdate.Price = oglas.Price;
         }
 
         // DELETE api/auctions/5
