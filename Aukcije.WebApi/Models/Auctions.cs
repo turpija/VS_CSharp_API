@@ -41,5 +41,7 @@ namespace Aukcije.WebApi.Models
                 }
             };
         }
+        
+
     }
 }

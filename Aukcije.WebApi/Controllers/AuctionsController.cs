@@ -11,7 +11,7 @@ namespace Aukcije.WebApi.Controllers
 {
     public class AuctionsController : ApiController
     {
-        Auctions aukcije = new Auctions();
+        static Auctions aukcije = new Auctions();
 
         // GET api/auctions
         [HttpGet]
@@ -28,18 +28,26 @@ namespace Aukcije.WebApi.Controllers
         }
 
         // POST api/auctions
-        public void Post([FromBody] string value)
+        [HttpPost]
+        public void Post([FromBody] Oglas oglas)
         {
+            aukcije.List.Add(oglas);
+            Console.WriteLine(aukcije.List);
         }
 
         // PUT api/auctions/5
-        public void Put(int id, [FromBody] string value)
+        [HttpPut]
+        public void Put(int id, [FromBody] Oglas oglas)
         {
+            Oglas itemToUpdate = aukcije.List.Find(item => item.Id == id);
+            itemToUpdate = oglas;
         }
 
         // DELETE api/auctions/5
+        [HttpDelete]
         public void Delete(int id)
         {
+            //aukcije.List.Remove();
         }
     }
 }
