@@ -7,7 +7,7 @@ namespace Aukcije.WebApi.Models
 {
     public class Oglas
     {
-        public Guid Id { get; set; }
+        public int Id { get; set; }
         public string ItemName { get; set; }
         public string Seller { get; set; }
         public double Price { get; set; }

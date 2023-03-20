@@ -1,24 +1,30 @@
-﻿using System;
+﻿using Aukcije.WebApi.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Runtime.InteropServices;
 using System.Web.Http;
 
 namespace Aukcije.WebApi.Controllers
 {
     public class AuctionsController : ApiController
     {
+        Auctions aukcije = new Auctions();
+
         // GET api/auctions
-        public IEnumerable<string> Get()
+        [HttpGet]
+        public IEnumerable<Oglas> Get()
         {
-            return new string[] { "value1", "value2" };
+            return aukcije.List;
         }
 
         // GET api/auctions/5
-        public string Get(int id)
+        [HttpGet]
+        public Oglas Get(int id)
         {
-            return "value";
+            return aukcije.List.Find(item => item.Id == id);
         }
 
         // POST api/auctions

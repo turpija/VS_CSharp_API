@@ -11,23 +11,35 @@ namespace Aukcije.WebApi.Models
 
         public Auctions()
         {
-            List.Add(new Oglas()
+            List = new List<Oglas>
             {
-                Id = Guid.NewGuid(),
-                ItemName = "Vikendica",
-                Price = 50000,
-                Seller = "Marko",
-                EndTime = DateTime.Now.AddDays(60)
-            });
+                new Oglas()
+                {
+                    Id = 1,
+                    ItemName = "Vikendica",
+                    Price = 50000,
+                    Seller = "Marko",
+                    EndTime = DateTime.Now.AddDays(60)
+                },
 
-            List.Add(new Oglas
-            {
-                Id = Guid.NewGuid(),
-                ItemName = "Auto",
-                Price = 15000,
-                Seller = "Darko",
-                EndTime = DateTime.Now.AddDays(30)
-            });
+                new Oglas
+                {
+                    Id = 2,
+                    ItemName = "Auto",
+                    Price = 15000,
+                    Seller = "Darko",
+                    EndTime = DateTime.Now.AddDays(30)
+                },
+
+                new Oglas
+                {
+                    Id = 3,
+                    ItemName = "Telefon",
+                    Price = 1500,
+                    Seller = "Slavko",
+                    EndTime = DateTime.Now.AddDays(10)
+                }
+            };
         }
     }
 }
