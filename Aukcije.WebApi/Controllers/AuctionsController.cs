@@ -50,7 +50,10 @@ namespace Aukcije.WebApi.Controllers
         [HttpDelete]
         public void Delete(int id)
         {
-            //aukcije.List.Remove();
+            Oglas itemToRemove = aukcije.List.FirstOrDefault(item => item.Id == id);
+
+            aukcije.List.Remove(itemToRemove);
+            Console.WriteLine(  );
         }
     }
 }
