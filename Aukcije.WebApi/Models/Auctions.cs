@@ -16,8 +16,8 @@ namespace Aukcije.WebApi.Models
                 new Oglas()
                 {
                     Id = 1,
-                    ItemName = "Vikendica",
-                    Price = 50000,
+                    ItemName = "Renault",
+                    Price = 5000,
                     Seller = "Marko",
                     EndTime = DateTime.Now.AddDays(60)
                 },
@@ -25,7 +25,7 @@ namespace Aukcije.WebApi.Models
                 new Oglas
                 {
                     Id = 2,
-                    ItemName = "Auto",
+                    ItemName = "Bmw",
                     Price = 15000,
                     Seller = "Darko",
                     EndTime = DateTime.Now.AddDays(30)
@@ -38,6 +38,23 @@ namespace Aukcije.WebApi.Models
                     Price = 1500,
                     Seller = "Slavko",
                     EndTime = DateTime.Now.AddDays(10)
+                },
+
+                new Oglas
+                {
+                    Id = 5,
+                    ItemName = "Mercedes",
+                    Price = 18000,
+                    Seller = "Vjekoslav",
+                    EndTime = DateTime.Now.AddDays(30)
+                },
+                new Oglas
+                {
+                    Id = 6,
+                    ItemName = "Porsche",
+                    Price = 39000,
+                    Seller = "Dalibor",
+                    EndTime = DateTime.Now.AddDays(70)
                 }
             };
         }

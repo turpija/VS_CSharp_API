@@ -15,21 +15,21 @@ namespace Aukcije.WebApi.Controllers
 
         // GET api/auctions
         [HttpGet]
-        public IEnumerable<Oglas> Get()
+        public IEnumerable<Oglas> GetAll()
         {
             return aukcije.List;
         }
 
-        // GET api/auctions/5
+        //GET api/auctions/5
         [HttpGet]
-        public Oglas Get(int id)
+        public Oglas GetId(int id)
         {
             return aukcije.List.Find(item => item.Id == id);
         }
 
         // POST api/auctions
         [HttpPost]
-        public void Post([FromBody] Oglas oglas)
+        public void Post(Oglas oglas)
         {
             aukcije.List.Add(oglas);
             Console.WriteLine(aukcije.List);
@@ -37,7 +37,7 @@ namespace Aukcije.WebApi.Controllers
 
         // PUT api/auctions/5
         [HttpPut]
-        public void Put(int id, [FromBody] Oglas oglas)
+        public void Put(int id, Oglas oglas)
         {
             Oglas itemToUpdate = aukcije.List.FirstOrDefault(item => item.Id == id);
             itemToUpdate.ItemName = oglas.ItemName;
@@ -46,14 +46,13 @@ namespace Aukcije.WebApi.Controllers
             itemToUpdate.Price = oglas.Price;
         }
 
+
         // DELETE api/auctions/5
         [HttpDelete]
         public void Delete(int id)
         {
             Oglas itemToRemove = aukcije.List.FirstOrDefault(item => item.Id == id);
-
             aukcije.List.Remove(itemToRemove);
-            Console.WriteLine(  );
         }
     }
 }
