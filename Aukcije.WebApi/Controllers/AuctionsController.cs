@@ -27,7 +27,7 @@ namespace Aukcije.WebApi.Controllers
             Oglas oglas = aukcije.List.Find(item => item.Id == id);
             if (oglas == null)
             {
-                return Request.CreateResponse(HttpStatusCode.NotFound, "id not found");
+                return Request.CreateResponse(HttpStatusCode.NotFound, $"item with id:{id} not found");
             }
             return Request.CreateResponse(HttpStatusCode.OK, aukcije.List.Find(item => item.Id == id));
         }
@@ -39,7 +39,7 @@ namespace Aukcije.WebApi.Controllers
             Oglas oglas = aukcije.List.Find(item => item.Id == oglasFromBody.Id);
             if (oglas != null)
             {
-                return Request.CreateResponse(HttpStatusCode.Forbidden, "item with that id already exists");
+                return Request.CreateResponse(HttpStatusCode.Forbidden, $"item with id:{oglasFromBody.Id} already exists");
             }
             aukcije.List.Add(oglasFromBody);
             return Request.CreateResponse(HttpStatusCode.Accepted, aukcije.List.Find(item => item.Id == oglasFromBody.Id));
@@ -47,28 +47,34 @@ namespace Aukcije.WebApi.Controllers
 
         // PUT api/auctions/5
         [HttpPut]
-        public HttpResponseMessage Put(int id,Oglas oglasFromBody)
+        public HttpResponseMessage Put(int id, Oglas oglasFromBody)
         {
             Oglas itemToUpdate = aukcije.List.Find(item => item.Id == id);
             if (itemToUpdate == null)
             {
-                return Request.CreateResponse(HttpStatusCode.NotFound, "item with that id does not exists");
+                return Request.CreateResponse(HttpStatusCode.NotFound, $"item with id: {id} does not exists");
             }
 
             itemToUpdate.ItemName = oglasFromBody.ItemName;
             itemToUpdate.Price = oglasFromBody.Price;
             itemToUpdate.Seller = oglasFromBody.Seller;
             itemToUpdate.Price = oglasFromBody.Price;
-            return Request.CreateResponse(HttpStatusCode.OK, oglasFromBody);
+            return Request.CreateResponse(HttpStatusCode.OK, itemToUpdate);
         }
 
 
         // DELETE api/auctions/5
         [HttpDelete]
-        public void Delete(int id)
+        public HttpResponseMessage Delete(int id)
         {
-            Oglas itemToRemove = aukcije.List.FirstOrDefault(item => item.Id == id);
-            aukcije.List.Remove(itemToRemove);
+            Oglas itemToDelete = aukcije.List.Find(item => item.Id == id);
+
+            if (itemToDelete == null)
+            {
+                return Request.CreateResponse(HttpStatusCode.NotFound, "item with that id does not exists");
+            }
+            aukcije.List.Remove(itemToDelete);
+            return Request.CreateResponse(HttpStatusCode.OK, $"item with id:{id} deleted");
         }
     }
 }
