@@ -17,7 +17,16 @@ namespace Aukcije.WebApi.Controllers
         [HttpGet]
         public HttpResponseMessage GetAll()
         {
-            return Request.CreateResponse(HttpStatusCode.OK, aukcije.List);
+            try
+            {
+                return Request.CreateResponse(HttpStatusCode.OK, aukcije.List);
+
+            }
+            catch (Exception ex)
+            {
+                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, $"Error: {ex.Message}");
+                throw;
+            }
         }
 
         //GET api/auctions/5
@@ -29,7 +38,7 @@ namespace Aukcije.WebApi.Controllers
             {
                 return Request.CreateResponse(HttpStatusCode.NotFound, $"item with id:{id} not found");
             }
-            return Request.CreateResponse(HttpStatusCode.OK, aukcije.List.Find(item => item.Id == id));
+            return Request.CreateResponse(HttpStatusCode.OK, oglas);
         }
 
         // POST api/auctions
@@ -42,24 +51,28 @@ namespace Aukcije.WebApi.Controllers
                 return Request.CreateResponse(HttpStatusCode.Forbidden, $"item with id:{oglasFromBody.Id} already exists");
             }
             aukcije.List.Add(oglasFromBody);
-            return Request.CreateResponse(HttpStatusCode.Accepted, aukcije.List.Find(item => item.Id == oglasFromBody.Id));
+            return Request.CreateResponse(HttpStatusCode.Accepted, oglas);
         }
 
         // PUT api/auctions/5
         [HttpPut]
         public HttpResponseMessage Put(int id, Oglas oglasFromBody)
         {
-            Oglas itemToUpdate = aukcije.List.Find(item => item.Id == id);
-            if (itemToUpdate == null)
+            if (!ModelState.IsValid)
             {
-                return Request.CreateResponse(HttpStatusCode.NotFound, $"item with id: {id} does not exists");
+                return Request.CreateResponse(HttpStatusCode.BadRequest, "missing required data");
             }
+                Oglas itemToUpdate = aukcije.List.Find(item => item.Id == id);
+                if (itemToUpdate == null)
+                {
+                    return Request.CreateResponse(HttpStatusCode.NotFound, $"item with id: {id} does not exists");
+                }
 
-            itemToUpdate.ItemName = oglasFromBody.ItemName;
-            itemToUpdate.Price = oglasFromBody.Price;
-            itemToUpdate.Seller = oglasFromBody.Seller;
-            itemToUpdate.Price = oglasFromBody.Price;
-            return Request.CreateResponse(HttpStatusCode.OK, itemToUpdate);
+                itemToUpdate.ItemName = string.IsNullOrWhiteSpace(oglasFromBody.ItemName) ? itemToUpdate.ItemName : oglasFromBody.ItemName;
+                itemToUpdate.Price = double.IsNaN(oglasFromBody.Price) ? itemToUpdate.Price : oglasFromBody.Price;
+                itemToUpdate.Seller = string.IsNullOrWhiteSpace(oglasFromBody.Seller) ? itemToUpdate.Seller : oglasFromBody.Seller;
+                itemToUpdate.EndTime = (oglasFromBody.EndTime == DateTime.MinValue) ? itemToUpdate.EndTime : oglasFromBody.EndTime;
+                return Request.CreateResponse(HttpStatusCode.OK, itemToUpdate);
         }
 
 

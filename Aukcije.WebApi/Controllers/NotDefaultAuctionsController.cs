@@ -12,17 +12,18 @@ namespace Aukcije.WebApi.Controllers
     {
         static Auctions aukcije = new Auctions();
 
-        // GET api/auctions
+        // GET api/notdefaultauctions/getall
+        [Route("api/getall")]
         [HttpGet]
         public IEnumerable<Oglas> GetAll()
         {
             return aukcije.List;
         }
 
-        //GET api/auctions --from body
-        [Route("[action]")]
+        // GET api/notdefaultauctions/getid
+        [Route("api/getid")]
         [HttpGet]
-        public Oglas GetById([FromBody]int id)
+        public Oglas Get([FromBody] int id)
         {
             return aukcije.List.Find(item => item.Id == id);
         }
