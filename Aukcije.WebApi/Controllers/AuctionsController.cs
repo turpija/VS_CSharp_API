@@ -15,24 +15,34 @@ namespace Aukcije.WebApi.Controllers
 
         // GET api/auctions
         [HttpGet]
-        public IEnumerable<Oglas> GetAll()
+        public HttpResponseMessage GetAll()
         {
-            return aukcije.List;
+            return Request.CreateResponse(HttpStatusCode.OK, aukcije.List);
         }
 
         //GET api/auctions/5
         [HttpGet]
-        public Oglas GetId(int id)
+        public HttpResponseMessage GetId(int id)
         {
-            return aukcije.List.Find(item => item.Id == id);
+            Oglas oglas = aukcije.List.Find(item => item.Id == id);
+            if (oglas == null)
+            {
+                return Request.CreateResponse(HttpStatusCode.NotFound, "id not found");
+            }
+            return Request.CreateResponse(HttpStatusCode.OK, aukcije.List.Find(item => item.Id == id));
         }
 
         // POST api/auctions
         [HttpPost]
-        public void Post(Oglas oglas)
+        public HttpResponseMessage Post(Oglas oglasFromBody)
         {
-            aukcije.List.Add(oglas);
-            Console.WriteLine(aukcije.List);
+            Oglas oglas = aukcije.List.Find(item => item.Id == oglasFromBody.Id);
+            if (oglas != null)
+            {
+                return Request.CreateResponse(HttpStatusCode.Forbidden, "item with that id already exists");
+            }
+            aukcije.List.Add(oglasFromBody);
+            return Request.CreateResponse(HttpStatusCode.Accepted, aukcije.List.Find(item => item.Id == oglasFromBody.Id));
         }
 
         // PUT api/auctions/5
