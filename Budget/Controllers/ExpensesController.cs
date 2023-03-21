@@ -93,6 +93,7 @@ namespace Budget.Controllers
             }
             baza.Kategorije.Remove(categoryToDelete);
             return Request.CreateResponse(HttpStatusCode.OK, $"item with id:{id} deleted");
+
         }
     }
 }
