@@ -47,13 +47,19 @@ namespace Aukcije.WebApi.Controllers
 
         // PUT api/auctions/5
         [HttpPut]
-        public void Put(int id, Oglas oglas)
+        public HttpResponseMessage Put(int id,Oglas oglasFromBody)
         {
-            Oglas itemToUpdate = aukcije.List.FirstOrDefault(item => item.Id == id);
-            itemToUpdate.ItemName = oglas.ItemName;
-            itemToUpdate.Price = oglas.Price;
-            itemToUpdate.Seller = oglas.Seller;
-            itemToUpdate.Price = oglas.Price;
+            Oglas itemToUpdate = aukcije.List.Find(item => item.Id == id);
+            if (itemToUpdate == null)
+            {
+                return Request.CreateResponse(HttpStatusCode.NotFound, "item with that id does not exists");
+            }
+
+            itemToUpdate.ItemName = oglasFromBody.ItemName;
+            itemToUpdate.Price = oglasFromBody.Price;
+            itemToUpdate.Seller = oglasFromBody.Seller;
+            itemToUpdate.Price = oglasFromBody.Price;
+            return Request.CreateResponse(HttpStatusCode.OK, oglasFromBody);
         }
 
 
