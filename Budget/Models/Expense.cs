@@ -7,15 +7,15 @@ using System.Web;
 
 namespace Budget.Models
 {
-    public class Item
+    public class Expense
     {
-        [Required] public int Id { get; set; }
+        public Guid Id { get; set; }
         [Required] public string Name { get; set; }
         public string Description { get; set; }
-        [Required] public int PersonId { get; set; }
-        [Required] public int CategoryId { get; set; }
+        [Required] public Guid PersonId { get; set; }
+        [Required] public Guid CategoryId { get; set; }
         [Required] public DateTime Date { get; set; }
-        [Required] public double Cost { get; set; }
+        [Required] public Decimal Cost { get; set; }
         public Person Person { get; set; }
         public Category Category { get; set; }
     }
