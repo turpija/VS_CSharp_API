@@ -27,8 +27,47 @@ namespace Budget.Controllers
             expense.Name = reader.GetString(3);
             expense.Date = reader.GetDateTime(4);
             expense.Description = !reader.IsDBNull(5) ? reader.GetString(5) : expense.Description;
+            expense.Cost = reader.GetDecimal(6);
 
             return expense;
+        }
+
+
+
+        public Expense GetExpenseItemById(string id)
+        {
+
+            SqlConnection connection = new SqlConnection(connectionString);
+            using (connection)
+            {
+                try
+                {
+                    SqlCommand command = new SqlCommand("SELECT * FROM [Expense] WHERE [Id] = @id;", connection);
+                    command.Parameters.AddWithValue("@id", id);
+
+                    command.Connection.Open();
+                    SqlDataReader reader = command.ExecuteReader();
+
+                    if (!reader.HasRows)
+                    {
+                        command.Connection.Close();
+                        Request.CreateResponse(HttpStatusCode.NotFound, "no content");
+                        return null;
+                    }
+
+                    reader.Read();
+                    Expense expense = PopulateExpenseWithReaderData(reader);
+                    reader.Close();
+
+                    Request.CreateResponse(HttpStatusCode.OK);
+                    return expense;
+                }
+                catch (Exception ex)
+                {
+                    Request.CreateErrorResponse(HttpStatusCode.InternalServerError, $"Error: {ex.Message}");
+                    return null;
+                }
+            }
         }
 
 
@@ -76,11 +115,26 @@ namespace Budget.Controllers
             }
         }
 
-
-        // GET expense by id
+        //GET expense by id
         [Route("api/expense/{id}")]
         [HttpGet]
         public HttpResponseMessage GetExpenseById(string id)
+        {
+            Expense expense = GetExpenseItemById(id);
+            if (expense == null)
+            {
+                return Request.CreateResponse(HttpStatusCode.NotFound, "no content");
+            }
+
+            return Request.CreateResponse(HttpStatusCode.OK, expense);
+        }
+
+
+
+        // GET expense by id ORIGINAL
+        //[Route("api/expense/{id}")]
+        [HttpGet]
+        public HttpResponseMessage GetExpenseById_Original(string id)
         {
 
             SqlConnection connection = new SqlConnection(connectionString);
@@ -177,16 +231,16 @@ namespace Budget.Controllers
             {
                 try
                 {
-                    SqlCommand command = new SqlCommand
-                        ("DELETE FROM [Expense] WHERE [Id] = @id;", connection);
+                    SqlCommand command = new SqlCommand("DELETE FROM [Expense] WHERE [Id] = @id;", connection);
                     command.Parameters.AddWithValue("@Id", id);
 
+
                     command.Connection.Open();
-                    
+
                     if (command.ExecuteNonQuery() > 0)
                     {
                         command.Connection.Close();
-                        return Request.CreateResponse(HttpStatusCode.OK,"deletion successful");
+                        return Request.CreateResponse(HttpStatusCode.OK, "deletion successful");
                     }
                     return Request.CreateResponse(HttpStatusCode.ExpectationFailed, "deletion failed.");
                 }
@@ -201,9 +255,57 @@ namespace Budget.Controllers
 
 
 
+        //PUT
+        [HttpPut]
+        [Route("api/expense/{id}")]
+        public HttpResponseMessage Update(string id, Expense expenseFromBody)
+        {
+            Expense expense = GetExpenseItemById(id);
+            //if it does not exists ...
+            //if (GetExpenseById(id).StatusCode != HttpStatusCode.OK)
+            if (expense == null)
+            {
+                return Request.CreateResponse(HttpStatusCode.NotFound, "no item to update");
+            }
+            //otherwise
+
+            SqlConnection connection = new SqlConnection(connectionString);
+
+            using (connection)
+            {
+                try
+                {
+                    //if expense with id exist ..
+                    SqlCommand command = new SqlCommand
+                        ("UPDATE [Expense] SET [Name] = @name, [PersonId] = @personId, [CategoryId] = @categoryId, [Cost] = @cost, [Date] = @date WHERE [Id] = @id;", connection);
+                    command.Parameters.AddWithValue("@Id", id);
+                    command.Parameters.AddWithValue("@name", expenseFromBody.Name == default ? expense.Name : expenseFromBody.Name);
+                    command.Parameters.AddWithValue("@cost", expenseFromBody.Cost == default ? expense.Cost : expenseFromBody.Cost);
+                    command.Parameters.AddWithValue("@date", expenseFromBody.Date == default ? expense.Date : expenseFromBody.Date);
+                    command.Parameters.AddWithValue("@personId", expenseFromBody.PersonId == default ? expense.PersonId : expenseFromBody.PersonId);
+                    command.Parameters.AddWithValue("@categoryId", expenseFromBody.CategoryId == default ? expense.CategoryId : expenseFromBody.CategoryId);
+
+                    command.Connection.Open();
+
+                    if (command.ExecuteNonQuery() > 0)
+                    {
+                        command.Connection.Close();
+                        return Request.CreateResponse(HttpStatusCode.OK, "update successful");
+                    }
+                    return Request.CreateResponse(HttpStatusCode.ExpectationFailed, "update failed.");
+                }
+                catch (Exception ex)
+                {
+                    return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, $"Error: {ex.Message}");
+                }
+            }
+
+
+        }
 
 
 
+        //ISPOD JE SVE STARO ŠTO RADI S STATIC LISTOM
 
 
 
