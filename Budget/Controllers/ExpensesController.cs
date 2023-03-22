@@ -32,6 +32,8 @@ namespace Budget.Controllers
         }
 
 
+
+
         // GET all expenses
         [Route("api/expense/")]
         [HttpGet]
@@ -78,7 +80,6 @@ namespace Budget.Controllers
         // GET expense by id
         [Route("api/expense/{id}")]
         [HttpGet]
-
         public HttpResponseMessage GetExpenseById(string id)
         {
 
@@ -102,7 +103,7 @@ namespace Budget.Controllers
                     reader.Read();
                     Expense expense = PopulateExpenseWithReaderData(reader);
                     reader.Close();
-                    
+
                     return Request.CreateResponse(HttpStatusCode.OK, expense);
 
                 }
@@ -121,6 +122,11 @@ namespace Budget.Controllers
 
         public HttpResponseMessage PostExpense(Expense expenseFromBody)
         {
+            if (!ModelState.IsValid)
+            {
+                return Request.CreateResponse(HttpStatusCode.BadRequest, "missing required data");
+            }
+
             SqlConnection connection = new SqlConnection(connectionString);
 
             using (connection)
@@ -137,9 +143,15 @@ namespace Budget.Controllers
                     command.Parameters.AddWithValue("@date", expenseFromBody.Date);
                     command.Parameters.AddWithValue("@cost", expenseFromBody.Cost);
 
-                    return Request.CreateResponse(HttpStatusCode.OK);
+                    command.Connection.Open();
+                    if (command.ExecuteNonQuery() > 0)
+                    {
+                        command.Connection.Close();
+                        return Request.CreateResponse(HttpStatusCode.OK);
+                    }
+                    return Request.CreateResponse(HttpStatusCode.ExpectationFailed, "insert into database failed.");
                 }
-                catch (Exception ex )
+                catch (Exception ex)
                 {
                     return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, $"Error: {ex.Message}");
                 }
@@ -147,9 +159,57 @@ namespace Budget.Controllers
         }
 
 
+        //DELETE
+        [HttpDelete]
+        [Route("api/expense/{id}")]
+        public HttpResponseMessage DeleteById(string id)
+        {
+            //if it does not exists ...
+            if (GetExpenseById(id).StatusCode != HttpStatusCode.OK)
+            {
+                return Request.CreateResponse(HttpStatusCode.NotFound, "no item to delete");
+            }
+            //otherwise
 
-            // GET all categories
-            [Route("api/expenses/categories")]
+            SqlConnection connection = new SqlConnection(connectionString);
+
+            using (connection)
+            {
+                try
+                {
+                    SqlCommand command = new SqlCommand
+                        ("DELETE FROM [Expense] WHERE [Id] = @id;", connection);
+                    command.Parameters.AddWithValue("@Id", id);
+
+                    command.Connection.Open();
+                    
+                    if (command.ExecuteNonQuery() > 0)
+                    {
+                        command.Connection.Close();
+                        return Request.CreateResponse(HttpStatusCode.OK,"deletion successful");
+                    }
+                    return Request.CreateResponse(HttpStatusCode.ExpectationFailed, "deletion failed.");
+                }
+                catch (Exception ex)
+                {
+                    return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, $"Error: {ex.Message}");
+                }
+            }
+
+
+        }
+
+
+
+
+
+
+
+
+
+
+        // GET all categories
+        [Route("api/expenses/categories")]
         [HttpGet]
         public HttpResponseMessage GetCategories()
         {
@@ -246,5 +306,15 @@ namespace Budget.Controllers
             return Request.CreateResponse(HttpStatusCode.OK, $"item with id:{id} deleted");
 
         }
+
+
+
+
+
+
+
+
+
+
     }
 }
