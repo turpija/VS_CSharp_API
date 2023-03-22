@@ -17,8 +17,23 @@ namespace Budget.Controllers
 
         private string connectionString = "Data Source=DESKTOP-D467OFD\\MOJSQLSERVER;Initial Catalog=Budget;Integrated Security=True";
 
+
+        private Expense PopulateExpenseWithReaderData(SqlDataReader reader)
+        {
+            Expense expense = new Expense();
+            expense.Id = reader.GetGuid(0);
+            expense.PersonId = reader.GetGuid(1);
+            expense.CategoryId = reader.GetGuid(2);
+            expense.Name = reader.GetString(3);
+            expense.Date = reader.GetDateTime(4);
+            expense.Description = !reader.IsDBNull(5) ? reader.GetString(5) : expense.Description;
+
+            return expense;
+        }
+
+
         // GET all expenses
-        [Route("api/expenses/")]
+        [Route("api/expense/")]
         [HttpGet]
         public HttpResponseMessage GetExpenses()
         {
@@ -43,16 +58,9 @@ namespace Budget.Controllers
                     }
                     while (reader.Read())
                     {
-                        Expense expense = new Expense();
-                        expense.Id = reader.GetGuid(0);
-                        expense.PersonId = reader.GetGuid(1);
-                        expense.CategoryId = reader.GetGuid(2);
-                        expense.Name = reader.GetString(3);
-                        expense.Date = reader.GetDateTime(4);
-                        expense.Description = !reader.IsDBNull(5) ? reader.GetString(5) : expense.Description;
-
-                        expenses.Add(expense);
+                        expenses.Add(PopulateExpenseWithReaderData(reader));
                     }
+                    reader.Close();
                     command.Connection.Close();
                     return Request.CreateResponse(HttpStatusCode.OK, expenses);
 
@@ -67,8 +75,81 @@ namespace Budget.Controllers
         }
 
 
-        // GET all categories
-        [Route("api/expenses/categories")]
+        // GET expense by id
+        [Route("api/expense/{id}")]
+        [HttpGet]
+
+        public HttpResponseMessage GetExpenseById(string id)
+        {
+
+            SqlConnection connection = new SqlConnection(connectionString);
+            using (connection)
+            {
+                try
+                {
+                    SqlCommand command = new SqlCommand("SELECT * FROM [Expense] WHERE [Id] = @id;", connection);
+                    command.Parameters.AddWithValue("@id", id);
+
+                    command.Connection.Open();
+                    SqlDataReader reader = command.ExecuteReader();
+
+                    if (!reader.HasRows)
+                    {
+                        command.Connection.Close();
+                        return Request.CreateResponse(HttpStatusCode.NotFound, "no content");
+                    }
+
+                    reader.Read();
+                    Expense expense = PopulateExpenseWithReaderData(reader);
+                    reader.Close();
+                    
+                    return Request.CreateResponse(HttpStatusCode.OK, expense);
+
+                }
+                catch (Exception ex)
+                {
+                    return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, $"Error: {ex.Message}");
+                }
+            }
+        }
+
+
+
+        // POST expense 
+        [Route("api/expense/")]
+        [HttpPost]
+
+        public HttpResponseMessage PostExpense(Expense expenseFromBody)
+        {
+            SqlConnection connection = new SqlConnection(connectionString);
+
+            using (connection)
+            {
+                try
+                {
+                    SqlCommand command = new SqlCommand
+                        ("INSERT INTO [Expense] ([Id],[PersonId], [CategoryId], [Name], [Date],[Cost]) VALUES " +
+                        "(@Id, @personId, @categoryId, @name, @date, @cost);", connection);
+                    command.Parameters.AddWithValue("@Id", Guid.NewGuid());
+                    command.Parameters.AddWithValue("@personId", expenseFromBody.PersonId);
+                    command.Parameters.AddWithValue("@categoryId", expenseFromBody.CategoryId);
+                    command.Parameters.AddWithValue("@name", expenseFromBody.Name);
+                    command.Parameters.AddWithValue("@date", expenseFromBody.Date);
+                    command.Parameters.AddWithValue("@cost", expenseFromBody.Cost);
+
+                    return Request.CreateResponse(HttpStatusCode.OK);
+                }
+                catch (Exception ex )
+                {
+                    return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, $"Error: {ex.Message}");
+                }
+            }
+        }
+
+
+
+            // GET all categories
+            [Route("api/expenses/categories")]
         [HttpGet]
         public HttpResponseMessage GetCategories()
         {
