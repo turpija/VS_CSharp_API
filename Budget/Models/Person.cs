@@ -13,6 +13,7 @@ namespace Budget.Models
         public string Username { get; set; }
         public string Password { get; set; }
         public string Email { get; set; }
-        public ICollection<Item> Items { get; set; }
+        public ICollection<Expense> Expenses { get; set; }
+        public ICollection<Earning> Earnings { get; set; }
     }
 }

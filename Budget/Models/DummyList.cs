@@ -10,7 +10,7 @@ namespace Budget.Models
     {
         public List<Category> Kategorije { get; set; }
         public List<Person> Persons { get; set; }
-        public List<Item> Items { get; set; }
+        public List<Expense> Expenses { get; set; }
 
         public DummyList()
         {
@@ -27,12 +27,12 @@ namespace Budget.Models
 
             Persons = new List<Person> { ivan, katarina };
 
-            Items = new List<Item>
+            Expenses = new List<Expense>
             {
-                new Item() {Id=1, Name="Kaufland",PersonId = 1, CategoryId=1,Date=new DateTime(2023,2,3), Cost=45.30, Person=ivan,Category=hrana},
-                new Item() {Id=2, Name="Konzum",PersonId = 2, CategoryId=1,Date=new DateTime(2023,02,17), Cost=17.50, Person=katarina,Category=hrana},
-                new Item() {Id=3, Name="Kredit za kuću",PersonId = 1, CategoryId=4,Date=new DateTime(2023,02,20), Cost=170.00, Person=ivan,Category=kredit},
-                new Item() {Id=4, Name="Rođendan",PersonId = 2, CategoryId=5,Date=new DateTime(2023,04,10), Cost=75.00, Person=katarina,Category=luksuz},
+                //new Expense() {Id=1, Name="Kaufland",PersonId = 1, CategoryId=1,Date=new DateTime(2023,2,3), Cost=45.30, Person=ivan,Category=hrana},
+                //new Expense() {Id=2, Name="Konzum",PersonId = 2, CategoryId=1,Date=new DateTime(2023,02,17), Cost=17.50, Person=katarina,Category=hrana},
+                //new Expense() {Id=3, Name="Kredit za kuću",PersonId = 1, CategoryId=4,Date=new DateTime(2023,02,20), Cost=170.00, Person=ivan,Category=kredit},
+                //new Expense() {Id=4, Name="Rođendan",PersonId = 2, CategoryId=5,Date=new DateTime(2023,04,10), Cost=75.00, Person=katarina,Category=luksuz},
 
             };
 

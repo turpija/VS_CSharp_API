@@ -1,6 +1,7 @@
 ﻿using Budget.Models;
 using System;
 using System.Collections.Generic;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
@@ -14,6 +15,58 @@ namespace Budget.Controllers
     {
         static DummyList baza = new DummyList();
 
+        private string connectionString = "Data Source=DESKTOP-D467OFD\\MOJSQLSERVER;Initial Catalog=Budget;Integrated Security=True";
+
+        // GET all expenses
+        [Route("api/expenses/")]
+        [HttpGet]
+        public HttpResponseMessage GetExpenses()
+        {
+            SqlConnection connection = new SqlConnection(connectionString);
+            List<Expense> expenses = new List<Expense>();
+
+            using (connection)
+            {
+                try
+                {
+                    SqlCommand command = new SqlCommand("SELECT * FROM Expense;", connection);
+                    //if request = empty result
+                    //SqlCommand command = new SqlCommand("select * from expense where \"Name\" = 'pero';", connection);
+
+                    command.Connection.Open();
+                    SqlDataReader reader = command.ExecuteReader();
+                    if (!reader.HasRows)
+                    {
+                        command.Connection.Close();
+                        return Request.CreateResponse(HttpStatusCode.NotFound, "no content");
+
+                    }
+                    while (reader.Read())
+                    {
+                        Expense expense = new Expense();
+                        expense.Id = reader.GetGuid(0);
+                        expense.PersonId = reader.GetGuid(1);
+                        expense.CategoryId = reader.GetGuid(2);
+                        expense.Name = reader.GetString(3);
+                        expense.Date = reader.GetDateTime(4);
+                        expense.Description = !reader.IsDBNull(5) ? reader.GetString(5) : expense.Description;
+
+                        expenses.Add(expense);
+                    }
+                    command.Connection.Close();
+                    return Request.CreateResponse(HttpStatusCode.OK, expenses);
+
+                }
+                catch (Exception ex)
+                {
+                    return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, $"Error: {ex.Message}");
+                }
+
+
+            }
+        }
+
+
         // GET all categories
         [Route("api/expenses/categories")]
         [HttpGet]
@@ -22,25 +75,42 @@ namespace Budget.Controllers
             return Request.CreateResponse(HttpStatusCode.OK, baza.Kategorije);
         }
 
-        // GET all expenses
-        [Route("api/expenses/items")]
-        [HttpGet]
-        public HttpResponseMessage GetItems()
-        {
-            return Request.CreateResponse(HttpStatusCode.OK, baza.Items);
+        /*
+         * GET
+        sqlconnection -> connection string
+        using sqlconnection{
+            sql command ("select ...", connection)
+            command.parameters.addwithvalue("@id",id);
+            connection.open
+            sqlreader.execute
+        if (reader.hasRows)
+            while(reader.read()) {
+            new person
+            person.name = reader.getstring(1);    
+            add person
+            }
+            connection.close
         }
+
+        POST
+        number of affected rows = command.executenonquery
+
+        */
+
+
 
         //GET all expenses for person
         [Route("api/expenses/{personName}")]
         [HttpGet]
         public HttpResponseMessage GetForPerson(string personName)
         {
+
             Person osoba = baza.Persons.Find(item => item.Name == personName);
             if (osoba == null)
             {
                 return Request.CreateResponse(HttpStatusCode.NotFound, "nema tako nekog");
             }
-            List<Item> allItems = baza.Items.Where(item => item.Person.Name == personName).ToList();
+            List<Expense> allItems = baza.Expenses.Where(item => item.Person.Name == personName).ToList();
             return Request.CreateResponse(HttpStatusCode.OK, allItems);
         }
 

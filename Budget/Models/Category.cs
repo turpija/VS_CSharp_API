@@ -10,7 +10,7 @@ namespace Budget.Models
     {
         [Required] public int Id { get; set; }
         [Required] public string Name { get; set; }
-        public ICollection<Item> Items { get; set; }
+        public ICollection<Expense> Expenses { get; set; }
 
     }
 }
