@@ -9,9 +9,9 @@ namespace Budget.Repository.Common
 {
     public interface IExpenseRepository
     {
-        List<Expense> GetExpenses();
-        Expense GetExpenseById(string id);
-        int PostExpense(Expense expenseFromBody);
+        List<Expense> GetAll();
+        Expense GetById(string id);
+        int Post(Expense expenseFromBody);
         bool DeleteById(string id);
         bool UpdateById(string id, Expense expenseUpdated);
     }

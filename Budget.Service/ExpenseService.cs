@@ -13,24 +13,24 @@ namespace Budget.Service
     {
         ExpenseRepository repository = new ExpenseRepository();
 
-        public List<Expense> GetExpenses()
+        public List<Expense> GetAll()
         {
-            return repository.GetExpenses();
+            return repository.GetAll();
         }
 
-        public Expense GetExpenseById(string id)
+        public Expense GetById(string id)
         {
-            return repository.GetExpenseById(id);
+            return repository.GetById(id);
         }
 
-        public int PostExpense(Expense expenseFromBody)
+        public int Post(Expense expenseFromBody)
         {
-            return repository.PostExpense(expenseFromBody);
+            return repository.Post(expenseFromBody);
         }
 
         public bool DeleteById(string id)
         {
-            if (GetExpenseById(id) == null)
+            if (GetById(id) == null)
             {
                 return false;
             }
@@ -39,15 +39,13 @@ namespace Budget.Service
 
         public bool UpdateById(string id, Expense newExpense)
         {
-            // postoji li expense s tim ID ? 
-            Expense currentExpense = GetExpenseById(id);
+            Expense currentExpense = GetById(id);
+            
             if (currentExpense == null)
             {
                 return false;
             }
 
-            //postoji expense s tim ID
-            // usporedi koje se vrijednosti trebaju promjeniti
             Expense expenseUpdated = new Expense();
 
             expenseUpdated.Name = newExpense.Name == default ? currentExpense.Name : newExpense.Name;

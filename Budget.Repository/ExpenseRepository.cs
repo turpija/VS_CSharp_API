@@ -15,8 +15,13 @@ namespace Budget.Repository
 {
     public class ExpenseRepository : IExpenseRepository
     {
+        //laptop
+        //private string connectionString = "Data Source=DESKTOP-D467OFD\\MOJSQLSERVER;Initial Catalog=Budget;Integrated Security=True";
+        
+        //home
+        private string connectionString = "Data Source=DESKTOP-413NSIC\\SQLEXPRESS01;Initial Catalog=KucniBudget;Integrated Security=True";
 
-        private string connectionString = "Data Source=DESKTOP-D467OFD\\MOJSQLSERVER;Initial Catalog=Budget;Integrated Security=True";
+
 
         private Expense PopulateExpenseWithReaderData(SqlDataReader reader)
         {
@@ -68,9 +73,7 @@ namespace Budget.Repository
         }
 
 
-
-
-        public List<Expense> GetExpenses()
+        public List<Expense> GetAll()
         {
             SqlConnection connection = new SqlConnection(connectionString);
             List<Expense> expenses = new List<Expense>();
@@ -104,14 +107,12 @@ namespace Budget.Repository
                     Debug.WriteLine($"Error: {ex.Message}");
                     return null;
                 }
-
-
             }
         }
 
 
 
-        public Expense GetExpenseById(string id)
+        public Expense GetById(string id)
         {
             Expense expense = GetExpenseItemById(id);
             if (expense == null)
@@ -122,7 +123,7 @@ namespace Budget.Repository
         }
 
 
-        public int PostExpense(Expense expenseFromBody)
+        public int Post(Expense expenseFromBody)
         {
             SqlConnection connection = new SqlConnection(connectionString);
 

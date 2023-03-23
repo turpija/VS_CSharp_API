@@ -19,9 +19,9 @@ namespace Budget.Controllers
         // GET all expenses
         [Route("api/expenses/")]
         [HttpGet]
-        public HttpResponseMessage GetExpenses()
+        public HttpResponseMessage GetAll()
         {
-            List<Expense> expenses = service.GetExpenses();
+            List<Expense> expenses = service.GetAll();
 
             if (expenses == null)
             {
@@ -35,9 +35,9 @@ namespace Budget.Controllers
         //GET expense by id
         [Route("api/expense/{id}")]
         [HttpGet]
-        public HttpResponseMessage GetExpenseById(string id)
+        public HttpResponseMessage GetById(string id)
         {
-            Expense expense = service.GetExpenseById(id);
+            Expense expense = service.GetById(id);
             if (expense == null)
             {
                 return Request.CreateResponse(HttpStatusCode.NotFound, "no content");
@@ -52,14 +52,14 @@ namespace Budget.Controllers
         [Route("api/expense/")]
         [HttpPost]
 
-        public HttpResponseMessage PostExpense(Expense expenseFromBody)
+        public HttpResponseMessage Post(Expense expenseFromBody)
         {
             if (!ModelState.IsValid)
             {
                 return Request.CreateResponse(HttpStatusCode.BadRequest, "missing required data");
             }
 
-            int result = service.PostExpense(expenseFromBody);
+            int result = service.Post(expenseFromBody);
             if (result > 0)
             {
                 return Request.CreateResponse(HttpStatusCode.OK, $"Success, rows affected: {result}");
