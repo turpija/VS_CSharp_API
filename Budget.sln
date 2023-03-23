@@ -17,6 +17,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Budget.Repository.Common", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Budget.Service.Common", "Budget.Service.Common\Budget.Service.Common.csproj", "{4C7963A6-CF41-4A7E-985D-69ED3564B298}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Budget.Common", "Budget.Common\Budget.Common.csproj", "{CCA255D5-1C03-48EF-B988-F05D028158F7}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -51,6 +53,10 @@ Global
 		{4C7963A6-CF41-4A7E-985D-69ED3564B298}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4C7963A6-CF41-4A7E-985D-69ED3564B298}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4C7963A6-CF41-4A7E-985D-69ED3564B298}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CCA255D5-1C03-48EF-B988-F05D028158F7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CCA255D5-1C03-48EF-B988-F05D028158F7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CCA255D5-1C03-48EF-B988-F05D028158F7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CCA255D5-1C03-48EF-B988-F05D028158F7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

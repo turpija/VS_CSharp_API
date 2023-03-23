@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Budget.Repository
 {
-    public class ExpenseService
+    public class ExpenseRepository
     {
     }
 }
