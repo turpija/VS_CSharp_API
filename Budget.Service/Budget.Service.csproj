@@ -53,6 +53,10 @@
       <Project>{E9361A1E-B02A-4F07-9FBB-41435E9509D5}</Project>
       <Name>Budget.Repository</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Budget.Service.Common\Budget.Service.Common.csproj">
+      <Project>{4C7963A6-CF41-4A7E-985D-69ED3564B298}</Project>
+      <Name>Budget.Service.Common</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

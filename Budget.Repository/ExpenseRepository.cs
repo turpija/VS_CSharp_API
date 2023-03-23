@@ -6,16 +6,17 @@ using System.Net.Http;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
-using Budget.Models;
+using Budget.Model;
 using System.Diagnostics;
+using Budget.Repository.Common;
+using System.Web.ModelBinding;
 
 namespace Budget.Repository
 {
-    public class ExpenseRepository
+    public class ExpenseRepository : IExpenseRepository
     {
 
         private string connectionString = "Data Source=DESKTOP-D467OFD\\MOJSQLSERVER;Initial Catalog=Budget;Integrated Security=True";
-
 
         private Expense PopulateExpenseWithReaderData(SqlDataReader reader)
         {
@@ -30,6 +31,44 @@ namespace Budget.Repository
 
             return expense;
         }
+
+
+        private Expense GetExpenseItemById(string id)
+        {
+
+            SqlConnection connection = new SqlConnection(connectionString);
+            using (connection)
+            {
+                try
+                {
+                    SqlCommand command = new SqlCommand("SELECT * FROM [Expense] WHERE [Id] = @id;", connection);
+                    command.Parameters.AddWithValue("@id", id);
+
+                    command.Connection.Open();
+                    SqlDataReader reader = command.ExecuteReader();
+
+                    if (!reader.HasRows)
+                    {
+                        command.Connection.Close();
+                        return null;
+                    }
+
+                    reader.Read();
+                    Expense expense = PopulateExpenseWithReaderData(reader);
+                    reader.Close();
+
+                    return expense;
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine($"Error: {ex.Message}");
+                    return null;
+                }
+            }
+        }
+
+
+
 
         public List<Expense> GetExpenses()
         {
@@ -69,6 +108,62 @@ namespace Budget.Repository
 
             }
         }
+
+
+
+        public Expense GetExpenseById(string id)
+        {
+            Expense expense = GetExpenseItemById(id);
+            if (expense == null)
+            {
+                return null;
+            }
+            return expense;
+        }
+
+
+        public int PostExpense(Expense expenseFromBody)
+        {
+            SqlConnection connection = new SqlConnection(connectionString);
+
+            using (connection)
+            {
+                try
+                {
+                    SqlCommand command = new SqlCommand
+                        ("INSERT INTO [Expense] ([Id],[PersonId], [CategoryId], [Name], [Date],[Cost]) VALUES " +
+                        "(@Id, @personId, @categoryId, @name, @date, @cost);", connection);
+                    command.Parameters.AddWithValue("@Id", Guid.NewGuid());
+                    command.Parameters.AddWithValue("@personId", expenseFromBody.PersonId);
+                    command.Parameters.AddWithValue("@categoryId", expenseFromBody.CategoryId);
+                    command.Parameters.AddWithValue("@name", expenseFromBody.Name);
+                    command.Parameters.AddWithValue("@date", expenseFromBody.Date);
+                    command.Parameters.AddWithValue("@cost", expenseFromBody.Cost);
+
+                    command.Connection.Open();
+
+                    int RowsAffected = command.ExecuteNonQuery();
+
+                    if (RowsAffected > 0)
+                    {
+                        command.Connection.Close();
+                        return RowsAffected;
+                    }
+                    return 0;
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine($"Error: {ex.Message}");
+                    return 0;
+                }
+            }
+        }
+
+
+
+
+
+
 
 
 

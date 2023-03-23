@@ -1,4 +1,4 @@
-﻿using Budget.Models;
+﻿using Budget.Model;
 using Budget.Service;
 using System;
 using System.Collections.Generic;
@@ -73,13 +73,13 @@ namespace Budget.Controllers
 
         */
 
+        ExpenseService service = new ExpenseService();
 
         // GET all expenses
         [Route("api/expenses/")]
         [HttpGet]
         public HttpResponseMessage GetExpenses()
         {
-            ExpenseService service = new ExpenseService();
             List<Expense> expenses = service.GetExpenses();
 
             if (expenses == null)
@@ -88,105 +88,44 @@ namespace Budget.Controllers
             }
             return Request.CreateResponse(HttpStatusCode.OK, expenses);
         }
+
+        //GET expense by id
+        [Route("api/expense/{id}")]
+        [HttpGet]
+        public HttpResponseMessage GetExpenseById(string id)
+        {
+            Expense expense = service.GetExpenseById(id);
+            if (expense == null)
+            {
+                return Request.CreateResponse(HttpStatusCode.NotFound, "no content");
+            }
+
+            return Request.CreateResponse(HttpStatusCode.OK, expense);
+        }
+
+
+
+
+        // POST expense 
+        [Route("api/expense/")]
+        [HttpPost]
+
+        public HttpResponseMessage PostExpense(Expense expenseFromBody)
+        {
+            if (!ModelState.IsValid)
+            {
+                return Request.CreateResponse(HttpStatusCode.BadRequest, "missing required data");
+            }
+
+            int result = service.PostExpense(expenseFromBody);
+            if (result > 0)
+            {
+                return Request.CreateResponse(HttpStatusCode.OK, $"Success, rows affected: {result}");
+            }
+            return Request.CreateResponse(HttpStatusCode.ExpectationFailed, "insert into database failed.");
+        }
     }
     /*
-
-    //GET expense by id
-    [Route("api/expense/{id}")]
-    [HttpGet]
-    public HttpResponseMessage GetExpenseById(string id)
-    {
-        Expense expense = GetExpenseItemById(id);
-        if (expense == null)
-        {
-            return Request.CreateResponse(HttpStatusCode.NotFound, "no content");
-        }
-
-        return Request.CreateResponse(HttpStatusCode.OK, expense);
-    }
-
-
-
-    // GET expense by id ORIGINAL
-    //[Route("api/expense/{id}")]
-    [HttpGet]
-    public HttpResponseMessage GetExpenseById_Original(string id)
-    {
-
-        SqlConnection connection = new SqlConnection(connectionString);
-        using (connection)
-        {
-            try
-            {
-                SqlCommand command = new SqlCommand("SELECT * FROM [Expense] WHERE [Id] = @id;", connection);
-                command.Parameters.AddWithValue("@id", id);
-
-                command.Connection.Open();
-                SqlDataReader reader = command.ExecuteReader();
-
-                if (!reader.HasRows)
-                {
-                    command.Connection.Close();
-                    return Request.CreateResponse(HttpStatusCode.NotFound, "no content");
-                }
-
-                reader.Read();
-                Expense expense = PopulateExpenseWithReaderData(reader);
-                reader.Close();
-
-                return Request.CreateResponse(HttpStatusCode.OK, expense);
-
-            }
-            catch (Exception ex)
-            {
-                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, $"Error: {ex.Message}");
-            }
-        }
-    }
-
-
-
-    // POST expense 
-    [Route("api/expense/")]
-    [HttpPost]
-
-    public HttpResponseMessage PostExpense(Expense expenseFromBody)
-    {
-        if (!ModelState.IsValid)
-        {
-            return Request.CreateResponse(HttpStatusCode.BadRequest, "missing required data");
-        }
-
-        SqlConnection connection = new SqlConnection(connectionString);
-
-        using (connection)
-        {
-            try
-            {
-                SqlCommand command = new SqlCommand
-                    ("INSERT INTO [Expense] ([Id],[PersonId], [CategoryId], [Name], [Date],[Cost]) VALUES " +
-                    "(@Id, @personId, @categoryId, @name, @date, @cost);", connection);
-                command.Parameters.AddWithValue("@Id", Guid.NewGuid());
-                command.Parameters.AddWithValue("@personId", expenseFromBody.PersonId);
-                command.Parameters.AddWithValue("@categoryId", expenseFromBody.CategoryId);
-                command.Parameters.AddWithValue("@name", expenseFromBody.Name);
-                command.Parameters.AddWithValue("@date", expenseFromBody.Date);
-                command.Parameters.AddWithValue("@cost", expenseFromBody.Cost);
-
-                command.Connection.Open();
-                if (command.ExecuteNonQuery() > 0)
-                {
-                    command.Connection.Close();
-                    return Request.CreateResponse(HttpStatusCode.OK);
-                }
-                return Request.CreateResponse(HttpStatusCode.ExpectationFailed, "insert into database failed.");
-            }
-            catch (Exception ex)
-            {
-                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, $"Error: {ex.Message}");
-            }
-        }
-    }
 
 
     //DELETE

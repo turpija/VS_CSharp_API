@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Web;
 
-namespace Budget.Models
+namespace Budget.Model
 {
     public class Person
     {
