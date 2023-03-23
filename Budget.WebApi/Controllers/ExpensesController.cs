@@ -124,50 +124,33 @@ namespace Budget.Controllers
             }
             return Request.CreateResponse(HttpStatusCode.ExpectationFailed, "insert into database failed.");
         }
+
+
+
+        //DELETE
+        [HttpDelete]
+        [Route("api/expense/{id}")]
+        public HttpResponseMessage DeleteById(string id)
+        {
+            Expense idExist = service.GetExpenseById(id);
+
+            if (idExist == null)
+            {
+                return Request.CreateResponse(HttpStatusCode.NotFound, "no item to delete");
+            }
+            bool deleted = service.DeleteById(id);
+            if (!deleted)
+            {
+                return Request.CreateResponse(HttpStatusCode.ExpectationFailed, "delete failed");
+            }
+
+            return Request.CreateResponse(HttpStatusCode.OK, "delete successfull");
+        }
+
+
     }
+
     /*
-
-
-    //DELETE
-    [HttpDelete]
-    [Route("api/expense/{id}")]
-    public HttpResponseMessage DeleteById(string id)
-    {
-        //if it does not exists ...
-        if (GetExpenseById(id).StatusCode != HttpStatusCode.OK)
-        {
-            return Request.CreateResponse(HttpStatusCode.NotFound, "no item to delete");
-        }
-        //otherwise
-
-        SqlConnection connection = new SqlConnection(connectionString);
-
-        using (connection)
-        {
-            try
-            {
-                SqlCommand command = new SqlCommand("DELETE FROM [Expense] WHERE [Id] = @id;", connection);
-                command.Parameters.AddWithValue("@Id", id);
-
-
-                command.Connection.Open();
-
-                if (command.ExecuteNonQuery() > 0)
-                {
-                    command.Connection.Close();
-                    return Request.CreateResponse(HttpStatusCode.OK, "deletion successful");
-                }
-                return Request.CreateResponse(HttpStatusCode.ExpectationFailed, "deletion failed.");
-            }
-            catch (Exception ex)
-            {
-                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, $"Error: {ex.Message}");
-            }
-        }
-
-
-    }
-
 
 
     //PUT
@@ -329,7 +312,6 @@ namespace Budget.Controllers
 
 
     */
-
 
 
 

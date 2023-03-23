@@ -11,5 +11,8 @@ namespace Budget.Service.Common
     {
         List<Expense> GetExpenses();
         Expense GetExpenseById(string id);
+        int PostExpense(Expense expenseFromBody);
+        bool DeleteById(string id);
+
     }
 }

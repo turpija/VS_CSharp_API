@@ -26,7 +26,15 @@ namespace Budget.Service
         public int PostExpense(Expense expenseFromBody)
         {
             return repository.PostExpense(expenseFromBody);
+        }
 
+        public bool DeleteById(string id)
+        {
+            if (GetExpenseById(id) == null)
+            {
+                return false;
+            }
+            return repository.DeleteById(id);
         }
 
 

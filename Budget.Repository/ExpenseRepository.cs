@@ -162,6 +162,37 @@ namespace Budget.Repository
 
 
 
+        public bool DeleteById(string id)
+        {
+
+            SqlConnection connection = new SqlConnection(connectionString);
+
+            using (connection)
+            {
+                try
+                {
+                    SqlCommand command = new SqlCommand("DELETE FROM [Expense] WHERE [Id] = @id;", connection);
+                    command.Parameters.AddWithValue("@Id", id);
+
+                    command.Connection.Open();
+
+                    if (command.ExecuteNonQuery() > 0)
+                    {
+                        command.Connection.Close();
+                        return true;
+                    }
+                    return false;
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine($"Error: {ex.Message}");
+                    return false;
+                }
+            }
+        }
+
+
+
 
 
 
