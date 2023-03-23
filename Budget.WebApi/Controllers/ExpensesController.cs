@@ -34,7 +34,7 @@ namespace Budget.Controllers
 
 
 
-        public Expense GetExpenseItemById(string id)
+        private Expense GetExpenseItemById(string id)
         {
 
             SqlConnection connection = new SqlConnection(connectionString);
