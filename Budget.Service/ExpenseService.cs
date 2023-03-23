@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Budget.Models;
+using Budget.Repository;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,21 +10,20 @@ namespace Budget.Service
 {
     public class ExpenseService
     {
+
+        public List<Expense> GetExpenses()
+        {
+            ExpenseRepository repository = new ExpenseRepository();
+            List<Expense> expenses = repository.GetExpenses();
+
+            if (expenses == null)
+            {
+                return null;
+            }
+            return expenses;
+        }
     }
 
-
-
-    /*
-     * NOTES
-     * 
-    controller, nova instanca servis -> vraća objekt/list
-
-    servis, nova instanca repositorija 
-        - dohvaća iz repo    
-        -> vraća objekt/list ili 0
-
-    repository 
-      */  
 
 
 

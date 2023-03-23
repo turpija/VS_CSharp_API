@@ -44,5 +44,15 @@
     <Compile Include="ExpenseService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Budget.Model\Budget.Model.csproj">
+      <Project>{240FB95D-11F4-4C58-B3E6-F74F79BCDB1E}</Project>
+      <Name>Budget.Model</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Budget.Repository\Budget.Repository.csproj">
+      <Project>{E9361A1E-B02A-4F07-9FBB-41435E9509D5}</Project>
+      <Name>Budget.Repository</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
