@@ -13,6 +13,6 @@ namespace Budget.Repository.Common
         Expense GetExpenseById(string id);
         int PostExpense(Expense expenseFromBody);
         bool DeleteById(string id);
-
+        bool UpdateById(string id, Expense expenseUpdated);
     }
 }

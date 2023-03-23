@@ -192,6 +192,43 @@ namespace Budget.Repository
         }
 
 
+        public bool UpdateById(string id, Expense expenseUpdated)
+        {
+            SqlConnection connection = new SqlConnection(connectionString);
+
+            using (connection)
+            {
+                try
+                {
+                    //if expense with id exist ..
+                    SqlCommand command = new SqlCommand
+                        ("UPDATE [Expense] SET [Name] = @name, [PersonId] = @personId, [CategoryId] = @categoryId, [Cost] = @cost, [Date] = @date WHERE [Id] = @id;", connection);
+                    command.Parameters.AddWithValue("@Id", id);
+                    command.Parameters.AddWithValue("@name", expenseUpdated.Name);
+                    command.Parameters.AddWithValue("@cost", expenseUpdated.Cost);
+                    command.Parameters.AddWithValue("@date", expenseUpdated.Date);
+                    command.Parameters.AddWithValue("@personId", expenseUpdated.PersonId);
+                    command.Parameters.AddWithValue("@categoryId", expenseUpdated.CategoryId);
+
+                    command.Connection.Open();
+
+                    if (command.ExecuteNonQuery() > 0)
+                    {
+                        command.Connection.Close();
+                        return true;
+                    }
+                    return false;
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine($"Error: {ex.Message}");
+                    return false;
+                }
+            }
+
+
+        }
+
 
 
 
