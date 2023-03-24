@@ -1,4 +1,5 @@
 ﻿using Budget.Model;
+using Budget.Models;
 using Budget.Service;
 using System;
 using System.Collections.Generic;
@@ -15,6 +16,21 @@ namespace Budget.Controllers
 {
     public class ExpensesController : ApiController
     {
+        private ExpenseRest PopulateExpenseRestView(Expense expense)
+        {
+
+            ExpenseRest expenseRestView = new ExpenseRest();
+            expenseRestView.Id = expense.Id;
+            expenseRestView.Name = expense.Name;
+            expenseRestView.Description = expense.Description;
+            expenseRestView.Cost = expense.Cost;
+            expenseRestView.Date = expense.Date;
+            expenseRestView.CategoryId = expense.CategoryId;
+            expenseRestView.PersonId = expense.PersonId;
+
+            return expenseRestView;
+        }
+
         ExpenseService service = new ExpenseService();
 
         // GET all expenses
@@ -23,12 +39,19 @@ namespace Budget.Controllers
         public async Task<HttpResponseMessage> GetAllAsync()
         {
             List<Expense> expenses = await service.GetAllAsync();
+            List<ExpenseRest> expensesRestView = new List<ExpenseRest>();
 
             if (expenses == null)
             {
                 return Request.CreateResponse(HttpStatusCode.NotFound, "no content");
             }
-            return Request.CreateResponse(HttpStatusCode.OK, expenses);
+
+            foreach(Expense item in expenses){
+                //populate ExpenseRest item ...
+                expensesRestView.Add(PopulateExpenseRestView(item));
+            };
+
+            return Request.CreateResponse(HttpStatusCode.OK, expensesRestView);
         }
 
 
@@ -39,12 +62,14 @@ namespace Budget.Controllers
         public async Task<HttpResponseMessage> GetByIdAsync(string id)
         {
             Expense expense = await service.GetByIdAsync(id);
+
             if (expense == null)
             {
                 return Request.CreateResponse(HttpStatusCode.NotFound, "no content");
             }
+            ExpenseRest expenseRestView = PopulateExpenseRestView(expense);
 
-            return Request.CreateResponse(HttpStatusCode.OK, expense);
+            return Request.CreateResponse(HttpStatusCode.OK, expenseRestView);
         }
 
 

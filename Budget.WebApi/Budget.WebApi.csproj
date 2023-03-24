@@ -162,6 +162,8 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Models\DummyList.cs" />
+    <Compile Include="Models\ExpenseRestUpdate.cs" />
+    <Compile Include="Models\ExpenseRestView.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
