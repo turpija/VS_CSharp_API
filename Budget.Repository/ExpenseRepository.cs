@@ -16,10 +16,10 @@ namespace Budget.Repository
     public class ExpenseRepository : IExpenseRepository
     {
         //laptop
-        //private string connectionString = "Data Source=DESKTOP-D467OFD\\MOJSQLSERVER;Initial Catalog=Budget;Integrated Security=True";
-        
+        private string connectionString = "Data Source=DESKTOP-D467OFD\\MOJSQLSERVER;Initial Catalog=Budget;Integrated Security=True";
+
         //home
-        private string connectionString = "Data Source=DESKTOP-413NSIC\\SQLEXPRESS01;Initial Catalog=KucniBudget;Integrated Security=True";
+        //private string connectionString = "Data Source=DESKTOP-413NSIC\\SQLEXPRESS01;Initial Catalog=KucniBudget;Integrated Security=True";
 
 
 
@@ -73,13 +73,8 @@ namespace Budget.Repository
         }
 
 
-<<<<<<< Updated upstream
-        public List<Expense> GetAll()
-=======
 
-
-        public async Task<List<Expense>> GetExpensesAsync()
->>>>>>> Stashed changes
+        public async Task<List<Expense>> GetAllAsync()
         {
             SqlConnection connection = new SqlConnection(connectionString);
             List<Expense> expenses = new List<Expense>();
@@ -118,7 +113,7 @@ namespace Budget.Repository
 
 
 
-        public async Task<Expense> GetExpenseByIdAsync(string id)
+        public async Task<Expense> GetByIdAsync(string id)
         {
             Expense expense = await GetExpenseItemByIdAsync(id);
             if (expense == null)
@@ -129,7 +124,7 @@ namespace Budget.Repository
         }
 
 
-        public async Task<int> PostExpenseAsync(Expense expenseFromBody)
+        public async Task<int> PostAsync(Expense expenseFromBody)
         {
             SqlConnection connection = new SqlConnection(connectionString);
 

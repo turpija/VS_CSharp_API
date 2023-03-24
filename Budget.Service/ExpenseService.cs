@@ -13,24 +13,24 @@ namespace Budget.Service
     {
         ExpenseRepository repository = new ExpenseRepository();
 
-        public async Task<List<Expense>> GetExpensesAsync()
+        public async Task<List<Expense>> GetAllAsync()
         {
-            return await repository.GetExpensesAsync();
+            return await repository.GetAllAsync();
         }
 
-        public async Task<Expense> GetExpenseByIdAsync(string id)
+        public async Task<Expense> GetByIdAsync(string id)
         {
-            return await repository.GetExpenseByIdAsync(id);
+            return await repository.GetByIdAsync(id);
         }
 
-        public async Task<int> PostExpenseAsync(Expense expenseFromBody)
+        public async Task<int> PostAsync(Expense expenseFromBody)
         {
-            return await repository.PostExpenseAsync(expenseFromBody);
+            return await repository.PostAsync(expenseFromBody);
         }
 
         public async Task<bool> DeleteByIdAsync(string id)
         {
-            if (await GetExpenseByIdAsync(id) == null)
+            if (await GetByIdAsync(id) == null)
             {
                 return false;
             }
@@ -40,7 +40,7 @@ namespace Budget.Service
         public async Task<bool> UpdateByIdAsync(string id, Expense newExpense)
         {
             // postoji li expense s tim ID ? 
-            Expense currentExpense = await GetExpenseByIdAsync(id);
+            Expense currentExpense = await GetByIdAsync(id);
             if (currentExpense == null)
             {
                 return false;

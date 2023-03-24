@@ -20,9 +20,9 @@ namespace Budget.Controllers
         // GET all expenses
         [Route("api/expenses/")]
         [HttpGet]
-        public async Task<HttpResponseMessage> GetExpensesAsync()
+        public async Task<HttpResponseMessage> GetAllAsync()
         {
-            List<Expense> expenses = await service.GetExpensesAsync();
+            List<Expense> expenses = await service.GetAllAsync();
 
             if (expenses == null)
             {
@@ -36,9 +36,9 @@ namespace Budget.Controllers
         //GET expense by id
         [Route("api/expense/{id}")]
         [HttpGet]
-        public async Task<HttpResponseMessage> GetExpenseByIdAsync(string id)
+        public async Task<HttpResponseMessage> GetByIdAsync(string id)
         {
-            Expense expense = await service.GetExpenseByIdAsync(id);
+            Expense expense = await service.GetByIdAsync(id);
             if (expense == null)
             {
                 return Request.CreateResponse(HttpStatusCode.NotFound, "no content");
@@ -53,14 +53,14 @@ namespace Budget.Controllers
         [Route("api/expense/")]
         [HttpPost]
 
-        public async Task<HttpResponseMessage> PostExpenseAsync(Expense expenseFromBody)
+        public async Task<HttpResponseMessage> PostAsync(Expense expenseFromBody)
         {
             if (!ModelState.IsValid)
             {
                 return Request.CreateResponse(HttpStatusCode.BadRequest, "missing required data");
             }
 
-            int result = await service.PostExpenseAsync(expenseFromBody);
+            int result = await service.PostAsync(expenseFromBody);
             if (result > 0)
             {
                 return Request.CreateResponse(HttpStatusCode.OK, $"Success, rows affected: {result}");
@@ -83,7 +83,6 @@ namespace Budget.Controllers
 
             return Request.CreateResponse(HttpStatusCode.OK, "delete successfull");
         }
-
 
 
 
