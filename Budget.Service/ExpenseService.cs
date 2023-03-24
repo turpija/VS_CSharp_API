@@ -13,34 +13,34 @@ namespace Budget.Service
     {
         ExpenseRepository repository = new ExpenseRepository();
 
-        public List<Expense> GetAll()
+        public async Task<List<Expense>> GetExpensesAsync()
         {
-            return repository.GetAll();
+            return await repository.GetExpensesAsync();
         }
 
-        public Expense GetById(string id)
+        public async Task<Expense> GetExpenseByIdAsync(string id)
         {
-            return repository.GetById(id);
+            return await repository.GetExpenseByIdAsync(id);
         }
 
-        public int Post(Expense expenseFromBody)
+        public async Task<int> PostExpenseAsync(Expense expenseFromBody)
         {
-            return repository.Post(expenseFromBody);
+            return await repository.PostExpenseAsync(expenseFromBody);
         }
 
-        public bool DeleteById(string id)
+        public async Task<bool> DeleteByIdAsync(string id)
         {
-            if (GetById(id) == null)
+            if (await GetExpenseByIdAsync(id) == null)
             {
                 return false;
             }
-            return repository.DeleteById(id);
+            return await repository.DeleteByIdAsync(id);
         }
 
-        public bool UpdateById(string id, Expense newExpense)
+        public async Task<bool> UpdateByIdAsync(string id, Expense newExpense)
         {
-            Expense currentExpense = GetById(id);
-            
+            // postoji li expense s tim ID ? 
+            Expense currentExpense = await GetExpenseByIdAsync(id);
             if (currentExpense == null)
             {
                 return false;
@@ -54,7 +54,7 @@ namespace Budget.Service
             expenseUpdated.PersonId = newExpense.PersonId == default ? currentExpense.PersonId : newExpense.PersonId;
             expenseUpdated.CategoryId = newExpense.CategoryId == default ? currentExpense.CategoryId : newExpense.CategoryId;
 
-            return repository.UpdateById(id, expenseUpdated);
+            return await repository.UpdateByIdAsync(id, expenseUpdated);
         }
 
 

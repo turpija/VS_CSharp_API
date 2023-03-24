@@ -9,10 +9,10 @@ namespace Budget.Repository.Common
 {
     public interface IExpenseRepository
     {
-        List<Expense> GetAll();
-        Expense GetById(string id);
-        int Post(Expense expenseFromBody);
-        bool DeleteById(string id);
-        bool UpdateById(string id, Expense expenseUpdated);
+        Task<List<Expense>> GetExpensesAsync();
+        Task<Expense> GetExpenseByIdAsync(string id);
+        Task<int> PostExpenseAsync(Expense expenseFromBody);
+        Task<bool> DeleteByIdAsync(string id);
+        Task<bool> UpdateByIdAsync(string id, Expense expenseUpdated);
     }
 }

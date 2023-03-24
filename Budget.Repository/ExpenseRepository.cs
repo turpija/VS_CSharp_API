@@ -37,8 +37,8 @@ namespace Budget.Repository
             return expense;
         }
 
-
-        private Expense GetExpenseItemById(string id)
+        // private async Task<Expense> GetExpenseItemByIdAsync(...)
+        private async Task<Expense> GetExpenseItemByIdAsync(string id)
         {
 
             SqlConnection connection = new SqlConnection(connectionString);
@@ -50,7 +50,7 @@ namespace Budget.Repository
                     command.Parameters.AddWithValue("@id", id);
 
                     command.Connection.Open();
-                    SqlDataReader reader = command.ExecuteReader();
+                    SqlDataReader reader = await command.ExecuteReaderAsync();
 
                     if (!reader.HasRows)
                     {
@@ -73,7 +73,13 @@ namespace Budget.Repository
         }
 
 
+<<<<<<< Updated upstream
         public List<Expense> GetAll()
+=======
+
+
+        public async Task<List<Expense>> GetExpensesAsync()
+>>>>>>> Stashed changes
         {
             SqlConnection connection = new SqlConnection(connectionString);
             List<Expense> expenses = new List<Expense>();
@@ -87,7 +93,7 @@ namespace Budget.Repository
                     //SqlCommand command = new SqlCommand("select * from expense where \"Name\" = 'pero';", connection);
 
                     command.Connection.Open();
-                    SqlDataReader reader = command.ExecuteReader();
+                    SqlDataReader reader = await command.ExecuteReaderAsync();
                     if (!reader.HasRows)
                     {
                         command.Connection.Close();
@@ -112,9 +118,9 @@ namespace Budget.Repository
 
 
 
-        public Expense GetById(string id)
+        public async Task<Expense> GetExpenseByIdAsync(string id)
         {
-            Expense expense = GetExpenseItemById(id);
+            Expense expense = await GetExpenseItemByIdAsync(id);
             if (expense == null)
             {
                 return null;
@@ -123,7 +129,7 @@ namespace Budget.Repository
         }
 
 
-        public int Post(Expense expenseFromBody)
+        public async Task<int> PostExpenseAsync(Expense expenseFromBody)
         {
             SqlConnection connection = new SqlConnection(connectionString);
 
@@ -143,7 +149,7 @@ namespace Budget.Repository
 
                     command.Connection.Open();
 
-                    int RowsAffected = command.ExecuteNonQuery();
+                    int RowsAffected = await command.ExecuteNonQueryAsync();
 
                     if (RowsAffected > 0)
                     {
@@ -163,7 +169,7 @@ namespace Budget.Repository
 
 
 
-        public bool DeleteById(string id)
+        public async Task<bool> DeleteByIdAsync(string id)
         {
 
             SqlConnection connection = new SqlConnection(connectionString);
@@ -177,7 +183,7 @@ namespace Budget.Repository
 
                     command.Connection.Open();
 
-                    if (command.ExecuteNonQuery() > 0)
+                    if (await command.ExecuteNonQueryAsync() > 0)
                     {
                         command.Connection.Close();
                         return true;
@@ -193,7 +199,7 @@ namespace Budget.Repository
         }
 
 
-        public bool UpdateById(string id, Expense expenseUpdated)
+        public async Task<bool> UpdateByIdAsync(string id, Expense expenseUpdated)
         {
             SqlConnection connection = new SqlConnection(connectionString);
 
@@ -209,11 +215,11 @@ namespace Budget.Repository
                     command.Parameters.AddWithValue("@cost", expenseUpdated.Cost);
                     command.Parameters.AddWithValue("@date", expenseUpdated.Date);
                     command.Parameters.AddWithValue("@personId", expenseUpdated.PersonId);
-                    command.Parameters.AddWithValue("@categoryId", expenseUpdated.CategoryId);
+                    command.Parameters.AddWithValue("@categoryId", expenseUpdated.CategoryId );
 
                     command.Connection.Open();
 
-                    if (command.ExecuteNonQuery() > 0)
+                    if (await command.ExecuteNonQueryAsync() > 0)
                     {
                         command.Connection.Close();
                         return true;

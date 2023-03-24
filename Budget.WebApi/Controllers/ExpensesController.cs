@@ -6,6 +6,7 @@ using System.Data.SqlClient;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Threading.Tasks;
 using System.Web.Http;
 using System.Web.WebPages;
 using WebGrease.Css.Extensions;
@@ -19,9 +20,9 @@ namespace Budget.Controllers
         // GET all expenses
         [Route("api/expenses/")]
         [HttpGet]
-        public HttpResponseMessage GetAll()
+        public async Task<HttpResponseMessage> GetExpensesAsync()
         {
-            List<Expense> expenses = service.GetAll();
+            List<Expense> expenses = await service.GetExpensesAsync();
 
             if (expenses == null)
             {
@@ -35,9 +36,9 @@ namespace Budget.Controllers
         //GET expense by id
         [Route("api/expense/{id}")]
         [HttpGet]
-        public HttpResponseMessage GetById(string id)
+        public async Task<HttpResponseMessage> GetExpenseByIdAsync(string id)
         {
-            Expense expense = service.GetById(id);
+            Expense expense = await service.GetExpenseByIdAsync(id);
             if (expense == null)
             {
                 return Request.CreateResponse(HttpStatusCode.NotFound, "no content");
@@ -52,14 +53,14 @@ namespace Budget.Controllers
         [Route("api/expense/")]
         [HttpPost]
 
-        public HttpResponseMessage Post(Expense expenseFromBody)
+        public async Task<HttpResponseMessage> PostExpenseAsync(Expense expenseFromBody)
         {
             if (!ModelState.IsValid)
             {
                 return Request.CreateResponse(HttpStatusCode.BadRequest, "missing required data");
             }
 
-            int result = service.Post(expenseFromBody);
+            int result = await service.PostExpenseAsync(expenseFromBody);
             if (result > 0)
             {
                 return Request.CreateResponse(HttpStatusCode.OK, $"Success, rows affected: {result}");
@@ -72,9 +73,9 @@ namespace Budget.Controllers
         //DELETE
         [HttpDelete]
         [Route("api/expense/{id}")]
-        public HttpResponseMessage DeleteById(string id)
+        public async Task<HttpResponseMessage> DeleteByIdAsync(string id)
         {
-            bool deleteSuccessful = service.DeleteById(id);
+            bool deleteSuccessful = await service.DeleteByIdAsync(id);
             if (!deleteSuccessful)
             {
                 return Request.CreateResponse(HttpStatusCode.ExpectationFailed, "delete failed");
@@ -89,9 +90,9 @@ namespace Budget.Controllers
         //PUT
         [HttpPut]
         [Route("api/expense/{id}")]
-        public HttpResponseMessage UpdateById(string id, Expense expenseFromBody)
+        public async Task<HttpResponseMessage> UpdateByIdAsync(string id, Expense expenseFromBody)
         {
-            bool updateSuccess = service.UpdateById(id, expenseFromBody);
+            bool updateSuccess = await service.UpdateByIdAsync(id, expenseFromBody);
             if (!updateSuccess)
             {
                 return Request.CreateResponse(HttpStatusCode.NotFound, "no item to update");
