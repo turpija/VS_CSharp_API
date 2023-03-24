@@ -23,9 +23,9 @@ namespace Budget.Service
             return await repository.GetByIdAsync(id);
         }
 
-        public async Task<int> PostAsync(Expense expenseFromBody)
+        public async Task<int> PostAsync(Expense expense)
         {
-            return await repository.PostAsync(expenseFromBody);
+            return await repository.PostAsync(expense);
         }
 
         public async Task<bool> DeleteByIdAsync(string id)

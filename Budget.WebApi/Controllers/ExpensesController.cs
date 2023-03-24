@@ -16,19 +16,33 @@ namespace Budget.Controllers
 {
     public class ExpensesController : ApiController
     {
-        private ExpenseRest PopulateExpenseRestView(Expense expense)
+        private ExpenseRest PopulateExpenseRest(Expense expense)
         {
-
-            ExpenseRest expenseRestView = new ExpenseRest();
-            expenseRestView.Id = expense.Id;
-            expenseRestView.Name = expense.Name;
-            expenseRestView.Description = expense.Description;
-            expenseRestView.Cost = expense.Cost;
-            expenseRestView.Date = expense.Date;
-            expenseRestView.CategoryId = expense.CategoryId;
-            expenseRestView.PersonId = expense.PersonId;
-
+            ExpenseRest expenseRestView = new ExpenseRest()
+            {
+                Id = expense.Id,
+                Name = expense.Name,
+                Description = expense.Description,
+                Cost = expense.Cost,
+                Date = expense.Date,
+                CategoryId = expense.CategoryId,
+                PersonId = expense.PersonId
+            };
             return expenseRestView;
+        }
+
+        private Expense PopulateExpense(ExpenseRest expenseRest)
+        {
+            Expense expense = new Expense()
+            {
+                Name = expenseRest.Name,
+                Description = expenseRest.Description,
+                PersonId = expenseRest.PersonId,
+                CategoryId = expenseRest.CategoryId,
+                Date = expenseRest.Date,
+                Cost = expenseRest.Cost
+            };
+            return expense;
         }
 
         ExpenseService service = new ExpenseService();
@@ -46,9 +60,10 @@ namespace Budget.Controllers
                 return Request.CreateResponse(HttpStatusCode.NotFound, "no content");
             }
 
-            foreach(Expense item in expenses){
+            foreach (Expense item in expenses)
+            {
                 //populate ExpenseRest item ...
-                expensesRestView.Add(PopulateExpenseRestView(item));
+                expensesRestView.Add(PopulateExpenseRest(item));
             };
 
             return Request.CreateResponse(HttpStatusCode.OK, expensesRestView);
@@ -67,7 +82,7 @@ namespace Budget.Controllers
             {
                 return Request.CreateResponse(HttpStatusCode.NotFound, "no content");
             }
-            ExpenseRest expenseRestView = PopulateExpenseRestView(expense);
+            ExpenseRest expenseRestView = PopulateExpenseRest(expense);
 
             return Request.CreateResponse(HttpStatusCode.OK, expenseRestView);
         }
@@ -78,14 +93,16 @@ namespace Budget.Controllers
         [Route("api/expense/")]
         [HttpPost]
 
-        public async Task<HttpResponseMessage> PostAsync(Expense expenseFromBody)
+        public async Task<HttpResponseMessage> PostAsync(ExpenseRest expenseRest)
         {
+            Expense expense = PopulateExpense(expenseRest);
+
             if (!ModelState.IsValid)
             {
                 return Request.CreateResponse(HttpStatusCode.BadRequest, "missing required data");
             }
 
-            int result = await service.PostAsync(expenseFromBody);
+            int result = await service.PostAsync(expense);
             if (result > 0)
             {
                 return Request.CreateResponse(HttpStatusCode.OK, $"Success, rows affected: {result}");
@@ -109,14 +126,14 @@ namespace Budget.Controllers
             return Request.CreateResponse(HttpStatusCode.OK, "delete successfull");
         }
 
-
-
         //PUT
         [HttpPut]
         [Route("api/expense/{id}")]
-        public async Task<HttpResponseMessage> UpdateByIdAsync(string id, Expense expenseFromBody)
+        public async Task<HttpResponseMessage> UpdateByIdAsync(string id, ExpenseRest expenseFromBody)
         {
-            bool updateSuccess = await service.UpdateByIdAsync(id, expenseFromBody);
+            Expense expense = PopulateExpense(expenseFromBody);
+
+            bool updateSuccess = await service.UpdateByIdAsync(id, expense);
             if (!updateSuccess)
             {
                 return Request.CreateResponse(HttpStatusCode.NotFound, "no item to update");
