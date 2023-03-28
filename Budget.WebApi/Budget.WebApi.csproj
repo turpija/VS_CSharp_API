@@ -152,6 +152,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App_Start\BundleConfig.cs" />
+    <Compile Include="App_Start\DIConfig.cs" />
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
@@ -189,7 +190,6 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="Models\DummyList.cs" />
     <Compile Include="Models\ExpenseRest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -337,6 +337,18 @@
     <ProjectReference Include="..\Budget.Model\Budget.Model.csproj">
       <Project>{240FB95D-11F4-4C58-B3E6-F74F79BCDB1E}</Project>
       <Name>Budget.Model</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Budget.Repository.Common\Budget.Repository.Common.csproj">
+      <Project>{3D0C9AA7-C62F-4052-AE76-7328D5691842}</Project>
+      <Name>Budget.Repository.Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Budget.Repository\Budget.Repository.csproj">
+      <Project>{E9361A1E-B02A-4F07-9FBB-41435E9509D5}</Project>
+      <Name>Budget.Repository</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Budget.Service.Common\Budget.Service.Common.csproj">
+      <Project>{4C7963A6-CF41-4A7E-985D-69ED3564B298}</Project>
+      <Name>Budget.Service.Common</Name>
     </ProjectReference>
     <ProjectReference Include="..\Budget.Service\Budget.Service.csproj">
       <Project>{CEC438C2-80A4-496E-9234-B4AD6213447B}</Project>

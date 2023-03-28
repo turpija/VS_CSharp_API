@@ -1,5 +1,6 @@
 ﻿using Budget.Model;
 using Budget.Repository;
+using Budget.Repository.Common;
 using Budget.Service.Common;
 using System;
 using System.Collections.Generic;
@@ -11,21 +12,28 @@ namespace Budget.Service
 {
     public class ExpenseService : IExpenseService
     {
-        ExpenseRepository repository = new ExpenseRepository();
+        //ExpenseRepository repository = new ExpenseRepository();
+
+        public IExpenseRepository Repository { get; set; }
+
+        public ExpenseService(IExpenseRepository repository)
+        {
+            Repository = repository;
+        }
 
         public async Task<List<Expense>> GetAllAsync()
         {
-            return await repository.GetAllAsync();
+            return await Repository.GetAllAsync();
         }
 
         public async Task<Expense> GetByIdAsync(string id)
         {
-            return await repository.GetByIdAsync(id);
+            return await Repository.GetByIdAsync(id);
         }
 
         public async Task<int> PostAsync(Expense expense)
         {
-            return await repository.PostAsync(expense);
+            return await Repository.PostAsync(expense);
         }
 
         public async Task<bool> DeleteByIdAsync(string id)
@@ -34,7 +42,7 @@ namespace Budget.Service
             {
                 return false;
             }
-            return await repository.DeleteByIdAsync(id);
+            return await Repository.DeleteByIdAsync(id);
         }
 
         public async Task<bool> UpdateByIdAsync(string id, Expense newExpense)
@@ -54,7 +62,7 @@ namespace Budget.Service
             expenseUpdated.PersonId = newExpense.PersonId == default ? currentExpense.PersonId : newExpense.PersonId;
             expenseUpdated.CategoryId = newExpense.CategoryId == default ? currentExpense.CategoryId : newExpense.CategoryId;
 
-            return await repository.UpdateByIdAsync(id, expenseUpdated);
+            return await Repository.UpdateByIdAsync(id, expenseUpdated);
         }
 
 
