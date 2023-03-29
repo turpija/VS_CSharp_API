@@ -4,18 +4,33 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 VisualStudioVersion = 17.5.33424.131
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Budget.WebApi", "Budget.WebApi\Budget.WebApi.csproj", "{264AEC55-47A1-49DF-BEBE-C6A9B529C25E}"
+	ProjectSection(ProjectDependencies) = postProject
+		{CCA255D5-1C03-48EF-B988-F05D028158F7} = {CCA255D5-1C03-48EF-B988-F05D028158F7}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Budget.Service", "Budget.Service\Budget.Service.csproj", "{CEC438C2-80A4-496E-9234-B4AD6213447B}"
+	ProjectSection(ProjectDependencies) = postProject
+		{CCA255D5-1C03-48EF-B988-F05D028158F7} = {CCA255D5-1C03-48EF-B988-F05D028158F7}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Budget.Model", "Budget.Model\Budget.Model.csproj", "{240FB95D-11F4-4C58-B3E6-F74F79BCDB1E}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Budget.Model.Common", "Budget.Model.Common\Budget.Model.Common.csproj", "{C5DEF8F5-9EDB-4D30-A7DF-53C96476031E}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Budget.Repository", "Budget.Repository\Budget.Repository.csproj", "{E9361A1E-B02A-4F07-9FBB-41435E9509D5}"
+	ProjectSection(ProjectDependencies) = postProject
+		{CCA255D5-1C03-48EF-B988-F05D028158F7} = {CCA255D5-1C03-48EF-B988-F05D028158F7}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Budget.Repository.Common", "Budget.Repository.Common\Budget.Repository.Common.csproj", "{3D0C9AA7-C62F-4052-AE76-7328D5691842}"
+	ProjectSection(ProjectDependencies) = postProject
+		{CCA255D5-1C03-48EF-B988-F05D028158F7} = {CCA255D5-1C03-48EF-B988-F05D028158F7}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Budget.Service.Common", "Budget.Service.Common\Budget.Service.Common.csproj", "{4C7963A6-CF41-4A7E-985D-69ED3564B298}"
+	ProjectSection(ProjectDependencies) = postProject
+		{CCA255D5-1C03-48EF-B988-F05D028158F7} = {CCA255D5-1C03-48EF-B988-F05D028158F7}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Budget.Common", "Budget.Common\Budget.Common.csproj", "{CCA255D5-1C03-48EF-B988-F05D028158F7}"
 EndProject

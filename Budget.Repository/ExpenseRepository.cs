@@ -10,17 +10,20 @@ using Budget.Model;
 using System.Diagnostics;
 using Budget.Repository.Common;
 using System.Web.ModelBinding;
+using System.Web.UI.WebControls;
+using Budget.Common;
+using static System.Net.Mime.MediaTypeNames;
+using System.Collections.Specialized;
 
 namespace Budget.Repository
 {
     public class ExpenseRepository : IExpenseRepository
     {
         //laptop
-        private string connectionString = "Data Source=DESKTOP-D467OFD\\MOJSQLSERVER;Initial Catalog=Budget;Integrated Security=True";
+        //private string connectionString = "Data Source=DESKTOP-D467OFD\\MOJSQLSERVER;Initial Catalog=Budget;Integrated Security=True";
 
         //home
-        //private string connectionString = "Data Source=DESKTOP-413NSIC\\SQLEXPRESS01;Initial Catalog=KucniBudget;Integrated Security=True";
-
+        private string connectionString = "Data Source=DESKTOP-413NSIC\\SQLEXPRESS01;Initial Catalog=KucniBudget;Integrated Security=True";
 
 
         private Expense PopulateExpenseWithReaderData(SqlDataReader reader)
@@ -37,7 +40,42 @@ namespace Budget.Repository
             return expense;
         }
 
-        // private async Task<Expense> GetExpenseItemByIdAsync(...)
+        private async Task<string> FindIdByName(string tableName, string columnName, string value)
+        {
+            SqlConnection connection = new SqlConnection(connectionString);
+            using (connection)
+            {
+                try
+                {
+                    StringBuilder sb = new StringBuilder();
+                    sb.AppendLine($"SELECT Id FROM [{tableName}]");
+                    sb.AppendLine($"WHERE [{columnName}] = '{value}';");
+                    SqlCommand command = new SqlCommand(sb.ToString(), connection);
+                    //command.Parameters.AddWithValue("@value", value);
+
+                    command.Connection.Open();
+                    SqlDataReader reader = await command.ExecuteReaderAsync();
+
+                    if (!reader.HasRows)
+                    {
+                        command.Connection.Close();
+                        return null;
+                    }
+
+                    reader.Read();
+                    //Expense expense = PopulateExpenseWithReaderData(reader);
+
+                    return reader.GetGuid(0).ToString();
+                    //reader.Close();
+
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine($"Error: {ex.Message}");
+                    return null;
+                }
+            }
+        }
         private async Task<Expense> GetExpenseItemByIdAsync(string id)
         {
 
@@ -72,20 +110,76 @@ namespace Budget.Repository
             }
         }
 
-
-
-        public async Task<List<Expense>> GetAllAsync()
+        public async Task<List<Expense>> GetAllAsync(Paging paging, Sorting sorting, Filtering filtering)
         {
+            // if no parameters, create default objects
+            if (paging == null) paging = new Paging();
+            if (sorting == null) sorting = new Sorting();
+            if (filtering == null) filtering = new Filtering();
+
+            // set sorting order
+            string sortingOrder = "ASC";
+            if (sorting.SortOrderAsc == false) sortingOrder = "DESC";
+
+
             SqlConnection connection = new SqlConnection(connectionString);
             List<Expense> expenses = new List<Expense>();
+
+            StringBuilder sb = new StringBuilder();
+
+            // create list with filtering conditions
+            List<string> filteringQuery = new List<string>();
+
+
+            if (filtering.Person != null)
+            {
+                string personId = await FindIdByName("Person", "DisplayName", filtering.Person);
+                filteringQuery.Add($"PersonId = '{personId}'");
+            }
+            if (filtering.Category != null)
+            {
+                string categoryId = await FindIdByName("Category", "Name", filtering.Category);
+                filteringQuery.Add($"CategoryId = '{categoryId}'");
+            }
+
+            if (filtering.DateFrom != null)
+            {
+                filteringQuery.Add($"DATE >= '{filtering.DateFrom}'");
+            }
+
+            if (filtering.DateTo != null)
+            {
+                filteringQuery.Add($"DATE <= '{filtering.DateTo}'");
+            }
+
+            if (filtering.CostFrom != null)
+            {
+                filteringQuery.Add($"COST >= '{filtering.CostFrom}'");
+            }
+
+            if (filtering.CostTo != null)
+            {
+                filteringQuery.Add($"COST <= '{filtering.CostTo}'");
+            }
+
+            // create query string
+            sb.AppendLine("SELECT * FROM [Expense]");
+
+            // filtering has parameters? add to query
+            if (filteringQuery.Any()) sb.AppendLine("WHERE " + string.Join(" AND ", filteringQuery.ToArray()));
+
+            sb.AppendLine($"ORDER BY [{sorting.OrderBy}] {sortingOrder}");
+            sb.AppendLine("OFFSET @offset ROWS");
+            sb.AppendLine("FETCH NEXT @pagesize ROWS ONLY");
+            sb.AppendLine(";");
 
             using (connection)
             {
                 try
                 {
-                    SqlCommand command = new SqlCommand("SELECT * FROM Expense;", connection);
-                    //if request = empty result
-                    //SqlCommand command = new SqlCommand("select * from expense where \"Name\" = 'pero';", connection);
+                    SqlCommand command = new SqlCommand(sb.ToString(), connection);
+                    command.Parameters.AddWithValue("@offset", (paging.PageNumber - 1) * paging.PageSize);
+                    command.Parameters.AddWithValue("@pagesize", paging.PageSize);
 
                     command.Connection.Open();
                     SqlDataReader reader = await command.ExecuteReaderAsync();
@@ -210,7 +304,7 @@ namespace Budget.Repository
                     command.Parameters.AddWithValue("@cost", expenseUpdated.Cost);
                     command.Parameters.AddWithValue("@date", expenseUpdated.Date);
                     command.Parameters.AddWithValue("@personId", expenseUpdated.PersonId);
-                    command.Parameters.AddWithValue("@categoryId", expenseUpdated.CategoryId );
+                    command.Parameters.AddWithValue("@categoryId", expenseUpdated.CategoryId);
 
                     command.Connection.Open();
 
