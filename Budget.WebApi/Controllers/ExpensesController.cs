@@ -60,11 +60,6 @@ namespace Budget.Controllers
         [Route("api/expenses/")]
         [HttpGet]
         public async Task<HttpResponseMessage> GetAllAsync([FromUri]Paging paging, [FromUri]Sorting sorting) { 
-        //public async Task<HttpResponseMessage> GetAllAsync(int currentPage, int pageSize, string orderBy, bool sortOrderAsc )
-        //{
-        //    Paging paging = new Paging();
-        //    paging.CurrentPage = currentPage;
-        //    paging.PageSize = pageSize;
 
             List<Expense> expenses = await Service.GetAllAsync(paging, sorting);
             List<ExpenseRest> expensesRestView = new List<ExpenseRest>();

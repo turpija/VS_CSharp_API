@@ -87,13 +87,16 @@ namespace Budget.Repository
             {
                 try
                 {
-                    //SqlCommand command = new SqlCommand("SELECT * FROM Expense;", connection);
-
-                    SqlCommand command = new SqlCommand("SELECT * FROM [Expense] ORDER BY [Date] OFFSET @offset ROWS FETCH NEXT @pagesize ROWS ONLY;", connection);
+                    StringBuilder sb = new StringBuilder();
+                    sb.AppendLine("SELECT * FROM [Expense]");
+                    sb.AppendLine($"ORDER BY [{sorting.OrderBy}]");
+                    sb.AppendLine("OFFSET @offset ROWS");
+                    sb.AppendLine("FETCH NEXT @pagesize ROWS ONLY");
+                    sb.AppendLine(";");
+                    //SqlCommand command = new SqlCommand("SELECT * FROM [Expense] ORDER BY [Date] OFFSET @offset ROWS FETCH NEXT @pagesize ROWS ONLY;", connection);
+                    SqlCommand command = new SqlCommand(sb.ToString());
                     command.Parameters.AddWithValue("@offset", (paging.CurrentPage - 1)*paging.PageSize);
                     command.Parameters.AddWithValue("@pagesize", paging.PageSize);
-                    //if request = empty result
-                    //SqlCommand command = new SqlCommand("select * from expense where \"Name\" = 'pero';", connection);
 
                     command.Connection.Open();
                     SqlDataReader reader = await command.ExecuteReaderAsync();
