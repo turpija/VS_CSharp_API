@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace Budget.Common
 {
-    public class Pager
+    public class Paging
     {
-        public int CurrentPage { get; set; }
-        public int PageSize { get; set; }
+        public int CurrentPage { get; set; } = 1;
+        public int PageSize { get; set; } = 1;
     }
 }

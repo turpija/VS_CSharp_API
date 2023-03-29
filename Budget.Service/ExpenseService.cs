@@ -22,9 +22,9 @@ namespace Budget.Service
             Repository = repository;
         }
 
-        public async Task<List<Expense>> GetAllAsync(Pager pager)
+        public async Task<List<Expense>> GetAllAsync(Paging paging, Sorting sorting)
         {
-            return await Repository.GetAllAsync(pager);
+            return await Repository.GetAllAsync(paging, sorting);
         }
 
         public async Task<Expense> GetByIdAsync(string id)

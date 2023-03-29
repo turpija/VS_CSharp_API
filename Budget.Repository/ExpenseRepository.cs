@@ -77,7 +77,7 @@ namespace Budget.Repository
 
 
 
-        public async Task<List<Expense>> GetAllAsync(Pager pager)
+        public async Task<List<Expense>> GetAllAsync(Paging paging, Sorting sorting)
         {
 
             SqlConnection connection = new SqlConnection(connectionString);
@@ -89,18 +89,11 @@ namespace Budget.Repository
                 {
                     //SqlCommand command = new SqlCommand("SELECT * FROM Expense;", connection);
 
-                    SqlCommand command = new SqlCommand("SELECT * FROM [Expense] ORDER BY [Name] OFFSET @offset ROWS FETCH NEXT @pagesize ROWS ONLY;", connection);
-                    command.Parameters.AddWithValue("@offset", pager.CurrentPage - 1);
-                    command.Parameters.AddWithValue("@pagesize", pager.PageSize);
+                    SqlCommand command = new SqlCommand("SELECT * FROM [Expense] ORDER BY [Date] OFFSET @offset ROWS FETCH NEXT @pagesize ROWS ONLY;", connection);
+                    command.Parameters.AddWithValue("@offset", (paging.CurrentPage - 1)*paging.PageSize);
+                    command.Parameters.AddWithValue("@pagesize", paging.PageSize);
                     //if request = empty result
                     //SqlCommand command = new SqlCommand("select * from expense where \"Name\" = 'pero';", connection);
-
-                    /*
-                    select* from expense
-                    order by name
-                    offset 0 rows
-                    fetch next 4 rows only;
-                    */
 
                     command.Connection.Open();
                     SqlDataReader reader = await command.ExecuteReaderAsync();
