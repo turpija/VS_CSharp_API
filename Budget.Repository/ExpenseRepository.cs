@@ -20,11 +20,10 @@ namespace Budget.Repository
     public class ExpenseRepository : IExpenseRepository
     {
         //laptop
-        private string connectionString = "Data Source=DESKTOP-D467OFD\\MOJSQLSERVER;Initial Catalog=Budget;Integrated Security=True";
+        //private string connectionString = "Data Source=DESKTOP-D467OFD\\MOJSQLSERVER;Initial Catalog=Budget;Integrated Security=True";
 
         //home
-        //private string connectionString = "Data Source=DESKTOP-413NSIC\\SQLEXPRESS01;Initial Catalog=KucniBudget;Integrated Security=True";
-
+        private string connectionString = "Data Source=DESKTOP-413NSIC\\SQLEXPRESS01;Initial Catalog=KucniBudget;Integrated Security=True";
 
 
         private Expense PopulateExpenseWithReaderData(SqlDataReader reader)
@@ -112,34 +111,56 @@ namespace Budget.Repository
         }
 
 
-
         public async Task<List<Expense>> GetAllAsync(Paging paging, Sorting sorting, Filtering filtering)
         {
-            string personId = await FindIdByName("Person", "DisplayName", filtering.Person);
-            string CategoryId = await FindIdByName("Category", "Name", filtering.Category);
+            // if no parameters, create default objects
+            if (paging == null) paging = new Paging();
+            if (sorting == null) sorting = new Sorting();
+            if (filtering == null) filtering = new Filtering();
+
+            // set sorting order
+            string sortingOrder = "ASC";
+            if (sorting.SortOrderAsc == false) sortingOrder = "DESC";
+
 
             SqlConnection connection = new SqlConnection(connectionString);
             List<Expense> expenses = new List<Expense>();
-            string sortingOrder = sorting.SortOrderAsc ? "ASC" : "DESC";
+
+            StringBuilder sb = new StringBuilder();
+
+            // create list with filtering conditions
+            List<string> filteringQuery = new List<string>();
+
+            if (filtering.Person != null)
+            {
+                string personId = await FindIdByName("Person", "DisplayName", filtering.Person);
+                if (personId != null) filteringQuery.Add($"PersonId = '{personId}'");
+            }
+            if (filtering.Category != null)
+            {
+                string categoryId = await FindIdByName("Category", "Name", filtering.Category);
+                if (categoryId != null) filteringQuery.Add($"CategoryId = '{categoryId}'");
+            }
+
 
             using (connection)
             {
                 try
                 {
-                    StringBuilder sb = new StringBuilder();
                     sb.AppendLine("SELECT * FROM [Expense]");
 
-                    //if personId is not null
-                    if (personId != null) sb.AppendLine($"WHERE PersonId = '{personId}'");
+                    // if filtering has parameters add to query
+                    if (filteringQuery.Any()) sb.AppendLine("WHERE " + string.Join(" AND ", filteringQuery.ToArray()));
+
                     sb.AppendLine($"ORDER BY [{sorting.OrderBy}] {sortingOrder}");
                     sb.AppendLine("OFFSET @offset ROWS");
                     sb.AppendLine("FETCH NEXT @pagesize ROWS ONLY");
                     sb.AppendLine(";");
-                    //SqlCommand command = new SqlCommand("SELECT * FROM [Expense] ORDER BY [Date] OFFSET @offset ROWS FETCH NEXT @pagesize ROWS ONLY;", connection);
+
                     SqlCommand command = new SqlCommand(sb.ToString(), connection);
                     command.Parameters.AddWithValue("@offset", (paging.CurrentPage - 1) * paging.PageSize);
                     command.Parameters.AddWithValue("@pagesize", paging.PageSize);
-                    //command.Parameters.AddWithValue("@personId", personId);
+
 
                     command.Connection.Open();
                     SqlDataReader reader = await command.ExecuteReaderAsync();
