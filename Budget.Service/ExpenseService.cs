@@ -1,4 +1,5 @@
-﻿using Budget.Model;
+﻿using Budget.Common;
+using Budget.Model;
 using Budget.Repository;
 using Budget.Repository.Common;
 using Budget.Service.Common;
@@ -21,9 +22,9 @@ namespace Budget.Service
             Repository = repository;
         }
 
-        public async Task<List<Expense>> GetAllAsync()
+        public async Task<List<Expense>> GetAllAsync(Pager pager)
         {
-            return await Repository.GetAllAsync();
+            return await Repository.GetAllAsync(pager);
         }
 
         public async Task<Expense> GetByIdAsync(string id)

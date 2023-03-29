@@ -1,4 +1,5 @@
-﻿using Budget.Model;
+﻿using Budget.Common;
+using Budget.Model;
 using Budget.Models;
 using Budget.Service;
 using Budget.Service.Common;
@@ -10,6 +11,7 @@ using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 using System.Web.Http;
+using System.Web.UI.WebControls;
 using System.Web.WebPages;
 using WebGrease.Css.Extensions;
 
@@ -57,9 +59,13 @@ namespace Budget.Controllers
         // GET all expenses
         [Route("api/expenses/")]
         [HttpGet]
-        public async Task<HttpResponseMessage> GetAllAsync()
+        public async Task<HttpResponseMessage> GetAllAsync(int currentPage = 1, int pageSize = 1)
         {
-            List<Expense> expenses = await Service.GetAllAsync();
+            Pager pager = new Pager();
+            pager.CurrentPage = currentPage;
+            pager.PageSize = pageSize;
+
+            List<Expense> expenses = await Service.GetAllAsync(pager);
             List<ExpenseRest> expensesRestView = new List<ExpenseRest>();
 
             if (expenses == null)

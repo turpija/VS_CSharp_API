@@ -79,6 +79,10 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Budget.Common\Budget.Common.csproj">
+      <Project>{cca255d5-1c03-48ef-b988-f05d028158f7}</Project>
+      <Name>Budget.Common</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Budget.Model\Budget.Model.csproj">
       <Project>{240FB95D-11F4-4C58-B3E6-F74F79BCDB1E}</Project>
       <Name>Budget.Model</Name>

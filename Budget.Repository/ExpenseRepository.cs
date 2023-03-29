@@ -10,6 +10,9 @@ using Budget.Model;
 using System.Diagnostics;
 using Budget.Repository.Common;
 using System.Web.ModelBinding;
+using System.Web.UI.WebControls;
+using Budget.Common;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace Budget.Repository
 {
@@ -74,8 +77,9 @@ namespace Budget.Repository
 
 
 
-        public async Task<List<Expense>> GetAllAsync()
+        public async Task<List<Expense>> GetAllAsync(Pager pager)
         {
+
             SqlConnection connection = new SqlConnection(connectionString);
             List<Expense> expenses = new List<Expense>();
 
@@ -83,9 +87,20 @@ namespace Budget.Repository
             {
                 try
                 {
-                    SqlCommand command = new SqlCommand("SELECT * FROM Expense;", connection);
+                    //SqlCommand command = new SqlCommand("SELECT * FROM Expense;", connection);
+
+                    SqlCommand command = new SqlCommand("SELECT * FROM [Expense] ORDER BY [Name] OFFSET @offset ROWS FETCH NEXT @pagesize ROWS ONLY;", connection);
+                    command.Parameters.AddWithValue("@offset", pager.CurrentPage - 1);
+                    command.Parameters.AddWithValue("@pagesize", pager.PageSize);
                     //if request = empty result
                     //SqlCommand command = new SqlCommand("select * from expense where \"Name\" = 'pero';", connection);
+
+                    /*
+                    select* from expense
+                    order by name
+                    offset 0 rows
+                    fetch next 4 rows only;
+                    */
 
                     command.Connection.Open();
                     SqlDataReader reader = await command.ExecuteReaderAsync();
@@ -210,7 +225,7 @@ namespace Budget.Repository
                     command.Parameters.AddWithValue("@cost", expenseUpdated.Cost);
                     command.Parameters.AddWithValue("@date", expenseUpdated.Date);
                     command.Parameters.AddWithValue("@personId", expenseUpdated.PersonId);
-                    command.Parameters.AddWithValue("@categoryId", expenseUpdated.CategoryId );
+                    command.Parameters.AddWithValue("@categoryId", expenseUpdated.CategoryId);
 
                     command.Connection.Open();
 
