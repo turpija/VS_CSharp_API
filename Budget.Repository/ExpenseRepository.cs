@@ -110,7 +110,6 @@ namespace Budget.Repository
             }
         }
 
-
         public async Task<List<Expense>> GetAllAsync(Paging paging, Sorting sorting, Filtering filtering)
         {
             // if no parameters, create default objects
@@ -131,36 +130,56 @@ namespace Budget.Repository
             // create list with filtering conditions
             List<string> filteringQuery = new List<string>();
 
+
             if (filtering.Person != null)
             {
                 string personId = await FindIdByName("Person", "DisplayName", filtering.Person);
-                if (personId != null) filteringQuery.Add($"PersonId = '{personId}'");
+                filteringQuery.Add($"PersonId = '{personId}'");
             }
             if (filtering.Category != null)
             {
                 string categoryId = await FindIdByName("Category", "Name", filtering.Category);
-                if (categoryId != null) filteringQuery.Add($"CategoryId = '{categoryId}'");
+                filteringQuery.Add($"CategoryId = '{categoryId}'");
             }
 
+            if (filtering.DateFrom != null)
+            {
+                filteringQuery.Add($"DATE >= '{filtering.DateFrom}'");
+            }
+
+            if (filtering.DateTo != null)
+            {
+                filteringQuery.Add($"DATE <= '{filtering.DateTo}'");
+            }
+
+            if (filtering.CostFrom != null)
+            {
+                filteringQuery.Add($"COST >= '{filtering.CostFrom}'");
+            }
+
+            if (filtering.CostTo != null)
+            {
+                filteringQuery.Add($"COST <= '{filtering.CostTo}'");
+            }
+
+            // create query string
+            sb.AppendLine("SELECT * FROM [Expense]");
+
+            // filtering has parameters? add to query
+            if (filteringQuery.Any()) sb.AppendLine("WHERE " + string.Join(" AND ", filteringQuery.ToArray()));
+
+            sb.AppendLine($"ORDER BY [{sorting.OrderBy}] {sortingOrder}");
+            sb.AppendLine("OFFSET @offset ROWS");
+            sb.AppendLine("FETCH NEXT @pagesize ROWS ONLY");
+            sb.AppendLine(";");
 
             using (connection)
             {
                 try
                 {
-                    sb.AppendLine("SELECT * FROM [Expense]");
-
-                    // if filtering has parameters add to query
-                    if (filteringQuery.Any()) sb.AppendLine("WHERE " + string.Join(" AND ", filteringQuery.ToArray()));
-
-                    sb.AppendLine($"ORDER BY [{sorting.OrderBy}] {sortingOrder}");
-                    sb.AppendLine("OFFSET @offset ROWS");
-                    sb.AppendLine("FETCH NEXT @pagesize ROWS ONLY");
-                    sb.AppendLine(";");
-
                     SqlCommand command = new SqlCommand(sb.ToString(), connection);
-                    command.Parameters.AddWithValue("@offset", (paging.CurrentPage - 1) * paging.PageSize);
+                    command.Parameters.AddWithValue("@offset", (paging.PageNumber - 1) * paging.PageSize);
                     command.Parameters.AddWithValue("@pagesize", paging.PageSize);
-
 
                     command.Connection.Open();
                     SqlDataReader reader = await command.ExecuteReaderAsync();
