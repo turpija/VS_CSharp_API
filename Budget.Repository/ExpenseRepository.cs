@@ -13,6 +13,7 @@ using System.Web.ModelBinding;
 using System.Web.UI.WebControls;
 using Budget.Common;
 using static System.Net.Mime.MediaTypeNames;
+using System.Collections.Specialized;
 
 namespace Budget.Repository
 {
@@ -40,7 +41,42 @@ namespace Budget.Repository
             return expense;
         }
 
-        // private async Task<Expense> GetExpenseItemByIdAsync(...)
+        private async Task<string> FindIdByName(string tableName, string columnName, string value)
+        {
+            SqlConnection connection = new SqlConnection(connectionString);
+            using (connection)
+            {
+                try
+                {
+                    StringBuilder sb = new StringBuilder();
+                    sb.AppendLine($"SELECT Id FROM [{tableName}]");
+                    sb.AppendLine($"WHERE [{columnName}] = '{value}';");
+                    SqlCommand command = new SqlCommand(sb.ToString(), connection);
+                    //command.Parameters.AddWithValue("@value", value);
+
+                    command.Connection.Open();
+                    SqlDataReader reader = await command.ExecuteReaderAsync();
+
+                    if (!reader.HasRows)
+                    {
+                        command.Connection.Close();
+                        return null;
+                    }
+
+                    reader.Read();
+                    //Expense expense = PopulateExpenseWithReaderData(reader);
+
+                    return reader.GetGuid(0).ToString();
+                    //reader.Close();
+
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine($"Error: {ex.Message}");
+                    return null;
+                }
+            }
+        }
         private async Task<Expense> GetExpenseItemByIdAsync(string id)
         {
 
@@ -77,11 +113,14 @@ namespace Budget.Repository
 
 
 
-        public async Task<List<Expense>> GetAllAsync(Paging paging, Sorting sorting)
+        public async Task<List<Expense>> GetAllAsync(Paging paging, Sorting sorting, Filtering filtering)
         {
+            string personId = await FindIdByName("Person", "DisplayName", filtering.Person);
+            string CategoryId = await FindIdByName("Category", "Name", filtering.Category);
 
             SqlConnection connection = new SqlConnection(connectionString);
             List<Expense> expenses = new List<Expense>();
+            string sortingOrder = sorting.SortOrderAsc ? "ASC" : "DESC";
 
             using (connection)
             {
@@ -89,14 +128,18 @@ namespace Budget.Repository
                 {
                     StringBuilder sb = new StringBuilder();
                     sb.AppendLine("SELECT * FROM [Expense]");
-                    sb.AppendLine($"ORDER BY [{sorting.OrderBy}]");
+
+                    //if personId is not null
+                    if (personId != null) sb.AppendLine($"WHERE PersonId = '{personId}'");
+                    sb.AppendLine($"ORDER BY [{sorting.OrderBy}] {sortingOrder}");
                     sb.AppendLine("OFFSET @offset ROWS");
                     sb.AppendLine("FETCH NEXT @pagesize ROWS ONLY");
                     sb.AppendLine(";");
                     //SqlCommand command = new SqlCommand("SELECT * FROM [Expense] ORDER BY [Date] OFFSET @offset ROWS FETCH NEXT @pagesize ROWS ONLY;", connection);
-                    SqlCommand command = new SqlCommand(sb.ToString());
-                    command.Parameters.AddWithValue("@offset", (paging.CurrentPage - 1)*paging.PageSize);
+                    SqlCommand command = new SqlCommand(sb.ToString(), connection);
+                    command.Parameters.AddWithValue("@offset", (paging.CurrentPage - 1) * paging.PageSize);
                     command.Parameters.AddWithValue("@pagesize", paging.PageSize);
+                    //command.Parameters.AddWithValue("@personId", personId);
 
                     command.Connection.Open();
                     SqlDataReader reader = await command.ExecuteReaderAsync();

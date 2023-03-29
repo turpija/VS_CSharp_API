@@ -59,9 +59,10 @@ namespace Budget.Controllers
         // GET all expenses
         [Route("api/expenses/")]
         [HttpGet]
-        public async Task<HttpResponseMessage> GetAllAsync([FromUri]Paging paging, [FromUri]Sorting sorting) { 
+        public async Task<HttpResponseMessage> GetAllAsync([FromUri] Paging paging, [FromUri] Sorting sorting, [FromUri] Filtering filtering)
+        {
 
-            List<Expense> expenses = await Service.GetAllAsync(paging, sorting);
+            List<Expense> expenses = await Service.GetAllAsync(paging, sorting, filtering);
             List<ExpenseRest> expensesRestView = new List<ExpenseRest>();
 
             if (expenses == null)
