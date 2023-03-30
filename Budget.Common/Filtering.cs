@@ -8,8 +8,8 @@ namespace Budget.Common
 {
     public class Filtering
     {
-        public string Person { get; set; } = null;
-        public string Category { get; set; } = null;
+        public Guid PersonId { get; set; }
+        public Guid CategoryId { get; set; }
         public string DateFrom { get; set; } = null;
         public string DateTo { get; set; } = null;
         public int? CostFrom { get; set; } = null;

@@ -20,10 +20,10 @@ namespace Budget.Repository
     public class ExpenseRepository : IExpenseRepository
     {
         //laptop
-        //private string connectionString = "Data Source=DESKTOP-D467OFD\\MOJSQLSERVER;Initial Catalog=Budget;Integrated Security=True";
+        private string connectionString = "Data Source=DESKTOP-D467OFD\\MOJSQLSERVER;Initial Catalog=Budget;Integrated Security=True";
 
         //home
-        private string connectionString = "Data Source=DESKTOP-413NSIC\\SQLEXPRESS01;Initial Catalog=KucniBudget;Integrated Security=True";
+        //private string connectionString = "Data Source=DESKTOP-413NSIC\\SQLEXPRESS01;Initial Catalog=KucniBudget;Integrated Security=True";
 
 
         private Expense PopulateExpenseWithReaderData(SqlDataReader reader)
@@ -123,23 +123,26 @@ namespace Budget.Repository
 
 
             SqlConnection connection = new SqlConnection(connectionString);
-            List<Expense> expenses = new List<Expense>();
-
             StringBuilder sb = new StringBuilder();
+            List<Expense> expenses = new List<Expense>();
+            //SqlCommand command = new SqlCommand(sb.ToString(), connection);
+            //SqlCommand command = new SqlCommand();
+
+
 
             // create list with filtering conditions
             List<string> filteringQuery = new List<string>();
 
 
-            if (filtering.Person != null)
+            if (filtering.PersonId != default)
             {
-                string personId = await FindIdByName("Person", "DisplayName", filtering.Person);
-                filteringQuery.Add($"PersonId = '{personId}'");
+                //string personId = await FindIdByName("Person", "PersonId", filtering.PersonId.ToString());
+                filteringQuery.Add($"PersonId = '{filtering.PersonId}'");
             }
-            if (filtering.Category != null)
+            if (filtering.CategoryId != default)
             {
-                string categoryId = await FindIdByName("Category", "Name", filtering.Category);
-                filteringQuery.Add($"CategoryId = '{categoryId}'");
+                //string categoryId = await FindIdByName("Category", "CategoryId", filtering.CategoryId.ToString());
+                filteringQuery.Add($"CategoryId = '{filtering.CategoryId}'");
             }
 
             if (filtering.DateFrom != null)
@@ -173,13 +176,18 @@ namespace Budget.Repository
             sb.AppendLine("FETCH NEXT @pagesize ROWS ONLY");
             sb.AppendLine(";");
 
+            SqlCommand command = new SqlCommand(sb.ToString(), connection);
+
+            //command.CommandText = sb.ToString();
+            //command.Connection = connection;
+            //= new SqlCommand(sb.ToString(), connection);
+
+            command.Parameters.AddWithValue("@offset", (paging.PageNumber - 1) * paging.PageSize);
+            command.Parameters.AddWithValue("@pagesize", paging.PageSize);
             using (connection)
             {
                 try
                 {
-                    SqlCommand command = new SqlCommand(sb.ToString(), connection);
-                    command.Parameters.AddWithValue("@offset", (paging.PageNumber - 1) * paging.PageSize);
-                    command.Parameters.AddWithValue("@pagesize", paging.PageSize);
 
                     command.Connection.Open();
                     SqlDataReader reader = await command.ExecuteReaderAsync();
