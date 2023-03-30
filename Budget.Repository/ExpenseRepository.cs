@@ -14,6 +14,7 @@ using System.Web.UI.WebControls;
 using Budget.Common;
 using static System.Net.Mime.MediaTypeNames;
 using System.Collections.Specialized;
+using System.Reflection;
 
 namespace Budget.Repository
 {
@@ -29,53 +30,30 @@ namespace Budget.Repository
         private Expense PopulateExpenseWithReaderData(SqlDataReader reader)
         {
             Expense expense = new Expense();
+
             expense.Id = reader.GetGuid(0);
-            expense.PersonId = reader.GetGuid(1);
-            expense.CategoryId = reader.GetGuid(2);
-            expense.Name = reader.GetString(3);
-            expense.Date = reader.GetDateTime(4);
-            expense.Description = !reader.IsDBNull(5) ? reader.GetString(5) : expense.Description;
-            expense.Cost = reader.GetDecimal(6);
+            //expense.PersonId = reader.GetGuid(1);
+            expense.Person = new Person()
+            {
+                Id = reader.GetGuid(1),
+                Username = reader.GetString(2),
+                Password = reader.GetString(3),
+                Email = reader.GetString(4)
+            };
+            //expense.CategoryId = reader.GetGuid(5);
+            expense.Category = new Category()
+            {
+                Id = reader.GetGuid(5),
+                Name = reader.GetString(6)
+            };
+            expense.Name = reader.GetString(7);
+            expense.Date = reader.GetDateTime(8);
+            expense.Cost = reader.GetDecimal(9);
+            expense.Description = !reader.IsDBNull(10) ? reader.GetString(10) : expense.Description;
 
             return expense;
         }
 
-        private async Task<string> FindIdByName(string tableName, string columnName, string value)
-        {
-            SqlConnection connection = new SqlConnection(connectionString);
-            using (connection)
-            {
-                try
-                {
-                    StringBuilder sb = new StringBuilder();
-                    sb.AppendLine($"SELECT Id FROM [{tableName}]");
-                    sb.AppendLine($"WHERE [{columnName}] = '{value}';");
-                    SqlCommand command = new SqlCommand(sb.ToString(), connection);
-                    //command.Parameters.AddWithValue("@value", value);
-
-                    command.Connection.Open();
-                    SqlDataReader reader = await command.ExecuteReaderAsync();
-
-                    if (!reader.HasRows)
-                    {
-                        command.Connection.Close();
-                        return null;
-                    }
-
-                    reader.Read();
-                    //Expense expense = PopulateExpenseWithReaderData(reader);
-
-                    return reader.GetGuid(0).ToString();
-                    //reader.Close();
-
-                }
-                catch (Exception ex)
-                {
-                    Debug.WriteLine($"Error: {ex.Message}");
-                    return null;
-                }
-            }
-        }
         private async Task<Expense> GetExpenseItemByIdAsync(string id)
         {
 
@@ -112,61 +90,78 @@ namespace Budget.Repository
 
         public async Task<List<Expense>> GetAllAsync(Paging paging, Sorting sorting, Filtering filtering)
         {
+
+            SqlConnection connection = new SqlConnection(connectionString);
+            StringBuilder sb = new StringBuilder();
+            List<Expense> expenses = new List<Expense>();
+
+            // create list with filtering conditions
+            List<string> filteringQuery = new List<string>();
+
             // if no parameters, create default objects
             if (paging == null) paging = new Paging();
             if (sorting == null) sorting = new Sorting();
-            if (filtering == null) filtering = new Filtering();
+            //if (filtering == null) filtering = new Filtering();
+
+
+
+            // UBACI VARIJABLE KAO COMMAND PARAMETRE !!!
+
+
+            if (filtering != null)
+            {
+                if (filtering.PersonId != default)
+                {
+                    //string personId = await FindIdByName("Person", "PersonId", filtering.PersonId.ToString());
+                    filteringQuery.Add($"PersonId = '{filtering.PersonId}'");
+                }
+                if (filtering.CategoryId != default)
+                {
+                    //string categoryId = await FindIdByName("Category", "CategoryId", filtering.CategoryId.ToString());
+                    filteringQuery.Add($"CategoryId = '{filtering.CategoryId}'");
+                }
+
+                if (filtering.DateFrom != null)
+                {
+                    filteringQuery.Add($"DATE >= '{filtering.DateFrom}'");
+                }
+
+                if (filtering.DateTo != null)
+                {
+                    filteringQuery.Add($"DATE <= '{filtering.DateTo}'");
+                }
+
+                if (filtering.CostFrom != null)
+                {
+                    filteringQuery.Add($"COST >= '{filtering.CostFrom}'");
+                }
+
+                if (filtering.CostTo != null)
+                {
+                    filteringQuery.Add($"COST <= '{filtering.CostTo}'");
+                }
+            };
 
             // set sorting order
             string sortingOrder = "ASC";
             if (sorting.SortOrderAsc == false) sortingOrder = "DESC";
 
-
-            SqlConnection connection = new SqlConnection(connectionString);
-            StringBuilder sb = new StringBuilder();
-            List<Expense> expenses = new List<Expense>();
-            //SqlCommand command = new SqlCommand(sb.ToString(), connection);
-            //SqlCommand command = new SqlCommand();
-
-
-
-            // create list with filtering conditions
-            List<string> filteringQuery = new List<string>();
-
-
-            if (filtering.PersonId != default)
-            {
-                //string personId = await FindIdByName("Person", "PersonId", filtering.PersonId.ToString());
-                filteringQuery.Add($"PersonId = '{filtering.PersonId}'");
-            }
-            if (filtering.CategoryId != default)
-            {
-                //string categoryId = await FindIdByName("Category", "CategoryId", filtering.CategoryId.ToString());
-                filteringQuery.Add($"CategoryId = '{filtering.CategoryId}'");
-            }
-
-            if (filtering.DateFrom != null)
-            {
-                filteringQuery.Add($"DATE >= '{filtering.DateFrom}'");
-            }
-
-            if (filtering.DateTo != null)
-            {
-                filteringQuery.Add($"DATE <= '{filtering.DateTo}'");
-            }
-
-            if (filtering.CostFrom != null)
-            {
-                filteringQuery.Add($"COST >= '{filtering.CostFrom}'");
-            }
-
-            if (filtering.CostTo != null)
-            {
-                filteringQuery.Add($"COST <= '{filtering.CostTo}'");
-            }
-
             // create query string
-            sb.AppendLine("SELECT * FROM [Expense]");
+            sb.Append("SELECT Expense.Id, ");
+            sb.Append("PersonId, ");
+            sb.Append("Person.Username AS 'PersonUsername', ");
+            sb.Append("Person.Password AS 'PersonPassword', ");
+            sb.AppendLine("Person.Email AS 'PersonEmail', ");
+            sb.Append("Expense.CategoryId, ");
+            sb.Append("Category.Name AS 'CategoryName', ");
+            sb.Append("Expense.Name, ");
+            sb.Append("Expense.Date, ");
+            sb.Append("Expense.Cost, ");
+            sb.Append("Expense.Description ");
+            sb.AppendLine("FROM EXPENSE ");
+
+            sb.AppendLine("INNER JOIN Person ON Expense.PersonId = Person.Id");
+            sb.AppendLine("INNER JOIN Category ON Expense.CategoryId = Category.Id");
 
             // filtering has parameters? add to query
             if (filteringQuery.Any()) sb.AppendLine("WHERE " + string.Join(" AND ", filteringQuery.ToArray()));
@@ -177,18 +172,12 @@ namespace Budget.Repository
             sb.AppendLine(";");
 
             SqlCommand command = new SqlCommand(sb.ToString(), connection);
-
-            //command.CommandText = sb.ToString();
-            //command.Connection = connection;
-            //= new SqlCommand(sb.ToString(), connection);
-
             command.Parameters.AddWithValue("@offset", (paging.PageNumber - 1) * paging.PageSize);
             command.Parameters.AddWithValue("@pagesize", paging.PageSize);
             using (connection)
             {
                 try
                 {
-
                     command.Connection.Open();
                     SqlDataReader reader = await command.ExecuteReaderAsync();
                     if (!reader.HasRows)

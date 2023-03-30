@@ -32,11 +32,20 @@ namespace Budget.Controllers
             {
                 Id = expense.Id,
                 Name = expense.Name,
-                Description = expense.Description,
                 Cost = expense.Cost,
                 Date = expense.Date,
-                CategoryId = expense.CategoryId,
-                PersonId = expense.PersonId
+                Description = expense.Description,
+                Person = new PersonRest()
+                {
+                    Id = expense.Person.Id,
+                    Username = expense.Person.Username,
+                    Email = expense.Person.Email
+                },
+                Category = new CategoryRest()
+                {
+                    Id = expense.Category.Id,
+                    Name = expense.Category.Name,
+                }
             };
             return expenseRestView;
         }
@@ -47,10 +56,12 @@ namespace Budget.Controllers
             {
                 Name = expenseRest.Name,
                 Description = expenseRest.Description,
-                PersonId = expenseRest.PersonId,
-                CategoryId = expenseRest.CategoryId,
                 Date = expenseRest.Date,
-                Cost = expenseRest.Cost
+                Cost = expenseRest.Cost,
+                Person = new Person() {Id = expenseRest.Person.Id },
+                Category = new Category() {Id = expenseRest.Category.Id }
+                //PersonId = expenseRest.PersonId,
+                //CategoryId = expenseRest.CategoryId,
             };
             return expense;
         }

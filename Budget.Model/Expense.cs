@@ -14,10 +14,12 @@ namespace Budget.Model
         public Guid Id { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
-        [Required] public Guid PersonId { get; set; }
-        [Required] public Guid CategoryId { get; set; }
-        [Required] public DateTime Date { get; set; }
-        [Required] public Decimal Cost { get; set; }
+        public Guid PersonId { get; set; }
+        //public string PersonName { get; set; }
+        public Guid CategoryId { get; set; }
+        //public string CategoryName { get; set; }
+        public DateTime Date { get; set; }
+        public Decimal Cost { get; set; }
         public IPerson Person { get; set; }
         public ICategory Category { get; set; }
     }

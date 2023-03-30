@@ -13,11 +13,13 @@ namespace Budget.Model.Common
         string Name { get; set; }
         string Description { get; set; }
         Guid PersonId { get; set; }
+        //string PersonName { get; set; }
+        IPerson Person { get; set; }
         Guid CategoryId { get; set; }
+        //string CategoryName { get;  set; }
+        ICategory Category { get; set; }
         DateTime Date { get; set; }
         Decimal Cost { get; set; }
-        IPerson Person { get; set; }
-        ICategory Category { get; set; }
     }
 }
 
