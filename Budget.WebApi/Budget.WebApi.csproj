@@ -198,6 +198,7 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Models\CategoryRest.cs" />
+    <Compile Include="Models\ExpenseInputRest.cs" />
     <Compile Include="Models\ExpenseRest.cs" />
     <Compile Include="Models\PersonRest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

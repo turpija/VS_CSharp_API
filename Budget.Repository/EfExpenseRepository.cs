@@ -7,8 +7,11 @@ using System;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
+using System.Runtime.InteropServices;
+using System.Runtime.Remoting.Messaging;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 
 namespace Budget.Repository
 {
@@ -43,19 +46,32 @@ namespace Budget.Repository
             };
         }
 
-        private Expense mapExpense(ExpenseDTO expenseDTO)
+        private Expense mapExpense(ExpenseDTO expenseDTO, [Optional] Guid id)
         {
-            return new Expense()
+            Expense expense = new Expense()
             {
-                Id = Guid.NewGuid(),
                 Name = expenseDTO.Name,
                 Date = expenseDTO.Date,
                 Cost = expenseDTO.Cost,
                 Description = expenseDTO.Description,
-                CategoryId = expenseDTO.Category.Id,
-                PersonId = expenseDTO.Person.Id,
+                CategoryId = expenseDTO.CategoryId,
+                PersonId = expenseDTO.PersonId,
             };
+            if (id != null)
+            {
+                expense.Id = id;
+            }
+            else
+            {
+                expense.Id = Guid.NewGuid();
+            }
+            return expense;
         }
+
+
+        //---------------------------------------
+        //                 GET BY ID
+        //---------------------------------------
 
         public async Task<ExpenseDTO> GetByIdAsync(Guid id)
         {
@@ -64,6 +80,9 @@ namespace Budget.Repository
 
             return MapExpenseDTO(result);
         }
+        //---------------------------------------
+        //                 GET
+        //---------------------------------------
 
         public async Task<List<ExpenseDTO>> GetAllAsync(Paging paging, Sorting sorting, Filtering filtering)
         {
@@ -75,6 +94,9 @@ namespace Budget.Repository
             }
             return expensesDTO;
         }
+        //---------------------------------------
+        //                 DELETE
+        //---------------------------------------
 
         public async Task<bool> DeleteByIdAsync(Guid id)
         {
@@ -84,11 +106,15 @@ namespace Budget.Repository
             {
                 Context.Expense.Remove(itemToRemove);
                 int result = await Context.SaveChangesAsync();
-                return true;
+                if (result > 0) return true;
+                else return false;
             }
             return false;
         }
 
+        //---------------------------------------
+        //                 POST
+        //---------------------------------------
         public async Task<int> PostAsync(ExpenseDTO expenseFromBody)
         {
             Context.Expense.Add(mapExpense(expenseFromBody));
@@ -96,10 +122,28 @@ namespace Budget.Repository
             return result;
         }
 
+        //---------------------------------------
+        //                 UPDATE
+        //---------------------------------------
 
-        public Task<bool> UpdateByIdAsync(Guid id, ExpenseDTO expenseUpdated)
+        public async Task<bool> UpdateByIdAsync(Guid id, ExpenseDTO expenseUpdated)
         {
-            throw new NotImplementedException();
+            var itemToUpdate = Context.Expense.Where(s => s.Id == id).FirstOrDefault();
+
+            if (itemToUpdate != null)
+            {
+                //itemToUpdate = mapExpense(expenseUpdated, id);
+                itemToUpdate.Name = expenseUpdated.Name;
+                itemToUpdate.Date = expenseUpdated.Date;
+                itemToUpdate.Cost = expenseUpdated.Cost;
+                itemToUpdate.Description = expenseUpdated.Description;
+                itemToUpdate.CategoryId = expenseUpdated.CategoryId;
+                itemToUpdate.PersonId = expenseUpdated.PersonId;
+                int result = await Context.SaveChangesAsync();
+                if (result > 0) return true;
+                else return false;
+            }
+            return false;
         }
     }
 }

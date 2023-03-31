@@ -22,20 +22,40 @@ namespace Budget.Service
             Repository = repository;
         }
 
+
+        //---------------------------------------
+        //                GET
+        //---------------------------------------
+
         public async Task<List<ExpenseDTO>> GetAllAsync(Paging paging, Sorting sorting, Filtering filtering)
         {
             return await Repository.GetAllAsync(paging, sorting, filtering);
         }
+
+
+        //---------------------------------------
+        //                 GET BY ID
+        //---------------------------------------
 
         public async Task<ExpenseDTO> GetByIdAsync(Guid id)
         {
             return await Repository.GetByIdAsync(id);
         }
 
+
+        //---------------------------------------
+        //                 POST
+        //---------------------------------------
+
         public async Task<int> PostAsync(ExpenseDTO expense)
         {
             return await Repository.PostAsync(expense);
         }
+
+
+        //---------------------------------------
+        //                 DELETE
+        //---------------------------------------
 
         public async Task<bool> DeleteByIdAsync(Guid id)
         {
@@ -45,6 +65,11 @@ namespace Budget.Service
             }
             return await Repository.DeleteByIdAsync(id);
         }
+
+
+        //---------------------------------------
+        //                 UPDATE
+        //---------------------------------------
 
         public async Task<bool> UpdateByIdAsync(Guid id, ExpenseDTO newExpense)
         {
@@ -60,8 +85,8 @@ namespace Budget.Service
             expenseUpdated.Name = newExpense.Name == default ? currentExpense.Name : newExpense.Name;
             expenseUpdated.Cost = newExpense.Cost == default ? currentExpense.Cost : newExpense.Cost;
             expenseUpdated.Date = newExpense.Date == default ? currentExpense.Date : newExpense.Date;
-            expenseUpdated.PersonId = newExpense.PersonId == default ? currentExpense.PersonId : newExpense.PersonId;
-            expenseUpdated.CategoryId = newExpense.CategoryId == default ? currentExpense.CategoryId : newExpense.CategoryId;
+            expenseUpdated.PersonId = newExpense.PersonId == default ? currentExpense.Person.Id : newExpense.PersonId;
+            expenseUpdated.CategoryId = newExpense.CategoryId == default ? currentExpense.Category.Id : newExpense.CategoryId;
 
             return await Repository.UpdateByIdAsync(id, expenseUpdated);
         }
