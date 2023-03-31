@@ -6,11 +6,13 @@ using Budget.Repository.Common;
 using System;
 using System.Collections.Generic;
 using System.Data.Entity;
+using System.Diagnostics;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Runtime.Remoting.Messaging;
 using System.Text;
 using System.Threading.Tasks;
+using System.Web.UI.WebControls;
 using System.Xml.Linq;
 
 namespace Budget.Repository
@@ -46,7 +48,7 @@ namespace Budget.Repository
             };
         }
 
-        private Expense mapExpense(ExpenseDTO expenseDTO, [Optional] Guid id)
+        private Expense mapExpense(ExpenseDTO expenseDTO)
         {
             Expense expense = new Expense()
             {
@@ -68,57 +70,133 @@ namespace Budget.Repository
 
         public async Task<ExpenseDTO> GetByIdAsync(Guid id)
         {
-            Expense result = await Context.Expense
-                .FirstOrDefaultAsync(s => s.Id == id);
-
-            if (result != null)
+            try
             {
-                return MapExpenseDTO(result);
+                Expense result = await Context.Expense
+                    .FirstOrDefaultAsync(s => s.Id == id);
 
+                if (result != null)
+                {
+                    return MapExpenseDTO(result);
+                }
+                return null;
             }
-            return null;
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"Error: {ex.Message}");
+                return null;
+            }
         }
+
+
         //---------------------------------------
         //                 GET
         //---------------------------------------
 
         public async Task<List<ExpenseDTO>> GetAllAsync(Paging paging, Sorting sorting, Filtering filtering)
         {
-            List<Expense> expenses = await Context.Expense.ToListAsync();
-            List<ExpenseDTO> expensesDTO = new List<ExpenseDTO>();
-            foreach (var item in expenses)
+            try
             {
-                expensesDTO.Add(MapExpenseDTO(item));
+                if (paging == null) new Paging();
+                if (sorting == null) new Sorting();
+
+                List<ExpenseDTO> expensesDTO = new List<ExpenseDTO>();
+
+                IQueryable<Expense> query = Context.Expense.AsQueryable();
+
+                if (filtering != null)
+                {
+                    if (filtering.PersonId != default) query = query.Where(s => s.Person.Id == filtering.PersonId);
+                    if (filtering.CategoryId != default) query = query.Where(s => s.Category.Id == filtering.CategoryId);
+                    if (filtering.DateFrom != default) query = query.Where(s => s.Date >= filtering.DateFrom);
+                    if (filtering.DateTo != default) query = query.Where(s => s.Date <= filtering.DateTo);
+                    if (filtering.CostFrom != default) query = query.Where(s => s.Cost >= filtering.CostFrom);
+                    if (filtering.CostTo != default) query = query.Where(s => s.Cost <= filtering.CostTo);
+                }
+
+                switch (sorting.OrderBy)
+                {
+                    case "Cost":
+                        if (sorting.SortOrderAsc) query = query.OrderBy(s => s.Cost);
+                        else query = query.OrderByDescending(s => s.Cost);
+                        break;
+                    case "Date":
+                        if (sorting.SortOrderAsc) query = query.OrderBy(s => s.Date);
+                        else query = query.OrderByDescending(s => s.Date);
+                        break;
+                    case "Name":
+                        if (sorting.SortOrderAsc) query = query.OrderBy(s => s.Name);
+                        else query = query.OrderByDescending(s => s.Name);
+                        break;
+                    default:
+                        break;
+                }
+
+                query = query
+                    .Skip((paging.PageNumber - 1) * paging.PageSize)
+                    .Take(paging.PageSize);
+
+                await query.ToListAsync();
+
+                foreach (var item in query)
+                {
+                    expensesDTO.Add(MapExpenseDTO(item));
+                }
+                return expensesDTO;
             }
-            return expensesDTO;
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"Error: {ex.Message}");
+                return null;
+            }
         }
+
+
         //---------------------------------------
         //                 DELETE
         //---------------------------------------
 
         public async Task<bool> DeleteByIdAsync(Guid id)
         {
-            var itemToRemove = Context.Expense.Where(s => s.Id == id).FirstOrDefault();
-
-            if (itemToRemove != null)
+            try
             {
-                Context.Expense.Remove(itemToRemove);
-                int result = await Context.SaveChangesAsync();
-                if (result > 0) return true;
-                else return false;
+                var itemToRemove = await Context.Expense.Where(s => s.Id == id).FirstOrDefaultAsync();
+
+                if (itemToRemove != null)
+                {
+                    Context.Expense.Remove(itemToRemove);
+                    int result = await Context.SaveChangesAsync();
+                    if (result > 0) return true;
+                    else return false;
+                }
+                return false;
             }
-            return false;
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"Error: {ex.Message}");
+                return false;
+            }
         }
+
 
         //---------------------------------------
         //                 POST
         //---------------------------------------
         public async Task<int> PostAsync(ExpenseDTO expenseFromBody)
         {
-            Context.Expense.Add(mapExpense(expenseFromBody));
-            int result = await Context.SaveChangesAsync();
-            return result;
+            try
+            {
+                Context.Expense.Add(mapExpense(expenseFromBody));
+                int result = await Context.SaveChangesAsync();
+                return result;
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"Error: {ex.Message}");
+                return 0;
+            }
         }
+
 
         //---------------------------------------
         //                 UPDATE
@@ -126,22 +204,30 @@ namespace Budget.Repository
 
         public async Task<bool> UpdateByIdAsync(Guid id, ExpenseDTO expenseUpdated)
         {
-            var itemToUpdate = Context.Expense.Where(s => s.Id == id).FirstOrDefault();
-
-            if (itemToUpdate != null)
+            try
             {
-                //itemToUpdate = mapExpense(expenseUpdated, id);
-                itemToUpdate.Name = expenseUpdated.Name;
-                itemToUpdate.Date = expenseUpdated.Date;
-                itemToUpdate.Cost = expenseUpdated.Cost;
-                itemToUpdate.Description = expenseUpdated.Description;
-                itemToUpdate.CategoryId = expenseUpdated.CategoryId;
-                itemToUpdate.PersonId = expenseUpdated.PersonId;
-                int result = await Context.SaveChangesAsync();
-                if (result > 0) return true;
-                else return false;
+                var itemToUpdate = Context.Expense.Where(s => s.Id == id).FirstOrDefault();
+
+                if (itemToUpdate != null)
+                {
+                    //itemToUpdate = mapExpense(expenseUpdated, id);
+                    itemToUpdate.Name = expenseUpdated.Name;
+                    itemToUpdate.Date = expenseUpdated.Date;
+                    itemToUpdate.Cost = expenseUpdated.Cost;
+                    itemToUpdate.Description = expenseUpdated.Description;
+                    itemToUpdate.CategoryId = expenseUpdated.CategoryId;
+                    itemToUpdate.PersonId = expenseUpdated.PersonId;
+                    int result = await Context.SaveChangesAsync();
+                    if (result > 0) return true;
+                    else return false;
+                }
+                return false;
             }
-            return false;
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"Error: {ex.Message}");
+                return false;
+            }
         }
     }
 }
