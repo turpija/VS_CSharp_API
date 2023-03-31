@@ -1,20 +1,21 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace Budget.Model.Common
 {
-    public interface IEarning
+    public class IIncomeDTO
     {
-        int Id { get; set; }
+        Guid Id { get; set; }
         string Name { get; set; }
         string Description { get; set; }
-        int PersonId { get; set; }
+        Guid PersonId { get; set; }
+        Guid IncomeCategoryId { get; set; }
         DateTime Date { get; set; }
-        double Amount { get; set; }
-        IPerson Person { get; set; }
+        decimal Amount { get; set; }
+        IPersonDTO Person { get; set; }
+        IIncomeCategoryDTO IncomeCategory { get; set; }
     }
 }

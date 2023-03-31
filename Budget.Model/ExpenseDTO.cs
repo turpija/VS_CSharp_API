@@ -9,7 +9,7 @@ using Budget.Model.Common;
 
 namespace Budget.Model
 {
-    public class ExpenseDTO : IExpense
+    public class ExpenseDTO : IExpenseDTO
     {
         public Guid Id { get; set; }
         public string Name { get; set; }
@@ -20,7 +20,7 @@ namespace Budget.Model
         //public string CategoryName { get; set; }
         public DateTime Date { get; set; }
         public Decimal Cost { get; set; }
-        public IPerson Person { get; set; }
-        public ICategory Category { get; set; }
+        public IPersonDTO Person { get; set; }
+        public ICategoryDTO Category { get; set; }
     }
 }

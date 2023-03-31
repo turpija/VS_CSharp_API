@@ -76,10 +76,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ICategory.cs" />
-    <Compile Include="IEarning.cs" />
-    <Compile Include="IExpense.cs" />
-    <Compile Include="IPerson.cs" />
+    <Compile Include="ICategoryDTO.cs" />
+    <Compile Include="IEarningDTO.cs" />
+    <Compile Include="IExpenseDTO.cs" />
+    <Compile Include="IIncomeDTO.cs" />
+    <Compile Include="IIncomeCategoryDTO.cs" />
+    <Compile Include="IPersonDTO.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

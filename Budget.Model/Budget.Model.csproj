@@ -77,6 +77,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CategoryDTO.cs" />
+    <Compile Include="IncomeCategoryDTO.cs" />
     <Compile Include="IncomeDTO.cs" />
     <Compile Include="ExpenseDTO.cs" />
     <Compile Include="PersonDTO.cs" />

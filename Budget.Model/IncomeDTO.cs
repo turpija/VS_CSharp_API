@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Budget.Model.Common;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -6,14 +7,17 @@ using System.Web;
 
 namespace Budget.Model
 {
-    public class IncomeDTO
+    public class IncomeDTO : IIncomeDTO
     {
-        [Required] public int Id { get; set; }
-        [Required] public string Name { get; set; }
+        public Guid Id { get; set; }
+        public string Name { get; set; }
         public string Description { get; set; }
-        [Required] public int PersonId { get; set; }
-        [Required] public DateTime Date { get; set; }
-        [Required] public double Amount { get; set; }
+        public Guid PersonId { get; set; }
+        public Guid IncomeCategoryId { get; set; }
+        public DateTime Date { get; set; }
+        public decimal Amount { get; set; }
         public PersonDTO Person { get; set; }
+        public IncomeCategoryDTO IncomeCategory { get; set; }
+
     }
 }

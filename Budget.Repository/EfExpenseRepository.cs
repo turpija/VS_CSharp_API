@@ -97,8 +97,8 @@ namespace Budget.Repository
         {
             try
             {
-                if (paging == null) new Paging();
-                if (sorting == null) new Sorting();
+                if (paging == null) paging = new Paging();
+                if (sorting == null) sorting = new Sorting();
 
                 List<ExpenseDTO> expensesDTO = new List<ExpenseDTO>();
 
@@ -114,22 +114,26 @@ namespace Budget.Repository
                     if (filtering.CostTo != default) query = query.Where(s => s.Cost <= filtering.CostTo);
                 }
 
-                switch (sorting.OrderBy)
+                if (sorting != null)
                 {
-                    case "Cost":
-                        if (sorting.SortOrderAsc) query = query.OrderBy(s => s.Cost);
-                        else query = query.OrderByDescending(s => s.Cost);
-                        break;
-                    case "Date":
-                        if (sorting.SortOrderAsc) query = query.OrderBy(s => s.Date);
-                        else query = query.OrderByDescending(s => s.Date);
-                        break;
-                    case "Name":
-                        if (sorting.SortOrderAsc) query = query.OrderBy(s => s.Name);
-                        else query = query.OrderByDescending(s => s.Name);
-                        break;
-                    default:
-                        break;
+
+                    switch (sorting.OrderBy)
+                    {
+                        case "Cost":
+                            if (sorting.SortOrderAsc) query = query.OrderBy(s => s.Cost);
+                            else query = query.OrderByDescending(s => s.Cost);
+                            break;
+                        case "Date":
+                            if (sorting.SortOrderAsc) query = query.OrderBy(s => s.Date);
+                            else query = query.OrderByDescending(s => s.Date);
+                            break;
+                        case "Name":
+                            if (sorting.SortOrderAsc) query = query.OrderBy(s => s.Name);
+                            else query = query.OrderByDescending(s => s.Name);
+                            break;
+                        default:
+                            break;
+                    }
                 }
 
                 query = query

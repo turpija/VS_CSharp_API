@@ -7,12 +7,10 @@ using System.Threading.Tasks;
 
 namespace Budget.Model.Common
 {
-    public interface IPerson
+    public interface ICategoryDTO
     {
         Guid Id { get; set; }
-        string Username { get; set; }
-        string Password { get; set; }
-        string Email { get; set; }
-        ICollection<IExpense> Expenses { get; set; }
+        string Name { get; set; }
+        ICollection<IExpenseDTO> Expenses { get; set; }
     }
 }
