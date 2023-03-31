@@ -50,6 +50,7 @@ namespace Budget.Repository
         {
             Expense expense = new Expense()
             {
+                Id = Guid.NewGuid(),
                 Name = expenseDTO.Name,
                 Date = expenseDTO.Date,
                 Cost = expenseDTO.Cost,
@@ -57,14 +58,6 @@ namespace Budget.Repository
                 CategoryId = expenseDTO.CategoryId,
                 PersonId = expenseDTO.PersonId,
             };
-            if (id != null)
-            {
-                expense.Id = id;
-            }
-            else
-            {
-                expense.Id = Guid.NewGuid();
-            }
             return expense;
         }
 
@@ -78,7 +71,12 @@ namespace Budget.Repository
             Expense result = await Context.Expense
                 .FirstOrDefaultAsync(s => s.Id == id);
 
-            return MapExpenseDTO(result);
+            if (result != null)
+            {
+                return MapExpenseDTO(result);
+
+            }
+            return null;
         }
         //---------------------------------------
         //                 GET
