@@ -54,7 +54,7 @@ namespace Budget.Repository
             return expense;
         }
 
-        private async Task<ExpenseDTO> GetExpenseItemByIdAsync(string id)
+        private async Task<ExpenseDTO> GetExpenseItemByIdAsync(Guid id)
         {
 
             SqlConnection connection = new SqlConnection(connectionString);
@@ -205,7 +205,7 @@ namespace Budget.Repository
 
 
 
-        public async Task<ExpenseDTO> GetByIdAsync(string id)
+        public async Task<ExpenseDTO> GetByIdAsync(Guid id)
         {
             ExpenseDTO expense = await GetExpenseItemByIdAsync(id);
             if (expense == null)
@@ -228,8 +228,8 @@ namespace Budget.Repository
                         ("INSERT INTO [Expense] ([Id],[PersonId], [CategoryId], [Name], [Date],[Cost]) VALUES " +
                         "(@Id, @personId, @categoryId, @name, @date, @cost);", connection);
                     command.Parameters.AddWithValue("@Id", Guid.NewGuid());
-                    command.Parameters.AddWithValue("@personId", expenseFromBody.PersonId);
-                    command.Parameters.AddWithValue("@categoryId", expenseFromBody.CategoryId);
+                    command.Parameters.AddWithValue("@personId", expenseFromBody.Person.Id);
+                    command.Parameters.AddWithValue("@categoryId", expenseFromBody.Category.Id);
                     command.Parameters.AddWithValue("@name", expenseFromBody.Name);
                     command.Parameters.AddWithValue("@date", expenseFromBody.Date);
                     command.Parameters.AddWithValue("@cost", expenseFromBody.Cost);
@@ -256,7 +256,7 @@ namespace Budget.Repository
 
 
 
-        public async Task<bool> DeleteByIdAsync(string id)
+        public async Task<bool> DeleteByIdAsync(Guid id)
         {
 
             SqlConnection connection = new SqlConnection(connectionString);
@@ -286,7 +286,7 @@ namespace Budget.Repository
         }
 
 
-        public async Task<bool> UpdateByIdAsync(string id, ExpenseDTO expenseUpdated)
+        public async Task<bool> UpdateByIdAsync(Guid id, ExpenseDTO expenseUpdated)
         {
             SqlConnection connection = new SqlConnection(connectionString);
 

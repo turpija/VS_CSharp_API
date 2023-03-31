@@ -11,10 +11,10 @@ namespace Budget.Service.Common
     public interface IExpenseService
     {
         Task<List<ExpenseDTO>> GetAllAsync(Paging pager, Sorting sorting, Filtering filtering);
-        Task<ExpenseDTO> GetByIdAsync(string id);
+        Task<ExpenseDTO> GetByIdAsync(Guid id);
         Task<int> PostAsync(ExpenseDTO expenseFromBody);
-        Task<bool> DeleteByIdAsync(string id);
-        Task<bool> UpdateByIdAsync(string id, ExpenseDTO newExpense);
+        Task<bool> DeleteByIdAsync(Guid id);
+        Task<bool> UpdateByIdAsync(Guid id, ExpenseDTO newExpense);
 
 
     }

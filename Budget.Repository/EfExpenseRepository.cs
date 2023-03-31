@@ -1,9 +1,11 @@
 ﻿using Budget.Common;
 using Budget.DAL;
 using Budget.Model;
+using Budget.Model.Common;
 using Budget.Repository.Common;
 using System;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -12,56 +14,83 @@ namespace Budget.Repository
 {
     public class EfExpenseRepository : IExpenseRepository
     {
-        public async Task<ExpenseDTO> GetByIdAsync(string id)
+        public BudgetContext Context { get; set; }
+        public EfExpenseRepository(BudgetContext context)
         {
-            throw new NotImplementedException();
-
+            Context = context;
+        }
+        private ExpenseDTO MapExpenseDTO(Expense expense)
+        {
+            return new ExpenseDTO()
+            {
+                Id = expense.Id,
+                Name = expense.Name,
+                Date = expense.Date,
+                Cost = expense.Cost,
+                Description = expense.Description,
+                Category = new CategoryDTO()
+                {
+                    Id = expense.Category.Id,
+                    Name = expense.Category.Name,
+                },
+                Person = new PersonDTO()
+                {
+                    Id = expense.Person.Id,
+                    Username = expense.Person.Username,
+                    Email = expense.Person.Email,
+                    Password = expense.Person.Password
+                }
+            };
         }
 
-        public Task<bool> DeleteByIdAsync(string id)
+        private Expense mapExpense(ExpenseDTO expenseDTO)
         {
-            throw new NotImplementedException();
+            return new Expense()
+            {
+                Id = expenseDTO.Id,
+                Name = expenseDTO.Name,
+                Date = expenseDTO.Date,
+                Cost = expenseDTO.Cost,
+                Description = expenseDTO.Description,
+                CategoryId = expenseDTO.Category.Id,
+                PersonId = expenseDTO.Person.Id,
+            };
+        }
+
+        public async Task<ExpenseDTO> GetByIdAsync(Guid id)
+        {
+            Expense result = await Context.Expense
+                .FirstOrDefaultAsync(s => s.Id == id);
+
+            return MapExpenseDTO(result);
         }
 
         public async Task<List<ExpenseDTO>> GetAllAsync(Paging paging, Sorting sorting, Filtering filtering)
         {
-            BudgetContext context = new BudgetContext();
-            List<ExpenseDTO> expenses = new List<ExpenseDTO>();
-
-            var listaEF = context.Expense.ToList();
-            foreach (var item in listaEF)
+            List<Expense> expenses = await Context.Expense.ToListAsync();
+            List<ExpenseDTO> expensesDTO = new List<ExpenseDTO>();
+            foreach (var item in expenses)
             {
-                ExpenseDTO expense = new ExpenseDTO()
-                {
-                    Id = item.Id,
-                    Name = item.Name,
-                    Date = item.Date,
-                    Cost = item.Cost,
-                    Description = item.Description,
-                    Category = new CategoryDTO()
-                    {
-                        Id = item.Category.Id,
-                        Name = item.Category.Name,
-                    },
-                    Person = new PersonDTO()
-                    {
-                        Id = item.Person.Id,
-                        Username = item.Person.Username,
-                        Email = item.Person.Email,
-                        Password = item.Person.Password
-                    }
-                };
-                expenses.Add(expense);
+                expensesDTO.Add(MapExpenseDTO(item));
             }
-            return expenses;
+            return expensesDTO;
         }
 
-        public Task<int> PostAsync(ExpenseDTO expenseFromBody)
+        public Task<bool> DeleteByIdAsync(Guid id)
         {
             throw new NotImplementedException();
+
         }
 
-        public Task<bool> UpdateByIdAsync(string id, ExpenseDTO expenseUpdated)
+        public async Task<int> PostAsync(ExpenseDTO expenseFromBody)
+        {
+            Context.Expense.Add(mapExpense(expenseFromBody));
+            var result = await Context.SaveChangesAsync();
+            return result;
+        }
+
+
+        public Task<bool> UpdateByIdAsync(Guid id, ExpenseDTO expenseUpdated)
         {
             throw new NotImplementedException();
         }

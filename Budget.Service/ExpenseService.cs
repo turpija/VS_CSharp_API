@@ -27,7 +27,7 @@ namespace Budget.Service
             return await Repository.GetAllAsync(paging, sorting, filtering);
         }
 
-        public async Task<ExpenseDTO> GetByIdAsync(string id)
+        public async Task<ExpenseDTO> GetByIdAsync(Guid id)
         {
             return await Repository.GetByIdAsync(id);
         }
@@ -37,7 +37,7 @@ namespace Budget.Service
             return await Repository.PostAsync(expense);
         }
 
-        public async Task<bool> DeleteByIdAsync(string id)
+        public async Task<bool> DeleteByIdAsync(Guid id)
         {
             if (await GetByIdAsync(id) == null)
             {
@@ -46,7 +46,7 @@ namespace Budget.Service
             return await Repository.DeleteByIdAsync(id);
         }
 
-        public async Task<bool> UpdateByIdAsync(string id, ExpenseDTO newExpense)
+        public async Task<bool> UpdateByIdAsync(Guid id, ExpenseDTO newExpense)
         {
             // postoji li expense s tim ID ? 
             ExpenseDTO currentExpense = await GetByIdAsync(id);

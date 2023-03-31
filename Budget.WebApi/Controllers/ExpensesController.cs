@@ -95,7 +95,7 @@ namespace Budget.Controllers
         //GET expense by id
         [Route("api/expense/{id}")]
         [HttpGet]
-        public async Task<HttpResponseMessage> GetByIdAsync(string id)
+        public async Task<HttpResponseMessage> GetByIdAsync(Guid id)
         {
             ExpenseDTO expense = await Service.GetByIdAsync(id);
 
@@ -136,7 +136,7 @@ namespace Budget.Controllers
         //DELETE
         [HttpDelete]
         [Route("api/expense/{id}")]
-        public async Task<HttpResponseMessage> DeleteByIdAsync(string id)
+        public async Task<HttpResponseMessage> DeleteByIdAsync(Guid id)
         {
             bool deleteSuccessful = await Service.DeleteByIdAsync(id);
             if (!deleteSuccessful)
@@ -150,7 +150,7 @@ namespace Budget.Controllers
         //PUT
         [HttpPut]
         [Route("api/expense/{id}")]
-        public async Task<HttpResponseMessage> UpdateByIdAsync(string id, ExpenseRest expenseFromBody)
+        public async Task<HttpResponseMessage> UpdateByIdAsync(Guid id, ExpenseRest expenseFromBody)
         {
             ExpenseDTO expense = PopulateExpense(expenseFromBody);
 
