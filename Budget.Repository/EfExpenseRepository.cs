@@ -47,7 +47,7 @@ namespace Budget.Repository
         {
             return new Expense()
             {
-                Id = expenseDTO.Id,
+                Id = Guid.NewGuid(),
                 Name = expenseDTO.Name,
                 Date = expenseDTO.Date,
                 Cost = expenseDTO.Cost,
@@ -76,16 +76,23 @@ namespace Budget.Repository
             return expensesDTO;
         }
 
-        public Task<bool> DeleteByIdAsync(Guid id)
+        public async Task<bool> DeleteByIdAsync(Guid id)
         {
-            throw new NotImplementedException();
+            var itemToRemove = Context.Expense.Where(s => s.Id == id).FirstOrDefault();
 
+            if (itemToRemove != null)
+            {
+                Context.Expense.Remove(itemToRemove);
+                int result = await Context.SaveChangesAsync();
+                return true;
+            }
+            return false;
         }
 
         public async Task<int> PostAsync(ExpenseDTO expenseFromBody)
         {
             Context.Expense.Add(mapExpense(expenseFromBody));
-            var result = await Context.SaveChangesAsync();
+            int result = await Context.SaveChangesAsync();
             return result;
         }
 
