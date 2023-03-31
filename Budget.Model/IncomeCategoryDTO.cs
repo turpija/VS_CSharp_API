@@ -1,17 +1,16 @@
 ﻿using Budget.Model.Common;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using System.Linq;
-using System.Web;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace Budget.Model
 {
-    public class Category : ICategory
+    public class IncomeCategoryDTO : IIncomeCategoryDTO
     {
         public Guid Id { get; set; }
         public string Name { get; set; }
-        public ICollection<IExpense> Expenses { get; set; }
-
+        public ICollection<IIncomeDTO> Incomes { get; set; }
     }
 }

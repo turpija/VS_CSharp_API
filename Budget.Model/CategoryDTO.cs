@@ -7,12 +7,10 @@ using System.Web;
 
 namespace Budget.Model
 {
-    public class Person :IPerson
+    public class CategoryDTO : ICategoryDTO
     {
         public Guid Id { get; set; }
-        public string Username { get; set; }
-        public string Password { get; set; }
-        public string Email { get; set; }
-        public ICollection<IExpense> Expenses { get; set; }
+        public string Name { get; set; }
+        public ICollection<IExpenseDTO> Expenses { get; set; }
     }
 }

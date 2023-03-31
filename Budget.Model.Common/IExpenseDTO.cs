@@ -7,17 +7,17 @@ using System.Threading.Tasks;
 
 namespace Budget.Model.Common
 {
-    public interface IExpense
+    public interface IExpenseDTO
     {
         Guid Id { get; set; }
         string Name { get; set; }
         string Description { get; set; }
         Guid PersonId { get; set; }
         //string PersonName { get; set; }
-        IPerson Person { get; set; }
+        IPersonDTO Person { get; set; }
         Guid CategoryId { get; set; }
         //string CategoryName { get;  set; }
-        ICategory Category { get; set; }
+        ICategoryDTO Category { get; set; }
         DateTime Date { get; set; }
         Decimal Cost { get; set; }
     }

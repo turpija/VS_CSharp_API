@@ -26,7 +26,7 @@ namespace Budget.Controllers
         {
             Service = service;
         }
-        private ExpenseRest PopulateExpenseRest(Expense expense)
+        private ExpenseRest PopulateExpenseRest(ExpenseDTO expense)
         {
             ExpenseRest expenseRestView = new ExpenseRest()
             {
@@ -50,30 +50,31 @@ namespace Budget.Controllers
             return expenseRestView;
         }
 
-        private Expense PopulateExpense(ExpenseRest expenseRest)
+        private ExpenseDTO PopulateExpense(ExpenseInputRest expenseInputRest)
         {
-            Expense expense = new Expense()
+            ExpenseDTO expense = new ExpenseDTO()
             {
-                Name = expenseRest.Name,
-                Description = expenseRest.Description,
-                Date = expenseRest.Date,
-                Cost = expenseRest.Cost,
-                Person = new Person() {Id = expenseRest.Person.Id },
-                Category = new Category() {Id = expenseRest.Category.Id }
-                //PersonId = expenseRest.PersonId,
-                //CategoryId = expenseRest.CategoryId,
+                Name = expenseInputRest.Name,
+                Description = expenseInputRest.Description,
+                Date = expenseInputRest.Date,
+                Cost = expenseInputRest.Cost,
+                PersonId = expenseInputRest.PersonId,
+                CategoryId = expenseInputRest.CategoryId,
             };
             return expense;
         }
 
 
-        // GET all expenses
+        //---------------------------------------
+        //                 GET
+        //---------------------------------------
+        
         [Route("api/expenses/")]
         [HttpGet]
         public async Task<HttpResponseMessage> GetAllAsync([FromUri] Paging paging, [FromUri] Sorting sorting, [FromUri] Filtering filtering)
         {
 
-            List<Expense> expenses = await Service.GetAllAsync(paging, sorting, filtering);
+            List<ExpenseDTO> expenses = await Service.GetAllAsync(paging, sorting, filtering);
             List<ExpenseRest> expensesRestView = new List<ExpenseRest>();
 
             if (expenses == null)
@@ -81,7 +82,7 @@ namespace Budget.Controllers
                 return Request.CreateResponse(HttpStatusCode.NotFound, "no content");
             }
 
-            foreach (Expense item in expenses)
+            foreach (ExpenseDTO item in expenses)
             {
                 //populate ExpenseRest item ...
                 expensesRestView.Add(PopulateExpenseRest(item));
@@ -91,13 +92,15 @@ namespace Budget.Controllers
         }
 
 
-
-        //GET expense by id
+        //---------------------------------------
+        //                 GET BY ID
+        //---------------------------------------
+        
         [Route("api/expense/{id}")]
         [HttpGet]
-        public async Task<HttpResponseMessage> GetByIdAsync(string id)
+        public async Task<HttpResponseMessage> GetByIdAsync(Guid id)
         {
-            Expense expense = await Service.GetByIdAsync(id);
+            ExpenseDTO expense = await Service.GetByIdAsync(id);
 
             if (expense == null)
             {
@@ -109,14 +112,16 @@ namespace Budget.Controllers
         }
 
 
+        //---------------------------------------
+        //                 POST
+        //---------------------------------------
 
-        // POST expense 
         [Route("api/expense/")]
         [HttpPost]
 
-        public async Task<HttpResponseMessage> PostAsync(ExpenseRest expenseRest)
+        public async Task<HttpResponseMessage> PostAsync(ExpenseInputRest expenseInputRest)
         {
-            Expense expense = PopulateExpense(expenseRest);
+            ExpenseDTO expense = PopulateExpense(expenseInputRest);
 
             if (!ModelState.IsValid)
             {
@@ -132,11 +137,13 @@ namespace Budget.Controllers
         }
 
 
+        //---------------------------------------
+        //                 DELETE
+        //---------------------------------------
 
-        //DELETE
         [HttpDelete]
         [Route("api/expense/{id}")]
-        public async Task<HttpResponseMessage> DeleteByIdAsync(string id)
+        public async Task<HttpResponseMessage> DeleteByIdAsync(Guid id)
         {
             bool deleteSuccessful = await Service.DeleteByIdAsync(id);
             if (!deleteSuccessful)
@@ -147,12 +154,16 @@ namespace Budget.Controllers
             return Request.CreateResponse(HttpStatusCode.OK, "delete successfull");
         }
 
-        //PUT
+
+        //---------------------------------------
+        //                 UPDATE
+        //---------------------------------------
+
         [HttpPut]
         [Route("api/expense/{id}")]
-        public async Task<HttpResponseMessage> UpdateByIdAsync(string id, ExpenseRest expenseFromBody)
+        public async Task<HttpResponseMessage> UpdateByIdAsync(Guid id, ExpenseInputRest expenseInputRest)
         {
-            Expense expense = PopulateExpense(expenseFromBody);
+            ExpenseDTO expense = PopulateExpense(expenseInputRest);
 
             bool updateSuccess = await Service.UpdateByIdAsync(id, expense);
             if (!updateSuccess)

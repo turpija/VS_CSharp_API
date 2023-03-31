@@ -1,5 +1,6 @@
 ﻿using Autofac;
 using Autofac.Integration.WebApi;
+using Budget.DAL;
 using Budget.Models;
 using Budget.Repository;
 using Budget.Repository.Common;
@@ -22,7 +23,9 @@ namespace Budget.App_Start
             var config = GlobalConfiguration.Configuration;
             builder.RegisterApiControllers(Assembly.GetExecutingAssembly());
             builder.RegisterType<ExpenseService>().As<IExpenseService>();
-            builder.RegisterType<ExpenseRepository>().As<IExpenseRepository>();
+            //builder.RegisterType<ExpenseRepository>().As<IExpenseRepository>(); //Ado.Net Repository
+            builder.RegisterType<EfExpenseRepository>().As<IExpenseRepository>().InstancePerLifetimeScope(); //EF Repository
+            builder.RegisterType<BudgetContext>().InstancePerLifetimeScope();
             var container = builder.Build();
             config.DependencyResolver = new AutofacWebApiDependencyResolver(container);
         }

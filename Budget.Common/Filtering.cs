@@ -10,8 +10,8 @@ namespace Budget.Common
     {
         public Guid PersonId { get; set; }
         public Guid CategoryId { get; set; }
-        public string DateFrom { get; set; } = null;
-        public string DateTo { get; set; } = null;
+        public DateTime DateFrom { get; set; }
+        public DateTime DateTo { get; set; }
         public int? CostFrom { get; set; } = null;
         public int? CostTo { get; set; } = null;
     }

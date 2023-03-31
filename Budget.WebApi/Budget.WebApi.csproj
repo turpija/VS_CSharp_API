@@ -198,6 +198,7 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Models\CategoryRest.cs" />
+    <Compile Include="Models\ExpenseInputRest.cs" />
     <Compile Include="Models\ExpenseRest.cs" />
     <Compile Include="Models\PersonRest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -346,6 +347,10 @@
     <ProjectReference Include="..\Budget.Common\Budget.Common.csproj">
       <Project>{CCA255D5-1C03-48EF-B988-F05D028158F7}</Project>
       <Name>Budget.Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Budget.DAL\Budget.DAL.csproj">
+      <Project>{3935C9EB-3B09-4A63-9257-E5F36CBB7549}</Project>
+      <Name>Budget.DAL</Name>
     </ProjectReference>
     <ProjectReference Include="..\Budget.Model.Common\Budget.Model.Common.csproj">
       <Project>{c5def8f5-9edb-4d30-a7df-53c96476031e}</Project>
