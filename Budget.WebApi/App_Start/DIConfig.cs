@@ -22,7 +22,8 @@ namespace Budget.App_Start
             var config = GlobalConfiguration.Configuration;
             builder.RegisterApiControllers(Assembly.GetExecutingAssembly());
             builder.RegisterType<ExpenseService>().As<IExpenseService>();
-            builder.RegisterType<ExpenseRepository>().As<IExpenseRepository>();
+            //builder.RegisterType<ExpenseRepository>().As<IExpenseRepository>(); //Ado.Net Repository
+            builder.RegisterType<EfExpenseRepository>().As<IExpenseRepository>().InstancePerLifetimeScope(); //EF Repository
             var container = builder.Build();
             config.DependencyResolver = new AutofacWebApiDependencyResolver(container);
         }

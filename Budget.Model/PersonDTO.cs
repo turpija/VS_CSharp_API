@@ -7,7 +7,7 @@ using System.Web;
 
 namespace Budget.Model
 {
-    public class Person :IPerson
+    public class PersonDTO :IPerson
     {
         public Guid Id { get; set; }
         public string Username { get; set; }

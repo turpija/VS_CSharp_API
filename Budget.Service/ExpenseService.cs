@@ -22,17 +22,17 @@ namespace Budget.Service
             Repository = repository;
         }
 
-        public async Task<List<Expense>> GetAllAsync(Paging paging, Sorting sorting, Filtering filtering)
+        public async Task<List<ExpenseDTO>> GetAllAsync(Paging paging, Sorting sorting, Filtering filtering)
         {
             return await Repository.GetAllAsync(paging, sorting, filtering);
         }
 
-        public async Task<Expense> GetByIdAsync(string id)
+        public async Task<ExpenseDTO> GetByIdAsync(string id)
         {
             return await Repository.GetByIdAsync(id);
         }
 
-        public async Task<int> PostAsync(Expense expense)
+        public async Task<int> PostAsync(ExpenseDTO expense)
         {
             return await Repository.PostAsync(expense);
         }
@@ -46,16 +46,16 @@ namespace Budget.Service
             return await Repository.DeleteByIdAsync(id);
         }
 
-        public async Task<bool> UpdateByIdAsync(string id, Expense newExpense)
+        public async Task<bool> UpdateByIdAsync(string id, ExpenseDTO newExpense)
         {
             // postoji li expense s tim ID ? 
-            Expense currentExpense = await GetByIdAsync(id);
+            ExpenseDTO currentExpense = await GetByIdAsync(id);
             if (currentExpense == null)
             {
                 return false;
             }
 
-            Expense expenseUpdated = new Expense();
+            ExpenseDTO expenseUpdated = new ExpenseDTO();
 
             expenseUpdated.Name = newExpense.Name == default ? currentExpense.Name : newExpense.Name;
             expenseUpdated.Cost = newExpense.Cost == default ? currentExpense.Cost : newExpense.Cost;

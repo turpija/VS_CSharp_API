@@ -27,13 +27,13 @@ namespace Budget.Repository
         //private string connectionString = "Data Source=DESKTOP-413NSIC\\SQLEXPRESS01;Initial Catalog=KucniBudget;Integrated Security=True";
 
 
-        private Expense PopulateExpenseWithReaderData(SqlDataReader reader)
+        private ExpenseDTO PopulateExpenseWithReaderData(SqlDataReader reader)
         {
-            Expense expense = new Expense();
+            ExpenseDTO expense = new ExpenseDTO();
 
             expense.Id = reader.GetGuid(0);
             //expense.PersonId = reader.GetGuid(1);
-            expense.Person = new Person()
+            expense.Person = new PersonDTO()
             {
                 Id = reader.GetGuid(1),
                 Username = reader.GetString(2),
@@ -41,7 +41,7 @@ namespace Budget.Repository
                 Email = reader.GetString(4)
             };
             //expense.CategoryId = reader.GetGuid(5);
-            expense.Category = new Category()
+            expense.Category = new CategoryDTO()
             {
                 Id = reader.GetGuid(5),
                 Name = reader.GetString(6)
@@ -54,7 +54,7 @@ namespace Budget.Repository
             return expense;
         }
 
-        private async Task<Expense> GetExpenseItemByIdAsync(string id)
+        private async Task<ExpenseDTO> GetExpenseItemByIdAsync(string id)
         {
 
             SqlConnection connection = new SqlConnection(connectionString);
@@ -75,7 +75,7 @@ namespace Budget.Repository
                     }
 
                     reader.Read();
-                    Expense expense = PopulateExpenseWithReaderData(reader);
+                    ExpenseDTO expense = PopulateExpenseWithReaderData(reader);
                     reader.Close();
 
                     return expense;
@@ -88,12 +88,12 @@ namespace Budget.Repository
             }
         }
 
-        public async Task<List<Expense>> GetAllAsync(Paging paging, Sorting sorting, Filtering filtering)
+        public async Task<List<ExpenseDTO>> GetAllAsync(Paging paging, Sorting sorting, Filtering filtering)
         {
 
             SqlConnection connection = new SqlConnection(connectionString);
             StringBuilder sb = new StringBuilder();
-            List<Expense> expenses = new List<Expense>();
+            List<ExpenseDTO> expenses = new List<ExpenseDTO>();
 
             // create list with filtering conditions
             List<string> filteringQuery = new List<string>();
@@ -104,8 +104,9 @@ namespace Budget.Repository
             //if (filtering == null) filtering = new Filtering();
 
 
-
+            //---------------------------------------------------------------------------
             // UBACI VARIJABLE KAO COMMAND PARAMETRE !!!
+            //---------------------------------------------------------------------------
 
 
             if (filtering != null)
@@ -204,9 +205,9 @@ namespace Budget.Repository
 
 
 
-        public async Task<Expense> GetByIdAsync(string id)
+        public async Task<ExpenseDTO> GetByIdAsync(string id)
         {
-            Expense expense = await GetExpenseItemByIdAsync(id);
+            ExpenseDTO expense = await GetExpenseItemByIdAsync(id);
             if (expense == null)
             {
                 return null;
@@ -215,7 +216,7 @@ namespace Budget.Repository
         }
 
 
-        public async Task<int> PostAsync(Expense expenseFromBody)
+        public async Task<int> PostAsync(ExpenseDTO expenseFromBody)
         {
             SqlConnection connection = new SqlConnection(connectionString);
 
@@ -285,7 +286,7 @@ namespace Budget.Repository
         }
 
 
-        public async Task<bool> UpdateByIdAsync(string id, Expense expenseUpdated)
+        public async Task<bool> UpdateByIdAsync(string id, ExpenseDTO expenseUpdated)
         {
             SqlConnection connection = new SqlConnection(connectionString);
 

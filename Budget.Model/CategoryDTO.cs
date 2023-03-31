@@ -7,7 +7,7 @@ using System.Web;
 
 namespace Budget.Model
 {
-    public class Category : ICategory
+    public class CategoryDTO : ICategory
     {
         public Guid Id { get; set; }
         public string Name { get; set; }
