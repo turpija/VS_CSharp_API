@@ -36,6 +36,8 @@ namespace Budget.Controllers
                 Cost = expense.Cost,
                 Date = expense.Date,
                 Description = expense.Description,
+                PersonId = expense.Person.Id,
+                CategoryId = expense.Category.Id,
                 Person = new PersonRest()
                 {
                     Id = expense.Person.Id,
