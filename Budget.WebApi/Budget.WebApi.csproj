@@ -193,6 +193,7 @@
     <Compile Include="Areas\HelpPage\XmlDocumentationProvider.cs" />
     <Compile Include="Controllers\ExpensesController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\IncomesController.cs" />
     <Compile Include="Controllers\ValuesController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -200,6 +201,8 @@
     <Compile Include="Models\CategoryRest.cs" />
     <Compile Include="Models\ExpenseInputRest.cs" />
     <Compile Include="Models\ExpenseRest.cs" />
+    <Compile Include="Models\IncomeCategoryRest.cs" />
+    <Compile Include="Models\IncomeRest.cs" />
     <Compile Include="Models\PersonRest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

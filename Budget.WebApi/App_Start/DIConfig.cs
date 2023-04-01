@@ -22,9 +22,14 @@ namespace Budget.App_Start
             var builder = new ContainerBuilder();
             var config = GlobalConfiguration.Configuration;
             builder.RegisterApiControllers(Assembly.GetExecutingAssembly());
+            // --- services ---
             builder.RegisterType<ExpenseService>().As<IExpenseService>();
+            builder.RegisterType<IncomeService>().As<IIncomeService>();
             //builder.RegisterType<ExpenseRepository>().As<IExpenseRepository>(); //Ado.Net Repository
-            builder.RegisterType<EfExpenseRepository>().As<IExpenseRepository>().InstancePerLifetimeScope(); //EF Repository
+            // --- repositories ---
+            builder.RegisterType<EfExpenseRepository>().As<IExpenseRepository>().InstancePerLifetimeScope(); 
+            builder.RegisterType<EfIncomeRepository>().As<IIncomeRepository>().InstancePerLifetimeScope(); 
+            // --- db context ---
             builder.RegisterType<BudgetV2Context>().InstancePerLifetimeScope();
             var container = builder.Build();
             config.DependencyResolver = new AutofacWebApiDependencyResolver(container);

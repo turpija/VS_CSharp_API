@@ -86,6 +86,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="EfIncomeRepository.cs" />
     <Compile Include="EfExpenseRepository.cs" />
     <Compile Include="ExpenseRepository.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
