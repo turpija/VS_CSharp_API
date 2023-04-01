@@ -19,7 +19,7 @@ namespace Budget.Service
         {
             Repository = repository;
         }
-        public async Task<List<IncomeDTO>> GetAllAsync(Paging pager, Sorting sorting, Filtering filtering)
+        public async Task<List<IncomeDTO>> GetAllAsync(Paging pager, Sorting sorting, FilteringIncome filtering)
         {
             return await Repository.GetAllAsync(pager, sorting, filtering);
         }

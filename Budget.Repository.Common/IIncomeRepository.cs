@@ -10,7 +10,7 @@ namespace Budget.Repository.Common
 {
     public interface IIncomeRepository
     {
-        Task<List<IncomeDTO>> GetAllAsync(Paging paging, Sorting sorting, Filtering filtering);
+        Task<List<IncomeDTO>> GetAllAsync(Paging paging, Sorting sorting, FilteringIncome filtering);
 
     }
 }

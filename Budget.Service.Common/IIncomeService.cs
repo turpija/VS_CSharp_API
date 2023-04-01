@@ -10,6 +10,6 @@ namespace Budget.Service.Common
 {
     public interface IIncomeService
     {
-        Task<List<IncomeDTO>> GetAllAsync(Paging pager, Sorting sorting, Filtering filtering);
+        Task<List<IncomeDTO>> GetAllAsync(Paging pager, Sorting sorting, FilteringIncome filtering);
     }
 }

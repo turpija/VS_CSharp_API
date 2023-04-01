@@ -73,14 +73,58 @@ namespace Budget.Repository
         //                 GET
         //---------------------------------------
 
-        public async Task<List<IncomeDTO>> GetAllAsync(Paging paging, Sorting sorting, Filtering filtering)
+        public async Task<List<IncomeDTO>> GetAllAsync(Paging paging, Sorting sorting, FilteringIncome filtering)
         {
+
+
             try
             {
+                // if paging and sorting is not provided, create with default values
+                if (paging == null) paging = new Paging();
+                if (sorting == null) sorting = new Sorting();
 
                 List<IncomeDTO> incomesDTO = new List<IncomeDTO>();
 
                 IQueryable<Income> query = Context.Income.AsQueryable();
+
+                // filtering parameters provided
+                if (filtering != null)
+                {
+                    if (filtering.PersonId != default) query = query.Where(s => s.Person.Id == filtering.PersonId);
+                    if (filtering.IncomeCategoryId != default) query = query.Where(s => s.IncomeCategory.Id == filtering.IncomeCategoryId);
+                    if (filtering.DateFrom != default) query = query.Where(s => s.Date >= filtering.DateFrom);
+                    if (filtering.DateTo != default) query = query.Where(s => s.Date <= filtering.DateTo);
+                    if (filtering.AmountFrom != default) query = query.Where(s => s.Amount>= filtering.AmountFrom);
+                    if (filtering.AmountTo != default) query = query.Where(s => s.Amount <= filtering.AmountTo);
+                }
+
+                // sorting parameters provided
+                if (sorting != null)
+                {
+
+                    switch (sorting.OrderBy)
+                    {
+                        case "Amount":
+                            if (sorting.SortOrderAsc) query = query.OrderBy(s => s.Amount);
+                            else query = query.OrderByDescending(s => s.Amount);
+                            break;
+                        case "Date":
+                            if (sorting.SortOrderAsc) query = query.OrderBy(s => s.Date);
+                            else query = query.OrderByDescending(s => s.Date);
+                            break;
+                        case "Name":
+                            if (sorting.SortOrderAsc) query = query.OrderBy(s => s.Name);
+                            else query = query.OrderByDescending(s => s.Name);
+                            break;
+                        default:
+                            break;
+                    }
+                }
+
+                // set paging
+                query = query
+                    .Skip((paging.PageNumber - 1) * paging.PageSize)
+                    .Take(paging.PageSize);
 
                 await query.ToListAsync();
 

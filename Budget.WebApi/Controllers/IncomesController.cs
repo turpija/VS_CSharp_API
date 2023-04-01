@@ -57,7 +57,7 @@ namespace Budget.Controllers
 
         [Route("api/incomes/")]
         [HttpGet]
-        public async Task<HttpResponseMessage> GetAllAsync([FromUri] Paging paging, [FromUri] Sorting sorting, [FromUri] Filtering filtering)
+        public async Task<HttpResponseMessage> GetAllAsync([FromUri] Paging paging, [FromUri] Sorting sorting, [FromUri] FilteringIncome filtering)
         {
             List<IncomeDTO> incomes = await Service.GetAllAsync(paging, sorting, filtering);
             List<IncomeRest> incomesRestView = new List<IncomeRest>();
