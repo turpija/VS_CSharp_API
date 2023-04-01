@@ -20,8 +20,8 @@ namespace Budget.Repository
     public class EfExpenseRepository : IExpenseRepository
     {
         // injected DB Context
-        protected BudgetContext Context { get; set; }
-        public EfExpenseRepository(BudgetContext context)
+        protected BudgetV2Context Context { get; set; }
+        public EfExpenseRepository(BudgetV2Context context)
         {
             Context = context;
         }
