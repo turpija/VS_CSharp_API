@@ -19,11 +19,14 @@ namespace Budget.Repository
 {
     public class EfExpenseRepository : IExpenseRepository
     {
-        public BudgetContext Context { get; set; }
+        // injected DB Context
+        protected BudgetContext Context { get; set; }
         public EfExpenseRepository(BudgetContext context)
         {
             Context = context;
         }
+
+        // map Entity model and return DTO
         private ExpenseDTO MapExpenseDTO(Expense expense)
         {
             return new ExpenseDTO()
@@ -48,6 +51,7 @@ namespace Budget.Repository
             };
         }
 
+        // map DTO and return Entity model
         private Expense mapExpense(ExpenseDTO expenseDTO)
         {
             Expense expense = new Expense()
@@ -97,6 +101,7 @@ namespace Budget.Repository
         {
             try
             {
+                // if paging and sorting is not provided, create with default values
                 if (paging == null) paging = new Paging();
                 if (sorting == null) sorting = new Sorting();
 
@@ -104,6 +109,7 @@ namespace Budget.Repository
 
                 IQueryable<Expense> query = Context.Expense.AsQueryable();
 
+                // filtering parameters provided
                 if (filtering != null)
                 {
                     if (filtering.PersonId != default) query = query.Where(s => s.Person.Id == filtering.PersonId);
@@ -114,6 +120,7 @@ namespace Budget.Repository
                     if (filtering.CostTo != default) query = query.Where(s => s.Cost <= filtering.CostTo);
                 }
 
+                // sorting parameters provided
                 if (sorting != null)
                 {
 
@@ -136,12 +143,14 @@ namespace Budget.Repository
                     }
                 }
 
+                // set paging
                 query = query
                     .Skip((paging.PageNumber - 1) * paging.PageSize)
                     .Take(paging.PageSize);
 
                 await query.ToListAsync();
 
+                // map list to DTO model
                 foreach (var item in query)
                 {
                     expensesDTO.Add(MapExpenseDTO(item));
@@ -164,8 +173,10 @@ namespace Budget.Repository
         {
             try
             {
+                // get item by id
                 var itemToRemove = await Context.Expense.Where(s => s.Id == id).FirstOrDefaultAsync();
 
+                // if exists, remove it                
                 if (itemToRemove != null)
                 {
                     Context.Expense.Remove(itemToRemove);
@@ -190,6 +201,7 @@ namespace Budget.Repository
         {
             try
             {
+                // get DTO, map it to Entity and add to DB
                 Context.Expense.Add(mapExpense(expenseFromBody));
                 int result = await Context.SaveChangesAsync();
                 return result;
@@ -210,11 +222,12 @@ namespace Budget.Repository
         {
             try
             {
+                // get item by id
                 var itemToUpdate = Context.Expense.Where(s => s.Id == id).FirstOrDefault();
 
+                // if exist, map DTO to Entity model and update it to DB
                 if (itemToUpdate != null)
                 {
-                    //itemToUpdate = mapExpense(expenseUpdated, id);
                     itemToUpdate.Name = expenseUpdated.Name;
                     itemToUpdate.Date = expenseUpdated.Date;
                     itemToUpdate.Cost = expenseUpdated.Cost;

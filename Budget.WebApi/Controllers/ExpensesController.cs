@@ -19,14 +19,15 @@ namespace Budget.Controllers
 {
     public class ExpensesController : ApiController
     {
-        //ExpenseService service = new ExpenseService();
-
-        public IExpenseService Service { get; set; }
+        // injected service
+        protected IExpenseService Service { get; set; }
         public ExpensesController(IExpenseService service)
         {
             Service = service;
         }
-        private ExpenseRest PopulateExpenseRest(ExpenseDTO expense)
+
+        // map DTO to Rest model
+        private ExpenseRest MapExpenseRest(ExpenseDTO expense)
         {
             ExpenseRest expenseRestView = new ExpenseRest()
             {
@@ -50,7 +51,8 @@ namespace Budget.Controllers
             return expenseRestView;
         }
 
-        private ExpenseDTO PopulateExpense(ExpenseInputRest expenseInputRest)
+        // map Rest to DTO model
+        private ExpenseDTO MapExpense(ExpenseInputRest expenseInputRest)
         {
             ExpenseDTO expense = new ExpenseDTO()
             {
@@ -84,8 +86,8 @@ namespace Budget.Controllers
 
             foreach (ExpenseDTO item in expenses)
             {
-                //populate ExpenseRest item ...
-                expensesRestView.Add(PopulateExpenseRest(item));
+                // map ExpenseRest item ...
+                expensesRestView.Add(MapExpenseRest(item));
             };
 
             return Request.CreateResponse(HttpStatusCode.OK, expensesRestView);
@@ -106,7 +108,7 @@ namespace Budget.Controllers
             {
                 return Request.CreateResponse(HttpStatusCode.NotFound, "no content");
             }
-            ExpenseRest expenseRestView = PopulateExpenseRest(expense);
+            ExpenseRest expenseRestView = MapExpenseRest(expense);
 
             return Request.CreateResponse(HttpStatusCode.OK, expenseRestView);
         }
@@ -121,7 +123,7 @@ namespace Budget.Controllers
 
         public async Task<HttpResponseMessage> PostAsync(ExpenseInputRest expenseInputRest)
         {
-            ExpenseDTO expense = PopulateExpense(expenseInputRest);
+            ExpenseDTO expense = MapExpense(expenseInputRest);
 
             if (!ModelState.IsValid)
             {
@@ -163,7 +165,7 @@ namespace Budget.Controllers
         [Route("api/expense/{id}")]
         public async Task<HttpResponseMessage> UpdateByIdAsync(Guid id, ExpenseInputRest expenseInputRest)
         {
-            ExpenseDTO expense = PopulateExpense(expenseInputRest);
+            ExpenseDTO expense = MapExpense(expenseInputRest);
 
             bool updateSuccess = await Service.UpdateByIdAsync(id, expense);
             if (!updateSuccess)

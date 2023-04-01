@@ -13,10 +13,8 @@ namespace Budget.Service
 {
     public class ExpenseService : IExpenseService
     {
-        //ExpenseRepository repository = new ExpenseRepository();
-
-        public IExpenseRepository Repository { get; set; }
-
+        // Injected repository
+        protected IExpenseRepository Repository { get; set; }
         public ExpenseService(IExpenseRepository repository)
         {
             Repository = repository;
@@ -73,12 +71,14 @@ namespace Budget.Service
 
         public async Task<bool> UpdateByIdAsync(Guid id, ExpenseDTO newExpense)
         {
-            // postoji li expense s tim ID ? 
+            // does item with id exists ? 
             ExpenseDTO currentExpense = await GetByIdAsync(id);
             if (currentExpense == null)
             {
                 return false;
             }
+
+            // check what values are provided and create new DTO with updated values
 
             ExpenseDTO expenseUpdated = new ExpenseDTO();
 
