@@ -12,7 +12,8 @@ namespace Budget.DAL
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public Person()
         {
-            Expense = new HashSet<Expense>();
+            Expenses = new HashSet<Expense>();
+            Incomes = new HashSet<Income>();
         }
 
         public Guid Id { get; set; }
@@ -34,6 +35,9 @@ namespace Budget.DAL
         public string Email { get; set; }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<Expense> Expense { get; set; }
+        public virtual ICollection<Expense> Expenses { get; set; }
+
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<Income> Incomes { get; set; }
     }
 }
