@@ -5,6 +5,7 @@ using Budget.Service.Common;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
@@ -32,7 +33,7 @@ namespace Budget.MVC.Controllers
                 Description = expense.Description,
                 PersonId = expense.Person.Id,
                 CategoryId = expense.Category.Id,
-                
+
                 Person = new PersonView()
                 {
                     Id = expense.Person.Id,
@@ -46,6 +47,22 @@ namespace Budget.MVC.Controllers
                 }
             };
             return expenseView;
+        }
+
+
+        // map View to DTO model
+        private ExpenseDTO MapExpense(ExpenseView expenseView)
+        {
+            ExpenseDTO expense = new ExpenseDTO()
+            {
+                Name = expenseView.Name,
+                Description = expenseView.Description,
+                Date = expenseView.Date,
+                Cost = expenseView.Cost,
+                PersonId = expenseView.PersonId,
+                CategoryId = expenseView.CategoryId,
+            };
+            return expense;
         }
 
 
@@ -76,9 +93,15 @@ namespace Budget.MVC.Controllers
         //---------------------------------------
         //                 GET BY ID
         //---------------------------------------
-        public ActionResult Details(int id)
+        public async Task<ActionResult> Details(Guid id)
         {
-            return View();
+            ExpenseDTO expense = await Service.GetByIdAsync(id);
+            if (expense == null)
+            {
+                return View();
+            }
+
+            return View(MapExpenseView(expense));
         }
 
 
@@ -88,18 +111,25 @@ namespace Budget.MVC.Controllers
 
         public ActionResult Create()
         {
+
             return View();
         }
 
         // POST: Expense/Create
         [HttpPost]
-        public ActionResult Create(FormCollection collection)
+        public async Task<ActionResult> Create(ExpenseView expenseView)
         {
             try
             {
-                // TODO: Add insert logic here
+                ExpenseDTO expenseDTO = MapExpense(expenseView);
 
-                return RedirectToAction("Index");
+                int result = await Service.PostAsync(expenseDTO);
+                if (result > 0)
+                {
+                    // success
+                }
+
+                return RedirectToAction("List");
             }
             catch
             {
@@ -112,9 +142,15 @@ namespace Budget.MVC.Controllers
         //                 UPDATE - GET
         //---------------------------------------
 
-        public ActionResult Edit(int id)
+        public async Task<ActionResult> Edit(Guid id)
         {
-            return View();
+            ExpenseDTO expense = await Service.GetByIdAsync(id);
+            if (expense == null)
+            {
+                return View();
+            }
+
+            return View(MapExpenseView(expense));
         }
 
 
@@ -123,13 +159,20 @@ namespace Budget.MVC.Controllers
         //---------------------------------------
 
         [HttpPost]
-        public ActionResult Edit(int id, FormCollection collection)
+        public async Task<ActionResult> Edit(Guid id, ExpenseView expenseView)
         {
             try
             {
-                // TODO: Add update logic here
+                ExpenseDTO expense = MapExpense(expenseView);
 
-                return RedirectToAction("Index");
+                bool updateSuccess = await Service.UpdateByIdAsync(id, expense);
+                if (!updateSuccess)
+                {
+                    //no item to update
+                }
+                // successfully updated
+
+                return RedirectToAction("List");
             }
             catch
             {
@@ -141,9 +184,14 @@ namespace Budget.MVC.Controllers
         //---------------------------------------
         //                 DELETE - GET
         //---------------------------------------
-        public ActionResult Delete(int id)
+        public async Task<ActionResult> Delete(Guid id)
         {
-            return View();
+            ExpenseDTO expense = await Service.GetByIdAsync(id);
+            if (expense == null)
+            {
+                return View();
+            }
+            return View(MapExpenseView(expense));
         }
 
 
@@ -152,13 +200,19 @@ namespace Budget.MVC.Controllers
         //---------------------------------------
 
         [HttpPost]
-        public ActionResult Delete(int id, FormCollection collection)
+        public async Task<ActionResult> Delete(Guid id, ExpenseView expenseView)
         {
             try
             {
                 // TODO: Add delete logic here
+                bool deleteSuccessful = await Service.DeleteByIdAsync(id);
+                if (!deleteSuccessful)
+                {
+                    // delete failed
+                }
+                    // delete successfull
 
-                return RedirectToAction("Index");
+                return RedirectToAction("List");
             }
             catch
             {
