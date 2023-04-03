@@ -1,7 +1,11 @@
-﻿using System;
+﻿using Budget.Model;
+using Budget.MVC.Models;
+using Budget.Service.Common;
+using System;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
 
@@ -14,10 +18,34 @@ namespace Budget.MVC.Controllers
         // create DI
         // create get all method 
 
-        // GET: Category
-        public ActionResult Index()
+        public ICategoryService Service { get; set; }
+
+        public CategoryController(ICategoryService service)
         {
-            return View();
+            Service = service;
+        }
+
+        // List all categories
+        public async Task<ActionResult> List()
+        {
+            List<CategoryDTO> categories = await Service.GetAllAsync();
+            List<CategoryView> categoriesView = new List<CategoryView>();
+
+            if (categories == null)
+            {
+                return View();
+            }
+
+            foreach (var item in categories)
+            {
+                categoriesView.Add(new CategoryView()
+                {
+                    Id = item.Id,
+                    Name = item.Name,
+                });
+            }
+
+            return View(categoriesView);
         }
     }
 }

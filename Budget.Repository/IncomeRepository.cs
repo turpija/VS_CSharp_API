@@ -17,11 +17,11 @@ using System.Xml.Linq;
 
 namespace Budget.Repository
 {
-    public class EfIncomeRepository : IIncomeRepository
+    public class IncomeRepository : IIncomeRepository
     {
         // injected DB Context
         protected BudgetV2Context Context { get; set; }
-        public EfIncomeRepository(BudgetV2Context context)
+        public IncomeRepository(BudgetV2Context context)
         {
             Context = context;
         }

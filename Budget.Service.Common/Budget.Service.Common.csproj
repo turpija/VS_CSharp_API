@@ -75,6 +75,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ICategoryService.cs" />
     <Compile Include="IExpenseService.cs" />
     <Compile Include="IIncomeService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

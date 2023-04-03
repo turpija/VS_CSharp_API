@@ -23,9 +23,11 @@ namespace Budget.MVC.App_Start
             // --- services ---
             builder.RegisterType<ExpenseService>().As<IExpenseService>();
             builder.RegisterType<IncomeService>().As<IIncomeService>();
+            builder.RegisterType<CategoryService>().As<ICategoryService>();
             // --- repositories ---
-            builder.RegisterType<EfExpenseRepository>().As<IExpenseRepository>().InstancePerLifetimeScope();
-            builder.RegisterType<EfIncomeRepository>().As<IIncomeRepository>().InstancePerLifetimeScope();
+            builder.RegisterType<ExpenseRepository>().As<IExpenseRepository>().InstancePerLifetimeScope();
+            builder.RegisterType<IncomeRepository>().As<IIncomeRepository>().InstancePerLifetimeScope();
+            builder.RegisterType<CategoryRepository>().As<ICategoryRepository>().InstancePerLifetimeScope();
             // --- db context ---
             builder.RegisterType<BudgetV2Context>().InstancePerLifetimeScope();
 

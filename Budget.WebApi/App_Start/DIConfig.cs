@@ -25,10 +25,10 @@ namespace Budget.App_Start
             // --- services ---
             builder.RegisterType<ExpenseService>().As<IExpenseService>();
             builder.RegisterType<IncomeService>().As<IIncomeService>();
-            //builder.RegisterType<ExpenseRepository>().As<IExpenseRepository>(); //Ado.Net Repository
+            //builder.RegisterType<OldExpenseRepository>().As<IExpenseRepository>(); //Ado.Net Repository
             // --- repositories ---
-            builder.RegisterType<EfExpenseRepository>().As<IExpenseRepository>().InstancePerLifetimeScope(); 
-            builder.RegisterType<EfIncomeRepository>().As<IIncomeRepository>().InstancePerLifetimeScope(); 
+            builder.RegisterType<ExpenseRepository>().As<IExpenseRepository>().InstancePerLifetimeScope(); 
+            builder.RegisterType<IncomeRepository>().As<IIncomeRepository>().InstancePerLifetimeScope(); 
             // --- db context ---
             builder.RegisterType<BudgetV2Context>().InstancePerLifetimeScope();
             var container = builder.Build();
