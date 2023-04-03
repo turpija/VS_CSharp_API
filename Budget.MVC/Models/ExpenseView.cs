@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Web;
 
@@ -13,7 +14,7 @@ namespace Budget.MVC.Models
         public Guid PersonId { get; set; }
         public Guid CategoryId { get; set; }
         public DateTime Date { get; set; }
-        public Decimal Cost { get; set; }
+        public decimal Cost { get; set; }
         public PersonView Person { get; set; }
         public CategoryView Category { get; set; }
     }

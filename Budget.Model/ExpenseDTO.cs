@@ -19,7 +19,7 @@ namespace Budget.Model
         public Guid CategoryId { get; set; }
         //public string CategoryName { get; set; }
         public DateTime Date { get; set; }
-        public Decimal Cost { get; set; }
+        public decimal Cost { get; set; }
         public IPersonDTO Person { get; set; }
         public ICategoryDTO Category { get; set; }
     }
