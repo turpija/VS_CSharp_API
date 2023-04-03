@@ -174,6 +174,8 @@ namespace Budget.Controllers
             {
                 return Request.CreateResponse(HttpStatusCode.NotFound, "no item to update");
             }
+
+            Request.CreateResponse();
             return Request.CreateResponse(HttpStatusCode.OK, "update successful");
         }
 
