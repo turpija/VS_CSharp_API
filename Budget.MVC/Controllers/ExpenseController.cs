@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
+using System.Runtime;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
@@ -15,9 +16,33 @@ namespace Budget.MVC.Controllers
     public class ExpenseController : Controller
     {
         public IExpenseService Service { get; set; }
-        public ExpenseController(IExpenseService service)
+        public ICategoryService CategoryService { get; set; }
+        public ExpenseController(IExpenseService service, ICategoryService categoryService)
         {
             Service = service;
+            CategoryService = categoryService;
+        }
+
+        // get all categories
+        public async Task<List<SelectListItem>> GetAllCategories()
+        {
+            List<CategoryDTO> categories = await CategoryService.GetAllAsync();
+            List<SelectListItem> categoriesList = new List<SelectListItem>();
+            if (categories == null)
+            {
+                return null;
+            }
+            foreach (var item in categories)
+            {
+                categoriesList.Add(new SelectListItem
+                {
+                    Value = item.Id.ToString(),
+                    Text = item.Name
+                });
+
+            }
+
+            return categoriesList;
         }
 
 
@@ -109,8 +134,10 @@ namespace Budget.MVC.Controllers
         //                 CREATE
         //---------------------------------------
 
-        public ActionResult Create()
+        public async Task<ActionResult> Create()
         {
+            //ViewData["Category"]=  GetAllCategories();
+            ViewBag.category = await GetAllCategories();
 
             return View();
         }
@@ -145,6 +172,9 @@ namespace Budget.MVC.Controllers
         public async Task<ActionResult> Edit(Guid id)
         {
             ExpenseDTO expense = await Service.GetByIdAsync(id);
+
+
+
             if (expense == null)
             {
                 return View();
@@ -210,7 +240,7 @@ namespace Budget.MVC.Controllers
                 {
                     // delete failed
                 }
-                    // delete successfull
+                // delete successfull
 
                 return RedirectToAction("List");
             }

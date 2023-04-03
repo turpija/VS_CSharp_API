@@ -26,14 +26,14 @@ namespace Budget.MVC.Controllers
         }
 
         // List all categories
-        public async Task<ActionResult> List()
+        public async Task<List<CategoryView>> List()
         {
             List<CategoryDTO> categories = await Service.GetAllAsync();
             List<CategoryView> categoriesView = new List<CategoryView>();
 
             if (categories == null)
             {
-                return View();
+                return null;
             }
 
             foreach (var item in categories)
@@ -45,7 +45,7 @@ namespace Budget.MVC.Controllers
                 });
             }
 
-            return View(categoriesView);
+            return categoriesView;
         }
     }
 }
