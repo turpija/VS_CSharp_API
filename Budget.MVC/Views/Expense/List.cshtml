@@ -12,13 +12,15 @@
 <table class="table">
     <tr>
         <th>
-            @Html.DisplayNameFor(model => model.Name)
+            @*@Html.DisplayNameFor(model => model.Name)*@
+            @Html.ActionLink("Name","List", new { OrderBy = "Name",SortOrderAsc = ViewBag.sortAsc })
         </th>
         <th>
             @Html.DisplayNameFor(model => model.Description)
         </th>
         <th>
             Person
+
             @*@Html.DisplayNameFor(model => model.Person.Username)*@
         </th>
         <th>
@@ -26,10 +28,12 @@
             @*@Html.DisplayNameFor(model => model.Category.Name)*@
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.Date)
+            @Html.ActionLink("Date", "List", new { OrderBy = "Date", SortOrderAsc = ViewBag.sortAsc })
+
+            @*@Html.DisplayNameFor(model => model.Date)*@
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.Cost)
+            @Html.ActionLink("Cost", "List", new { OrderBy = "Cost", SortOrderAsc = ViewBag.sortAsc })
         </th>
         <th></th>
     </tr>

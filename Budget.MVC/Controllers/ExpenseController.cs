@@ -86,6 +86,9 @@ namespace Budget.MVC.Controllers
                 expensesView.Add(MapExpenseView(item));
             }
 
+            ViewBag.sortOrder = sorting == null ? null : sorting.OrderBy;
+            ViewBag.sortAsc = sorting.SortOrderAsc ? false : true;
+
             return View(expensesView);
         }
 
