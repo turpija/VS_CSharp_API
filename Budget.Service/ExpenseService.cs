@@ -10,6 +10,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
+using PagedList;
 
 namespace Budget.Service
 {
@@ -55,7 +56,7 @@ namespace Budget.Service
         //                GET
         //---------------------------------------
 
-        public async Task<List<ExpenseDTO>> GetAllAsync(Paging paging, Sorting sorting, Filtering filtering)
+        public async Task<IPagedList<ExpenseDTO>> GetAllAsync(Paging paging, Sorting sorting, Filtering filtering)
         {
             return await Repository.GetAllAsync(paging, sorting, filtering);
         }

@@ -18,7 +18,7 @@ using System.Reflection;
 
 namespace Budget.Repository
 {
-    public class OldExpenseRepository : IExpenseRepository
+    public class OldExpenseRepository
     {
         //laptop
         private string connectionString = "Data Source=DESKTOP-D467OFD\\MOJSQLSERVER;Initial Catalog=Budget;Integrated Security=True";

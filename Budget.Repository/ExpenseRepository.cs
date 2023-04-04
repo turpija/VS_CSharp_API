@@ -14,6 +14,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Web.UI.WebControls;
 using System.Xml.Linq;
+using PagedList;
 
 namespace Budget.Repository
 {
@@ -97,7 +98,7 @@ namespace Budget.Repository
         //                 GET
         //---------------------------------------
 
-        public async Task<List<ExpenseDTO>> GetAllAsync(Paging paging, Sorting sorting, Filtering filtering)
+        public async Task<IPagedList<ExpenseDTO>> GetAllAsync(Paging paging, Sorting sorting, Filtering filtering)
         {
             try
             {
@@ -144,9 +145,9 @@ namespace Budget.Repository
                 }
 
                 // set paging
-                query = query
-                    .Skip((paging.PageNumber - 1) * paging.PageSize)
-                    .Take(paging.PageSize);
+                //query = query
+                //    .Skip((paging.PageNumber - 1) * paging.PageSize)
+                //    .Take(paging.PageSize);
 
                 await query.ToListAsync();
 
@@ -155,7 +156,7 @@ namespace Budget.Repository
                 {
                     expensesDTO.Add(MapExpenseDTO(item));
                 }
-                return expensesDTO;
+                return expensesDTO.ToPagedList(paging.PageNumber, paging.PageSize);
             }
             catch (Exception ex)
             {

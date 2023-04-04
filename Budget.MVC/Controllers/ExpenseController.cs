@@ -2,6 +2,7 @@
 using Budget.Model;
 using Budget.MVC.Models;
 using Budget.Service.Common;
+using PagedList;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -73,7 +74,7 @@ namespace Budget.MVC.Controllers
 
         public async Task<ActionResult> List(Paging paging, Sorting sorting, Filtering filtering)
         {
-            List<ExpenseDTO> expenses = await Service.GetAllAsync(paging, sorting, filtering);
+            IPagedList<ExpenseDTO> expenses = await Service.GetAllAsync(paging, sorting, filtering);
             List<ExpenseView> expensesView = new List<ExpenseView>();
 
             if (expenses == null)

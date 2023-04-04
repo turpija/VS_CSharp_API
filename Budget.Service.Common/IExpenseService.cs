@@ -6,13 +6,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Web.Mvc;
+using PagedList;
 
 namespace Budget.Service.Common
 {
     public interface IExpenseService
     {
         Task<List<SelectListItem>> GetCategoriesAsync();
-        Task<List<ExpenseDTO>> GetAllAsync(Paging pager, Sorting sorting, Filtering filtering);
+        Task<IPagedList<ExpenseDTO>> GetAllAsync(Paging pager, Sorting sorting, Filtering filtering);
         Task<ExpenseDTO> GetByIdAsync(Guid id);
         Task<int> PostAsync(ExpenseDTO expenseFromBody);
         Task<bool> DeleteByIdAsync(Guid id);
