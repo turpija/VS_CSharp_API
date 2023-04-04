@@ -3,11 +3,25 @@
 
 
 @{
+    // set variables
     ViewBag.Title = "List";
     int TotalPages = ViewBag.TotalPages;
     int TotalCount = ViewBag.TotalCount;
     int ItemsPerPage = ViewBag.ItemsPerPage;
     int PageNumber = ViewBag.PageNumber;
+}
+
+@{
+    // toggle sorting order 
+    bool sortToggle;
+    if (ViewBag.SortOrderAsc == true)
+    {
+        sortToggle = false;
+    }
+    else
+    {
+        sortToggle = true;
+    }
 }
 
 <h2>List of expenses</h2>
@@ -18,9 +32,7 @@
 <table class="table">
     <tr>
         <th>
-            @*@Html.DisplayNameFor(model => model.Name)*@
-            @Html.ActionLink("Name", "List", new { OrderBy = "Name", SortOrderAsc = ViewBag.sortAsc })
-            @*@Html.ActionLink("Last Name", "Index", new { sortOrder = ViewBag.NameSortParm, currentFilter = ViewBag.CurrentFilter })*@
+            @Html.ActionLink("Name", "List", new { PageNumber = PageNumber, OrderBy = "Name", SortOrderAsc = sortToggle })
 
         </th>
         <th>
@@ -28,20 +40,15 @@
         </th>
         <th>
             Person
-
-            @*@Html.DisplayNameFor(model => model.Person.Username)*@
         </th>
         <th>
             Category
-            @*@Html.DisplayNameFor(model => model.Category.Name)*@
         </th>
         <th>
-            @Html.ActionLink("Date", "List", new { OrderBy = "Date", SortOrderAsc = ViewBag.sortAsc })
-
-            @*@Html.DisplayNameFor(model => model.Date)*@
+            @Html.ActionLink("Date", "List", new { PageNumber = PageNumber, OrderBy = "Date", SortOrderAsc = sortToggle })
         </th>
         <th>
-            @Html.ActionLink("Cost", "List", new { OrderBy = "Cost", SortOrderAsc = ViewBag.sortAsc })
+            @Html.ActionLink("Cost", "List", new { PageNumber = PageNumber, OrderBy = "Cost", SortOrderAsc = sortToggle })
         </th>
         <th></th>
     </tr>
@@ -83,11 +90,11 @@
     {
         if (PageNumber == i)
         {
-            @Html.ActionLink($"{i}", "List", new { PageNumber = $"{i}" }, new { @class = "btn btn-secondary btn-sm m-1" });
+            @Html.ActionLink($"{i}", "List", new { PageNumber = $"{i}", OrderBy = ViewBag.OrderBy, SortOrderAsc = ViewBag.SortOrderAsc }, new { @class = "btn btn-secondary btn-sm m-1" });
         }
         else
         {
-            @Html.ActionLink($"{i}", "List", new { PageNumber = $"{i}" }, new { @class = "btn btn-outline-secondary btn-sm m-1" });
+            @Html.ActionLink($"{i}", "List", new { PageNumber = $"{i}", OrderBy = ViewBag.OrderBy, SortOrderAsc = ViewBag.SortOrderAsc }, new { @class = "btn btn-outline-secondary btn-sm m-1" });
         }
     }
     <br />
