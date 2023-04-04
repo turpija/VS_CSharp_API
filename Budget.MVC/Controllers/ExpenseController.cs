@@ -1,5 +1,6 @@
 ﻿using Budget.Common;
 using Budget.Model;
+using Budget.Model.Common;
 using Budget.MVC.Models;
 using Budget.Service.Common;
 using PagedList;
@@ -91,6 +92,8 @@ namespace Budget.MVC.Controllers
             ViewBag.sortAsc = sorting.SortOrderAsc ? false : true;
 
             return View(expensesView);
+            //return View(expensesView.ToPagedList(paging.PageNumber, paging.PageSize));
+
         }
 
 

@@ -144,19 +144,23 @@ namespace Budget.Repository
                     }
                 }
 
-                // set paging
+                //set paging
                 //query = query
                 //    .Skip((paging.PageNumber - 1) * paging.PageSize)
                 //    .Take(paging.PageSize);
 
-                await query.ToListAsync();
+
+                var result = query.ToPagedList(paging.PageNumber, paging.PageSize);
+                //ToListAsync();
+
 
                 // map list to DTO model
-                foreach (var item in query)
+                foreach (var item in result)
                 {
                     expensesDTO.Add(MapExpenseDTO(item));
                 }
-                return expensesDTO.ToPagedList(paging.PageNumber, paging.PageSize);
+
+                return new StaticPagedList<ExpenseDTO>(expensesDTO, result.PageNumber, result.PageSize, result.TotalItemCount);
             }
             catch (Exception ex)
             {

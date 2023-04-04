@@ -1,4 +1,6 @@
 ﻿@model IEnumerable<Budget.MVC.Models.ExpenseView>
+<link href="~/Content/PagedList.css" rel="stylesheet" type="text/css" />
+
 
 @{
     ViewBag.Title = "List";
@@ -13,7 +15,9 @@
     <tr>
         <th>
             @*@Html.DisplayNameFor(model => model.Name)*@
-            @Html.ActionLink("Name","List", new { OrderBy = "Name",SortOrderAsc = ViewBag.sortAsc })
+            @Html.ActionLink("Name", "List", new { OrderBy = "Name", SortOrderAsc = ViewBag.sortAsc })
+            @*@Html.ActionLink("Last Name", "Index", new { sortOrder = ViewBag.NameSortParm, currentFilter = ViewBag.CurrentFilter })*@
+
         </th>
         <th>
             @Html.DisplayNameFor(model => model.Description)
@@ -38,32 +42,34 @@
         <th></th>
     </tr>
 
-@foreach (var item in Model) {
-    <tr>
-        <td>
-            @Html.DisplayFor(modelItem => item.Name)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Description)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Person.Username)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Category.Name)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Date)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Cost)
-        </td>
-        <td>
-            @Html.ActionLink("Edit", "Edit", new { id=item.Id }) |
-            @Html.ActionLink("Details", "Details", new { id=item.Id }) |
-            @Html.ActionLink("Delete", "Delete", new { id=item.Id })
-        </td>
-    </tr>
-}
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Description)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Person.Username)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Category.Name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Date)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Cost)
+            </td>
+            <td>
+                @Html.ActionLink("Edit", "Edit", new { id = item.Id }) |
+                @Html.ActionLink("Details", "Details", new { id = item.Id }) |
+                @Html.ActionLink("Delete", "Delete", new { id = item.Id })
+            </td>
+        </tr>
+    }
 
 </table>
+
