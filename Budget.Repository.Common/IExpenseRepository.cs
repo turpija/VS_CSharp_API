@@ -11,7 +11,7 @@ namespace Budget.Repository.Common
 {
     public interface IExpenseRepository
     {
-        Task<IPagedList<ExpenseDTO>> GetAllAsync(Paging paging, Sorting sorting, Filtering filtering);
+        Task<ExpenseReturnDTO> GetAllAsync(Paging paging, Sorting sorting, Filtering filtering);
         Task<ExpenseDTO> GetByIdAsync(Guid id);
         Task<int> PostAsync(ExpenseDTO expenseFromBody);
         Task<bool> DeleteByIdAsync(Guid id);

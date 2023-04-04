@@ -75,21 +75,25 @@ namespace Budget.MVC.Controllers
 
         public async Task<ActionResult> List(Paging paging, Sorting sorting, Filtering filtering)
         {
-            IPagedList<ExpenseDTO> expenses = await Service.GetAllAsync(paging, sorting, filtering);
+            ExpenseReturnDTO expenseResult = await Service.GetAllAsync(paging, sorting, filtering);
             List<ExpenseView> expensesView = new List<ExpenseView>();
 
-            if (expenses == null)
+            if (expenseResult.Expenses == null)
             {
                 return View();
             }
 
-            foreach (var item in expenses)
+            foreach (var item in expenseResult.Expenses)
             {
                 expensesView.Add(MapExpenseView(item));
             }
 
             ViewBag.sortOrder = sorting == null ? null : sorting.OrderBy;
             ViewBag.sortAsc = sorting.SortOrderAsc ? false : true;
+            ViewBag.TotalPages = expenseResult.TotalPages;
+            ViewBag.TotalCount = expenseResult.TotalCount;
+            ViewBag.ItemsPerPage = expenseResult.ItemsPerPage;
+            ViewBag.PageNumber = expenseResult.PageNumber;
 
             return View(expensesView);
             //return View(expensesView.ToPagedList(paging.PageNumber, paging.PageSize));

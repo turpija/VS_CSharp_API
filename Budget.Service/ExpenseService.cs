@@ -56,7 +56,7 @@ namespace Budget.Service
         //                GET
         //---------------------------------------
 
-        public async Task<IPagedList<ExpenseDTO>> GetAllAsync(Paging paging, Sorting sorting, Filtering filtering)
+        public async Task<ExpenseReturnDTO> GetAllAsync(Paging paging, Sorting sorting, Filtering filtering)
         {
             return await Repository.GetAllAsync(paging, sorting, filtering);
         }

@@ -98,8 +98,10 @@ namespace Budget.Repository
         //                 GET
         //---------------------------------------
 
-        public async Task<IPagedList<ExpenseDTO>> GetAllAsync(Paging paging, Sorting sorting, Filtering filtering)
+        public async Task<ExpenseReturnDTO> GetAllAsync(Paging paging, Sorting sorting, Filtering filtering)
         {
+            var result = new ExpenseReturnDTO();
+
             try
             {
                 // if paging and sorting is not provided, create with default values
@@ -144,23 +146,33 @@ namespace Budget.Repository
                     }
                 }
 
+                //get number of total items in DB
+                result.TotalCount = query.Count();
+                result.ItemsPerPage = paging.PageSize;
+                result.PageNumber = paging.PageNumber;
+                result.TotalPages =  (result.TotalCount / result.ItemsPerPage)+1;
                 //set paging
-                //query = query
-                //    .Skip((paging.PageNumber - 1) * paging.PageSize)
-                //    .Take(paging.PageSize);
+                query = query
+                    .Skip((paging.PageNumber - 1) * paging.PageSize)
+                    .Take(paging.PageSize);
 
 
-                var result = query.ToPagedList(paging.PageNumber, paging.PageSize);
+                await query.ToListAsync();
+                //var result = query.ToPagedList(paging.PageNumber, paging.PageSize);
                 //ToListAsync();
 
 
                 // map list to DTO model
-                foreach (var item in result)
+                foreach (var item in query)
                 {
                     expensesDTO.Add(MapExpenseDTO(item));
                 }
 
-                return new StaticPagedList<ExpenseDTO>(expensesDTO, result.PageNumber, result.PageSize, result.TotalItemCount);
+                result.Expenses = expensesDTO;
+
+                return result;
+
+                //return new StaticPagedList<ExpenseDTO>(expensesDTO, result.PageNumber, result.PageSize, result.TotalItemCount);
             }
             catch (Exception ex)
             {

@@ -13,7 +13,7 @@ namespace Budget.Service.Common
     public interface IExpenseService
     {
         Task<List<SelectListItem>> GetCategoriesAsync();
-        Task<IPagedList<ExpenseDTO>> GetAllAsync(Paging pager, Sorting sorting, Filtering filtering);
+        Task<ExpenseReturnDTO> GetAllAsync(Paging pager, Sorting sorting, Filtering filtering);
         Task<ExpenseDTO> GetByIdAsync(Guid id);
         Task<int> PostAsync(ExpenseDTO expenseFromBody);
         Task<bool> DeleteByIdAsync(Guid id);

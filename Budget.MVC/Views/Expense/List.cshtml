@@ -4,6 +4,10 @@
 
 @{
     ViewBag.Title = "List";
+    int TotalPages = ViewBag.TotalPages;
+    int TotalCount = ViewBag.TotalCount;
+    int ItemsPerPage = ViewBag.ItemsPerPage;
+    int PageNumber = ViewBag.PageNumber;
 }
 
 <h2>List of expenses</h2>
@@ -72,4 +76,23 @@
     }
 
 </table>
+
+<footer>
+    Pages:
+    @for (int i = 1; i <= TotalPages; i++)
+    {
+        if (PageNumber == i)
+        {
+            @Html.ActionLink($"{i}", "List", new { PageNumber = $"{i}" }, new { @class = "btn btn-secondary btn-sm m-1" });
+        }
+        else
+        {
+            @Html.ActionLink($"{i}", "List", new { PageNumber = $"{i}" }, new { @class = "btn btn-outline-secondary btn-sm m-1" });
+        }
+    }
+    <br />
+    TotalCount:@TotalCount<br />
+    TotalPages: @TotalPages<br />
+    Items per page: @ItemsPerPage<br />
+</footer>
 
