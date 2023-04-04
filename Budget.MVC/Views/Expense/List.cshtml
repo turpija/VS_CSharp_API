@@ -12,7 +12,7 @@
 }
 
 @{
-    // toggle sorting order 
+    // toggle sorting order
     bool sortToggle;
     if (ViewBag.SortOrderAsc == true)
     {
@@ -25,30 +25,58 @@
 }
 
 <h2>List of expenses</h2>
-
 <p>
-    @Html.ActionLink("Create New", "Create")
+    @Html.ActionLink("Create New Item", "Create",new { }, new { @class = "btn btn-outline-primary" })
+</p>
+<p>
+    <hr />
+    <h4>Filterz</h4>
+    <ul>
+        <li>person</li>
+        <li>category</li>
+        <li>date from-to</li>
+        <li>cost from-to</li>
+    </ul>
+    <hr />
 </p>
 <table class="table">
     <tr>
         <th>
-            @Html.ActionLink("Name", "List", new { PageNumber = PageNumber, OrderBy = "Name", SortOrderAsc = sortToggle })
+            @Html.ActionLink("Name", "List", new
+            {
+                PageNumber = PageNumber,
+                OrderBy = "Name",
+                SortOrderAsc = sortToggle
+            }, new { @class = "btn btn-outline-secondary " })
 
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.Description)
+            Description
+            @*@Html.Label("Description", htmlAttributes: new { @class = "btn  disabled" })*@
         </th>
         <th>
             Person
+            @*@Html.Label("Person", htmlAttributes: new { @class = "btn btn-sm disabled" })*@
         </th>
         <th>
             Category
+            @*@Html.Label("Category", htmlAttributes: new { @class = "btn btn-sm disabled" })*@
         </th>
         <th>
-            @Html.ActionLink("Date", "List", new { PageNumber = PageNumber, OrderBy = "Date", SortOrderAsc = sortToggle })
+            @Html.ActionLink("Date", "List", new
+            {
+                PageNumber = PageNumber,
+                OrderBy = "Date",
+                SortOrderAsc = sortToggle
+            }, new { @class = "btn btn-outline-secondary " })
         </th>
         <th>
-            @Html.ActionLink("Cost", "List", new { PageNumber = PageNumber, OrderBy = "Cost", SortOrderAsc = sortToggle })
+            @Html.ActionLink("Cost", "List", new
+            {
+                PageNumber = PageNumber,
+                OrderBy = "Cost",
+                SortOrderAsc = sortToggle
+            }, new { @class = "btn btn-outline-secondary  " })
         </th>
         <th></th>
     </tr>
@@ -75,9 +103,9 @@
                 @Html.DisplayFor(modelItem => item.Cost)
             </td>
             <td>
-                @Html.ActionLink("Edit", "Edit", new { id = item.Id }) |
-                @Html.ActionLink("Details", "Details", new { id = item.Id }) |
-                @Html.ActionLink("Delete", "Delete", new { id = item.Id })
+                @Html.ActionLink("Edit", "Edit", new { id = item.Id }, new { @class = "btn btn-outline-secondary btn-sm " })
+                @Html.ActionLink("Details", "Details", new { id = item.Id }, new { @class = "btn btn-outline-secondary btn-sm " })
+                @Html.ActionLink("Delete", "Delete", new { id = item.Id }, new { @class = "btn btn-outline-secondary btn-sm " })
             </td>
         </tr>
     }
@@ -86,20 +114,21 @@
 
 <footer>
     Pages:
-    @for (int i = 1; i <= TotalPages; i++)
-    {
-        if (PageNumber == i)
+    <div class="btn-group" role="group">
+
+        @for (int i = 1; i <= TotalPages; i++)
         {
-            @Html.ActionLink($"{i}", "List", new { PageNumber = $"{i}", OrderBy = ViewBag.OrderBy, SortOrderAsc = ViewBag.SortOrderAsc }, new { @class = "btn btn-secondary btn-sm m-1" });
+            if (PageNumber == i)
+            {@Html.ActionLink($"{i}", "List", new { PageNumber = $"{i}", OrderBy = ViewBag.OrderBy, SortOrderAsc = ViewBag.SortOrderAsc }, new { @class = "btn btn-secondary btn-sm disabled" }) ;
         }
         else
-        {
-            @Html.ActionLink($"{i}", "List", new { PageNumber = $"{i}", OrderBy = ViewBag.OrderBy, SortOrderAsc = ViewBag.SortOrderAsc }, new { @class = "btn btn-outline-secondary btn-sm m-1" });
-        }
+        { @Html.ActionLink($"{i}", "List", new { PageNumber = $"{i}", OrderBy = ViewBag.OrderBy, SortOrderAsc = ViewBag.SortOrderAsc }, new { @class = "btn btn-outline-secondary btn-sm" });
     }
-    <br />
-    TotalCount:@TotalCount<br />
-    TotalPages: @TotalPages<br />
-    Items per page: @ItemsPerPage<br />
+}
+        </div>
+        <br />
+        Total num of items: <strong>@TotalCount</strong><br />
+        Total pages: <strong>@TotalPages</strong><br />
+        Items per page: <strong>@ItemsPerPage</strong><br />
 </footer>
 
