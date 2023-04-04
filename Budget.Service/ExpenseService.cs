@@ -8,6 +8,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Web;
+using System.Web.Mvc;
 
 namespace Budget.Service
 {
@@ -15,11 +17,39 @@ namespace Budget.Service
     {
         // Injected repository
         protected IExpenseRepository Repository { get; set; }
-        public ExpenseService(IExpenseRepository repository)
+        public ICategoryService CategoryService { get; set; }
+        public ExpenseService(IExpenseRepository repository, ICategoryService categoryService)
         {
             Repository = repository;
+            CategoryService = categoryService;
         }
 
+
+        //---------------------------------------
+        //                GET CATEGORIES
+        //---------------------------------------
+
+        public async Task<List<SelectListItem>> GetCategoriesAsync()
+        {
+            //return await CategoryService.GetAllAsync();
+
+            List<CategoryDTO> categories = await CategoryService.GetAllAsync();
+            List<SelectListItem> categoriesList = new List<SelectListItem>();
+            if (categories == null)
+            {
+                return null;
+            }
+            foreach (var item in categories)
+            {
+                categoriesList.Add(new SelectListItem
+                {
+                    Value = item.Id.ToString(),
+                    Text = item.Name
+                });
+            }
+
+            return categoriesList;
+        }
 
         //---------------------------------------
         //                GET

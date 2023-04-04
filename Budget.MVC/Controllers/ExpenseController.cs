@@ -16,35 +16,10 @@ namespace Budget.MVC.Controllers
     public class ExpenseController : Controller
     {
         public IExpenseService Service { get; set; }
-        public ICategoryService CategoryService { get; set; }
-        public ExpenseController(IExpenseService service, ICategoryService categoryService)
+        public ExpenseController(IExpenseService service)
         {
             Service = service;
-            CategoryService = categoryService;
         }
-
-        // get all categories
-        public async Task<List<SelectListItem>> GetAllCategories()
-        {
-            List<CategoryDTO> categories = await CategoryService.GetAllAsync();
-            List<SelectListItem> categoriesList = new List<SelectListItem>();
-            if (categories == null)
-            {
-                return null;
-            }
-            foreach (var item in categories)
-            {
-                categoriesList.Add(new SelectListItem
-                {
-                    Value = item.Id.ToString(),
-                    Text = item.Name
-                });
-
-            }
-
-            return categoriesList;
-        }
-
 
         // map DTO to View model
         private ExpenseView MapExpenseView(ExpenseDTO expense)
@@ -136,8 +111,7 @@ namespace Budget.MVC.Controllers
 
         public async Task<ActionResult> Create()
         {
-            //ViewData["Category"]=  GetAllCategories();
-            ViewBag.category = await GetAllCategories();
+            ViewBag.category = await Service.GetCategoriesAsync() ;
 
             return View();
         }
@@ -172,8 +146,6 @@ namespace Budget.MVC.Controllers
         public async Task<ActionResult> Edit(Guid id)
         {
             ExpenseDTO expense = await Service.GetByIdAsync(id);
-
-
 
             if (expense == null)
             {
@@ -234,7 +206,6 @@ namespace Budget.MVC.Controllers
         {
             try
             {
-                // TODO: Add delete logic here
                 bool deleteSuccessful = await Service.DeleteByIdAsync(id);
                 if (!deleteSuccessful)
                 {

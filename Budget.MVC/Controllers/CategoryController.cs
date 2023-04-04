@@ -13,11 +13,6 @@ namespace Budget.MVC.Controllers
 {
     public class CategoryController : Controller
     {
-        // create service & interface
-        // create repository & interface
-        // create DI
-        // create get all method 
-
         public ICategoryService Service { get; set; }
 
         public CategoryController(ICategoryService service)

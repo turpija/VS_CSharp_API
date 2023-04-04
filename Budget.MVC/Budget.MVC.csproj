@@ -281,11 +281,11 @@
       <Name>Budget.Repository</Name>
     </ProjectReference>
     <ProjectReference Include="..\Budget.Service.Common\Budget.Service.Common.csproj">
-      <Project>{4C7963A6-CF41-4A7E-985D-69ED3564B298}</Project>
+      <Project>{4c7963a6-cf41-4a7e-985d-69ed3564b298}</Project>
       <Name>Budget.Service.Common</Name>
     </ProjectReference>
     <ProjectReference Include="..\Budget.Service\Budget.Service.csproj">
-      <Project>{CEC438C2-80A4-496E-9234-B4AD6213447B}</Project>
+      <Project>{cec438c2-80a4-496e-9234-b4ad6213447b}</Project>
       <Name>Budget.Service</Name>
     </ProjectReference>
   </ItemGroup>

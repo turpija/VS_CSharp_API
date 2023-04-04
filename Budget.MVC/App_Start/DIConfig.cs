@@ -20,14 +20,17 @@ namespace Budget.MVC.App_Start
         {
             var builder = new ContainerBuilder();
             builder.RegisterControllers(typeof(MvcApplication).Assembly);
+
             // --- services ---
             builder.RegisterType<ExpenseService>().As<IExpenseService>();
             builder.RegisterType<IncomeService>().As<IIncomeService>();
             builder.RegisterType<CategoryService>().As<ICategoryService>();
+
             // --- repositories ---
             builder.RegisterType<ExpenseRepository>().As<IExpenseRepository>().InstancePerLifetimeScope();
             builder.RegisterType<IncomeRepository>().As<IIncomeRepository>().InstancePerLifetimeScope();
             builder.RegisterType<CategoryRepository>().As<ICategoryRepository>().InstancePerLifetimeScope();
+           
             // --- db context ---
             builder.RegisterType<BudgetV2Context>().InstancePerLifetimeScope();
 

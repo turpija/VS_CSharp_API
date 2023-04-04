@@ -223,7 +223,7 @@ namespace Budget.Repository
             try
             {
                 // get item by id
-                var itemToUpdate = Context.Expense.Where(s => s.Id == id).FirstOrDefault();
+                Expense itemToUpdate = Context.Expense.Where(s => s.Id == id).FirstOrDefault();
 
                 // if exist, map DTO to Entity model and update it to DB
                 if (itemToUpdate != null)
