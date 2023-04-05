@@ -30,10 +30,8 @@ namespace Budget.Service
         //                GET CATEGORIES
         //---------------------------------------
 
-        public async Task<List<SelectListItem>> GetCategoriesAsync()
+        public async Task<List<CategoryDTO>> GetCategoriesAsync()
         {
-            //return await CategoryService.GetAllAsync();
-
             List<CategoryDTO> categories = await CategoryService.GetAllAsync();
             List<SelectListItem> categoriesList = new List<SelectListItem>();
             if (categories == null)
@@ -49,7 +47,7 @@ namespace Budget.Service
                 });
             }
 
-            return categoriesList;
+            return categories;
         }
 
         //---------------------------------------

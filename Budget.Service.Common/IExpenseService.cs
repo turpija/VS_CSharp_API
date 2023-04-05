@@ -12,7 +12,7 @@ namespace Budget.Service.Common
 {
     public interface IExpenseService
     {
-        Task<List<SelectListItem>> GetCategoriesAsync();
+        Task<List<CategoryDTO>> GetCategoriesAsync();
         Task<ExpenseReturnDTO> GetAllAsync(Paging pager, Sorting sorting, Filtering filtering);
         Task<ExpenseDTO> GetByIdAsync(Guid id);
         Task<int> PostAsync(ExpenseDTO expenseFromBody);

@@ -95,7 +95,9 @@ namespace Budget.MVC.Controllers
             ViewBag.TotalPages = expenseResult.TotalPages;
             ViewBag.TotalCount = expenseResult.TotalCount;
             ViewBag.ItemsPerPage = expenseResult.ItemsPerPage;
-            ViewBag.PageNumber = expenseResult.PageNumber;
+            ViewBag.PageNumber = expenseResult.PageNumber; 
+            ViewBag.Category = new SelectList(await Service.GetCategoriesAsync(), "Id", "Name");
+
 
             return View(expensesView);
             //return View(expensesView.ToPagedList(paging.PageNumber, paging.PageSize));
@@ -124,7 +126,8 @@ namespace Budget.MVC.Controllers
 
         public async Task<ActionResult> Create()
         {
-            ViewBag.category = await Service.GetCategoriesAsync() ;
+            //ViewBag.category = await Service.GetCategoriesAsync() ;
+            ViewBag.Category = new SelectList(await Service.GetCategoriesAsync(), "Id", "Name");
 
             return View();
         }

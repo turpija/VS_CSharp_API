@@ -1,4 +1,5 @@
 ﻿@model IEnumerable<Budget.MVC.Models.ExpenseView>
+
 <link href="~/Content/PagedList.css" rel="stylesheet" type="text/css" />
 
 
@@ -28,24 +29,30 @@
 
 <h2>List of expenses</h2>
 <p>
-    @Html.ActionLink("Create New Item", "Create",new { }, new { @class = "btn btn-outline-success" })
+    @Html.ActionLink("Create New Item", "Create", new { }, new { @class = "btn btn-outline-success" })
 </p>
+<div>
+    @using (Html.BeginForm(
+            "List", "Expense",
+            new { PageNumber = 1, OrderBy = ViewBag.OrderBy, SortOrderAsc = ViewBag.SortOrderAsc },
+            FormMethod.Get))
+    {
+        <p>
 
-@using (Html.BeginForm(
-        "List", "Expense",
-        new {PageNumber = 1, OrderBy = ViewBag.OrderBy, SortOrderAsc = ViewBag.SortOrderAsc},
-        FormMethod.Get))
-{
-<p>
+            Find by name: @Html.TextBox("SearchString", "", new { @placeholder = "search..." })<br />
+            Cost From: @Html.TextBox("CostFrom", "", new { @type = "number", @placeholder = "min value" })
+            Cost To: @Html.TextBox("CostTo", "", new { @type = "number", @placeholder = "max value" })<br />
+            Date From: @Html.TextBox("DateFrom", "", new { @type = "date" })
+            Date To: @Html.TextBox("DateTo", "", new { @type = "date" })<br />
+            @*@Html.DropDownListFor((IEnumerable<SelectListItem>)ViewBag.category, new { @class = "form-control" })*@
 
-    Find by name: @Html.TextBox("SearchString")
-    Cost From: @Html.TextBox("CostFrom")
-    Cost To: @Html.TextBox("CostTo")
-    Date From: @Html.TextBox("DateFrom")
-    <input type="submit" value="search" class="btn btn-outline-secondary btn-sm " />
-</p>
-}
+            @*@Html.DropDownListFor(model => model.CategoryId, (IEnumerable<SelectListItem>)ViewBag.Category, new { @class = "form-control" })*@
 
+
+            <input type="submit" value="search" class="btn btn-outline-secondary btn-sm " />
+        </p>
+    }
+</div>
 <hr />
     </p>
 <table class="table">
@@ -101,31 +108,31 @@
 
     @foreach (var item in Model)
     {
-    <tr>
-        <td>
-            @Html.DisplayFor(modelItem => item.Name)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Description)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Person.Username)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Category.Name)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Date)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Cost)
-        </td>
-        <td>
-            @Html.ActionLink("Edit", "Edit", new { id = item.Id }, new { @class = "btn btn-outline-secondary btn-sm " })
-            @Html.ActionLink("Details", "Details", new { id = item.Id }, new { @class = "btn btn-outline-secondary btn-sm " })
-            @Html.ActionLink("Delete", "Delete", new { id = item.Id }, new { @class = "btn btn-outline-danger btn-sm " })
-        </td>
-    </tr>
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Description)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Person.Username)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Category.Name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Date)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Cost)
+            </td>
+            <td>
+                @Html.ActionLink("Edit", "Edit", new { id = item.Id }, new { @class = "btn btn-outline-secondary btn-sm " })
+                @Html.ActionLink("Details", "Details", new { id = item.Id }, new { @class = "btn btn-outline-secondary btn-sm " })
+                @Html.ActionLink("Delete", "Delete", new { id = item.Id }, new { @class = "btn btn-outline-danger btn-sm " })
+            </td>
+        </tr>
     }
 
 </table>
@@ -137,24 +144,28 @@
         @for (int i = 1; i <= TotalPages; i++)
         {
             if (PageNumber == i)
-            {@Html.ActionLink($"{i}", "List", new {
-                SearchString = Request.QueryString["SearchString"],
-                CostFrom = Request.QueryString["CostFrom"],
-                CostTo = Request.QueryString["CostTo"],
-                PageNumber = $"{i}",
-                OrderBy = ViewBag.OrderBy,
-                SortOrderAsc = ViewBag.SortOrderAsc },
-            new { @class = "btn btn-secondary btn-sm disabled" }) ;
+            {@Html.ActionLink($"{i}", "List", new
+               {
+              SearchString = Request.QueryString["SearchString"],
+              CostFrom = Request.QueryString["CostFrom"],
+              CostTo = Request.QueryString["CostTo"],
+              PageNumber = $"{i}",
+              OrderBy = ViewBag.OrderBy,
+              SortOrderAsc = ViewBag.SortOrderAsc
+               },
+          new { @class = "btn btn-secondary btn-sm disabled" }) ;
         }
         else
-        { @Html.ActionLink($"{i}", "List", new { 
-                SearchString = Request.QueryString["SearchString"],
-                CostFrom = Request.QueryString["CostFrom"],
-                CostTo = Request.QueryString["CostTo"],
-                PageNumber = $"{i}", 
-                OrderBy = ViewBag.OrderBy, 
-                SortOrderAsc = ViewBag.SortOrderAsc }, 
-            new { @class = "btn btn-outline-secondary btn-sm" });
+        { @Html.ActionLink($"{i}", "List", new
+          {
+            SearchString = Request.QueryString["SearchString"],
+            CostFrom = Request.QueryString["CostFrom"],
+            CostTo = Request.QueryString["CostTo"],
+            PageNumber = $"{i}",
+            OrderBy = ViewBag.OrderBy,
+            SortOrderAsc = ViewBag.SortOrderAsc
+          },
+        new { @class = "btn btn-outline-secondary btn-sm" });
     }
 }
     </div>
