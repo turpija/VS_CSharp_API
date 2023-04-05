@@ -88,6 +88,8 @@ namespace Budget.MVC.Controllers
                 expensesView.Add(MapExpenseView(item));
             }
 
+            ViewBag.Filering = filtering;
+
             ViewBag.OrderBy = sorting == null ? null : sorting.OrderBy;
             ViewBag.SortOrderAsc = sorting.SortOrderAsc;
             ViewBag.TotalPages = expenseResult.TotalPages;
