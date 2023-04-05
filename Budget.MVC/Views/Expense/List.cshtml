@@ -26,62 +26,77 @@
 
 <h2>List of expenses</h2>
 <p>
-    @Html.ActionLink("Create New Item", "Create",new { }, new { @class = "btn btn-outline-primary" })
+    @Html.ActionLink("Create New Item", "Create",new { }, new { @class = "btn btn-outline-success" })
 </p>
+
 <p>
     <hr />
-    <h4>Filterz</h4>
-    <ul>
-        <li>person</li>
-        <li>category</li>
-        <li>date from-to</li>
-        <li>cost from-to</li>
-    </ul>
-    <hr />
+
+@*    @using (Html.BeginForm())*@
+    @using (Html.BeginForm("List", "Expense", FormMethod.Get)) 
+
+{
+<p>
+    Find by name: @Html.TextBox("SearchString")
+    <input type="submit" value="Search" class="btn btn-outline-secondary btn-sm "/>
 </p>
-<table class="table">
-    <tr>
-        <th>
-            @Html.ActionLink("Name", "List", new
-            {
-                PageNumber = PageNumber,
-                OrderBy = "Name",
-                SortOrderAsc = sortToggle
-            }, new { @class = "btn btn-outline-secondary " })
+}
 
-        </th>
-        <th>
-            Description
-            @*@Html.Label("Description", htmlAttributes: new { @class = "btn  disabled" })*@
-        </th>
-        <th>
-            Person
-            @*@Html.Label("Person", htmlAttributes: new { @class = "btn btn-sm disabled" })*@
-        </th>
-        <th>
-            Category
-            @*@Html.Label("Category", htmlAttributes: new { @class = "btn btn-sm disabled" })*@
-        </th>
-        <th>
-            @Html.ActionLink("Date", "List", new
-            {
-                PageNumber = PageNumber,
-                OrderBy = "Date",
-                SortOrderAsc = sortToggle
-            }, new { @class = "btn btn-outline-secondary " })
-        </th>
-        <th>
-            @Html.ActionLink("Cost", "List", new
-            {
-                PageNumber = PageNumber,
-                OrderBy = "Cost",
-                SortOrderAsc = sortToggle
-            }, new { @class = "btn btn-outline-secondary  " })
-        </th>
-        <th></th>
-    </tr>
 
-    @foreach (var item in Model)
+
+    <h4>Filterz</h4>
+    <p>
+        <ul>
+            <li>person</li>
+            <li>category</li>
+            <li>date from-to</li>
+            <li>cost from-to</li>
+        </ul>
+        <hr />
+    </p>
+    <table class="table">
+        <tr>
+            <th>
+                @Html.ActionLink("Name", "List", new
+                {
+                    PageNumber = PageNumber,
+                    OrderBy = "Name",
+                    SortOrderAsc = sortToggle
+                }, new { @class = "btn btn-outline-secondary " })
+
+            </th>
+            <th>
+                Description
+                @*@Html.Label("Description", htmlAttributes: new { @class = "btn  disabled" })*@
+            </th>
+            <th>
+                Person
+                @*@Html.Label("Person", htmlAttributes: new { @class = "btn btn-sm disabled" })*@
+            </th>
+            <th>
+                Category
+                @*@Html.Label("Category", htmlAttributes: new { @class = "btn btn-sm disabled" })*@
+            </th>
+            <th>
+                @Html.ActionLink("Date", "List", new
+                {
+                    PageNumber = PageNumber,
+                    OrderBy = "Date",
+                    SortOrderAsc = sortToggle
+                }, new { @class = "btn btn-outline-secondary " })
+            </th>
+            <th>
+                @Html.ActionLink("Cost", "List", new
+                {
+                    PageNumber = PageNumber,
+                    OrderBy = "Cost",
+                    SortOrderAsc = sortToggle
+                }, new { @class = "btn btn-outline-secondary  " })
+            </th>
+            <th></th>
+        </tr>
+
+        @foreach (var item in Model)
     {
         <tr>
             <td>
@@ -105,18 +120,18 @@
             <td>
                 @Html.ActionLink("Edit", "Edit", new { id = item.Id }, new { @class = "btn btn-outline-secondary btn-sm " })
                 @Html.ActionLink("Details", "Details", new { id = item.Id }, new { @class = "btn btn-outline-secondary btn-sm " })
-                @Html.ActionLink("Delete", "Delete", new { id = item.Id }, new { @class = "btn btn-outline-secondary btn-sm " })
+                @Html.ActionLink("Delete", "Delete", new { id = item.Id }, new { @class = "btn btn-outline-danger btn-sm " })
             </td>
         </tr>
     }
 
-</table>
+    </table>
 
-<footer>
-    Pages:
-    <div class="btn-group" role="group">
+    <footer>
+        Pages:
+        <div class="btn-group" role="group">
 
-        @for (int i = 1; i <= TotalPages; i++)
+            @for (int i = 1; i <= TotalPages; i++)
         {
             if (PageNumber == i)
             {@Html.ActionLink($"{i}", "List", new { PageNumber = $"{i}", OrderBy = ViewBag.OrderBy, SortOrderAsc = ViewBag.SortOrderAsc }, new { @class = "btn btn-secondary btn-sm disabled" }) ;
@@ -130,5 +145,5 @@
         Total num of items: <strong>@TotalCount</strong><br />
         Total pages: <strong>@TotalPages</strong><br />
         Items per page: <strong>@ItemsPerPage</strong><br />
-</footer>
+    </footer>
 

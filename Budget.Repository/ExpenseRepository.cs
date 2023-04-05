@@ -113,6 +113,12 @@ namespace Budget.Repository
                 IQueryable<Expense> query = Context.Expense.AsQueryable();
 
                 // filtering parameters provided
+                if (filtering == default)
+                {
+                    //set page to 1
+                    paging.PageNumber = 1;
+                }
+
                 if (filtering != null)
                 {
                     if (filtering.PersonId != default) query = query.Where(s => s.Person.Id == filtering.PersonId);
@@ -121,6 +127,9 @@ namespace Budget.Repository
                     if (filtering.DateTo != default) query = query.Where(s => s.Date <= filtering.DateTo);
                     if (filtering.CostFrom != default) query = query.Where(s => s.Cost >= filtering.CostFrom);
                     if (filtering.CostTo != default) query = query.Where(s => s.Cost <= filtering.CostTo);
+                    if (!String.IsNullOrEmpty(filtering.SearchString)) query = query
+                            .Where(s => s.Name.Contains(filtering.SearchString)
+                            || s.Description.Contains(filtering.SearchString));
                 }
 
                 // sorting parameters provided
@@ -150,17 +159,13 @@ namespace Budget.Repository
                 result.TotalCount = query.Count();
                 result.ItemsPerPage = paging.PageSize;
                 result.PageNumber = paging.PageNumber;
-                result.TotalPages =  (result.TotalCount / result.ItemsPerPage)+1;
+                result.TotalPages = (result.TotalCount / result.ItemsPerPage) + 1;
                 //set paging
                 query = query
                     .Skip((paging.PageNumber - 1) * paging.PageSize)
                     .Take(paging.PageSize);
 
-
                 await query.ToListAsync();
-                //var result = query.ToPagedList(paging.PageNumber, paging.PageSize);
-                //ToListAsync();
-
 
                 // map list to DTO model
                 foreach (var item in query)
@@ -171,8 +176,6 @@ namespace Budget.Repository
                 result.Expenses = expensesDTO;
 
                 return result;
-
-                //return new StaticPagedList<ExpenseDTO>(expensesDTO, result.PageNumber, result.PageSize, result.TotalItemCount);
             }
             catch (Exception ex)
             {

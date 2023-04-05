@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Policy;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -8,6 +9,7 @@ namespace Budget.Common
 {
     public class Filtering
     {
+        public string SearchString { get; set; }
         public Guid PersonId { get; set; }
         public Guid CategoryId { get; set; }
         public DateTime DateFrom { get; set; }
