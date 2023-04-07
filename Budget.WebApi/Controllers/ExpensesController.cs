@@ -11,14 +11,19 @@ using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 using System.Web.Http;
+using System.Web.Http.Cors;
 using System.Web.UI.WebControls;
 using System.Web.WebPages;
 using WebGrease.Css.Extensions;
 
+
 namespace Budget.Controllers
 {
+    [EnableCors(origins: "*", headers: "*", methods: "*")]
     public class ExpensesController : ApiController
     {
+
+
         // injected service
         protected IExpenseService Service { get; set; }
         public ExpensesController(IExpenseService service)
@@ -72,21 +77,21 @@ namespace Budget.Controllers
         //---------------------------------------
         //                 GET
         //---------------------------------------
-        
+
         [Route("api/expenses/")]
         [HttpGet]
         public async Task<HttpResponseMessage> GetAllAsync([FromUri] Paging paging, [FromUri] Sorting sorting, [FromUri] Filtering filtering)
         {
 
-            List<ExpenseDTO> expenses = await Service.GetAllAsync(paging, sorting, filtering);
+            ExpenseReturnDTO expenseResult = await Service.GetAllAsync(paging, sorting, filtering);
             List<ExpenseRest> expensesRestView = new List<ExpenseRest>();
 
-            if (expenses == null)
+            if (expenseResult == null)
             {
                 return Request.CreateResponse(HttpStatusCode.NotFound, "no content");
             }
 
-            foreach (ExpenseDTO item in expenses)
+            foreach (ExpenseDTO item in expenseResult.Expenses)
             {
                 // map ExpenseRest item ...
                 expensesRestView.Add(MapExpenseRest(item));
@@ -99,7 +104,7 @@ namespace Budget.Controllers
         //---------------------------------------
         //                 GET BY ID
         //---------------------------------------
-        
+
         [Route("api/expense/{id}")]
         [HttpGet]
         public async Task<HttpResponseMessage> GetByIdAsync(Guid id)

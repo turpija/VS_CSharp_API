@@ -22,13 +22,17 @@ namespace Budget.App_Start
             var builder = new ContainerBuilder();
             var config = GlobalConfiguration.Configuration;
             builder.RegisterApiControllers(Assembly.GetExecutingAssembly());
+
             // --- services ---
             builder.RegisterType<ExpenseService>().As<IExpenseService>();
             builder.RegisterType<IncomeService>().As<IIncomeService>();
-            //builder.RegisterType<OldExpenseRepository>().As<IExpenseRepository>(); //Ado.Net Repository
+            builder.RegisterType<CategoryService>().As<ICategoryService>();
+
             // --- repositories ---
             builder.RegisterType<ExpenseRepository>().As<IExpenseRepository>().InstancePerLifetimeScope(); 
-            builder.RegisterType<IncomeRepository>().As<IIncomeRepository>().InstancePerLifetimeScope(); 
+            builder.RegisterType<IncomeRepository>().As<IIncomeRepository>().InstancePerLifetimeScope();
+            builder.RegisterType<CategoryRepository>().As<ICategoryRepository>().InstancePerLifetimeScope();
+
             // --- db context ---
             builder.RegisterType<BudgetV2Context>().InstancePerLifetimeScope();
             var container = builder.Build();
