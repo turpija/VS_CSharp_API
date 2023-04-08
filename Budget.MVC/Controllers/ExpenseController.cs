@@ -165,6 +165,9 @@ namespace Budget.MVC.Controllers
         {
             ExpenseDTO expense = await Service.GetByIdAsync(id);
 
+            ViewBag.Category = new SelectList(await Service.GetCategoriesAsync(), "Id", "Name");
+
+
             if (expense == null)
             {
                 return View();
