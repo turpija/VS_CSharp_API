@@ -118,28 +118,28 @@
     {
         <tr>
             <td>
-                <input type="text" name="name" value="@item.Name" disabled />
-                @*@Html.DisplayFor(modelItem => item.Name)*@
+                @*<input type="text" name="name" value="@item.Name" disabled />*@
+                @Html.DisplayFor(modelItem => item.Name)
             </td>
             @*<td>
                     <input type="type" name="name" value="@item.Description" disabled />
                     @Html.DisplayFor(modelItem => item.Description)
                 </td>*@
             <td>
-                <input type="text" name="username" value="@item.Person.Username" disabled />
-                @*@Html.DisplayFor(modelItem => item.Person.Username)*@
+                @*<input type="text" name="username" value="@item.Person.Username" disabled />*@
+                @Html.DisplayFor(modelItem => item.Person.Username)
             </td>
             <td>
-                <input type="text" name="category" value="@item.Category.Name" disabled />
-                @*@Html.DisplayFor(modelItem => item.Category.Name)*@
+                @*<input type="text" name="category" value="@item.Category.Name" disabled />*@
+                @Html.DisplayFor(modelItem => item.Category.Name)
             </td>
             <td>
-                <input type="text" name="date" value="@item.Date" disabled />
-                @*@Html.DisplayFor(modelItem => item.Date)*@
+                @*<input type="text" name="date" value="@item.Date" disabled />*@
+                @Html.DisplayFor(modelItem => item.Date)
             </td>
             <td>
-                <input type="text" name="cost" value="@item.Cost" disabled />
-                @*@Html.DisplayFor(modelItem => item.Cost)*@
+                @*<input type="text" name="cost" value="@item.Cost" disabled />*@
+                @Html.DisplayFor(modelItem => item.Cost)
             </td>
             <td>
                 @Html.ActionLink("Edit", "Edit", new { id = item.Id }, new { @class = "btn btn-outline-secondary btn-sm " })
