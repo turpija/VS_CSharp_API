@@ -38,27 +38,27 @@
             new { PageNumber = 1, OrderBy = ViewBag.OrderBy, SortOrderAsc = ViewBag.SortOrderAsc },
             FormMethod.Get))
     {
-    <p>
+        <p>
 
-        Find by name: @Html.TextBox("SearchString", "", new { @placeholder = "search..." })<br />
-        Cost From: @Html.TextBox("CostFrom", "", new { @type = "number", @placeholder = "min value" })
-        Cost To: @Html.TextBox("CostTo", "", new { @type = "number", @placeholder = "max value" })<br />
-        Date From: @Html.TextBox("DateFrom", "", new { @type = "date" })
-        Date To: @Html.TextBox("DateTo", "", new { @type = "date" })<br />
-        @*@Html.DropDownListFor(item => item.Text,(IEnumerable<SelectListItem>)ViewBag.category, new { @class = "form-control" })*@
+            Find by name: @Html.TextBox("SearchString", "", new { @placeholder = "search..." })<br />
+            Cost From: @Html.TextBox("CostFrom", "", new { @type = "number", @placeholder = "min value" })
+            Cost To: @Html.TextBox("CostTo", "", new { @type = "number", @placeholder = "max value" })<br />
+            Date From: @Html.TextBox("DateFrom", "", new { @type = "date" })
+            Date To: @Html.TextBox("DateTo", "", new { @type = "date" })<br />
+            @*@Html.DropDownListFor(item => item.Text,(IEnumerable<SelectListItem>)ViewBag.category, new { @class = "form-control" })*@
 
-        @*model: @Model
+            @*model: @Model
 
-        @foreach (var item in ViewBag.Category)
-            {
-    <p>@item.Text</p>
-            }*@
+                    @foreach (var item in ViewBag.Category)
+                        {
+                <p>@item.Text</p>
+                        }*@
 
-        @*@Html.DropDownListFor("item", ViewBag.Category)*@
+            @*@Html.DropDownListFor("item", ViewBag.Category)*@
 
 
 
-        <input type="submit" value="search" class="btn btn-outline-secondary btn-sm " />
+            <input type="submit" value="search" class="btn btn-outline-secondary btn-sm " />
         </p>
     }
 </div>
@@ -77,10 +77,10 @@
             }, new { @class = "btn btn-outline-secondary " })
 
         </th>
-        <th>
-            Description
-            @*@Html.Label("Description", htmlAttributes: new { @class = "btn  disabled" })*@
-        </th>
+        <!--<th>
+            Description-->
+        @*@Html.Label("Description", htmlAttributes: new { @class = "btn  disabled" })*@
+        <!--</th>-->
         <th>
             Person
             @*@Html.Label("Person", htmlAttributes: new { @class = "btn btn-sm disabled" })*@
@@ -116,31 +116,37 @@
 
     @foreach (var item in Model)
     {
-    <tr>
-        <td>
-            @Html.DisplayFor(modelItem => item.Name)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Description)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Person.Username)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Category.Name)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Date)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Cost)
-        </td>
-        <td>
-            @Html.ActionLink("Edit", "Edit", new { id = item.Id }, new { @class = "btn btn-outline-secondary btn-sm " })
-            @Html.ActionLink("Details", "Details", new { id = item.Id }, new { @class = "btn btn-outline-secondary btn-sm " })
-            @Html.ActionLink("Delete", "Delete", new { id = item.Id }, new { @class = "btn btn-outline-danger btn-sm " })
-        </td>
-    </tr>
+        <tr>
+            <td>
+                <input type="text" name="name" value="@item.Name" disabled />
+                @*@Html.DisplayFor(modelItem => item.Name)*@
+            </td>
+            @*<td>
+                    <input type="type" name="name" value="@item.Description" disabled />
+                    @Html.DisplayFor(modelItem => item.Description)
+                </td>*@
+            <td>
+                <input type="text" name="username" value="@item.Person.Username" disabled />
+                @*@Html.DisplayFor(modelItem => item.Person.Username)*@
+            </td>
+            <td>
+                <input type="text" name="category" value="@item.Category.Name" disabled />
+                @*@Html.DisplayFor(modelItem => item.Category.Name)*@
+            </td>
+            <td>
+                <input type="text" name="date" value="@item.Date" disabled />
+                @*@Html.DisplayFor(modelItem => item.Date)*@
+            </td>
+            <td>
+                <input type="text" name="cost" value="@item.Cost" disabled />
+                @*@Html.DisplayFor(modelItem => item.Cost)*@
+            </td>
+            <td>
+                @Html.ActionLink("Edit", "Edit", new { id = item.Id }, new { @class = "btn btn-outline-secondary btn-sm " })
+                @Html.ActionLink("Details", "Details", new { id = item.Id }, new { @class = "btn btn-outline-secondary btn-sm " })
+                @Html.ActionLink("Delete", "Delete", new { id = item.Id }, new { @class = "btn btn-outline-danger btn-sm " })
+            </td>
+        </tr>
     }
 
 </table>
@@ -153,27 +159,27 @@
         {
             if (PageNumber == i)
             {@Html.ActionLink($"{i}", "List", new
-              {
-             SearchString = Request.QueryString["SearchString"],
-             CostFrom = Request.QueryString["CostFrom"],
-             CostTo = Request.QueryString["CostTo"],
-             PageNumber = $"{i}",
-             OrderBy = ViewBag.OrderBy,
-             SortOrderAsc = ViewBag.SortOrderAsc
-              },
-         new { @class = "btn btn-secondary btn-sm disabled" }) ;
+            {
+           SearchString = Request.QueryString["SearchString"],
+           CostFrom = Request.QueryString["CostFrom"],
+           CostTo = Request.QueryString["CostTo"],
+           PageNumber = $"{i}",
+           OrderBy = ViewBag.OrderBy,
+           SortOrderAsc = ViewBag.SortOrderAsc
+            },
+       new { @class = "btn btn-secondary btn-sm disabled" }) ;
         }
         else
         { @Html.ActionLink($"{i}", "List", new
-        {
-          SearchString = Request.QueryString["SearchString"],
-          CostFrom = Request.QueryString["CostFrom"],
-          CostTo = Request.QueryString["CostTo"],
-          PageNumber = $"{i}",
-          OrderBy = ViewBag.OrderBy,
-          SortOrderAsc = ViewBag.SortOrderAsc
-        },
-      new { @class = "btn btn-outline-secondary btn-sm" });
+    {
+      SearchString = Request.QueryString["SearchString"],
+      CostFrom = Request.QueryString["CostFrom"],
+      CostTo = Request.QueryString["CostTo"],
+      PageNumber = $"{i}",
+      OrderBy = ViewBag.OrderBy,
+      SortOrderAsc = ViewBag.SortOrderAsc
+    },
+  new { @class = "btn btn-outline-secondary btn-sm" });
     }
 }
     </div>

@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <title>Document</title>
+</head>
+
+<body>
+
+    <fieldset>
+        <!-- <fieldset> -->
+        <!-- <legend>search</legend> -->
+        <input type="text"><button>SEARCH</button>
+        <!-- </fieldset> -->
+        <br>
+        <!-- <fieldset> -->
+        <!-- <legend>Date:</legend> -->
+        <label for="DateFrom">Date From:</label>
+        <input type="date" id="DateFrom">
+        <label for="DateTo">To:</label>
+        <input type="date" id="DateTo">
+        <!-- </fieldset> -->
+        <br>
+        <!-- <fieldset> -->
+        <!-- <legend>Cost:</legend> -->
+        <label for="CostFrom">Cost From:</label>
+        <input type="number" id="CostFrom">
+        <label for="CostTo">To:</label>
+        <input type="number" id="CostTo">
+        <!-- </fieldset> -->
+        <br>
+        <label for="kateg">Category:</label>
+        <select name="kateg" id="">
+            <option value="">category 1</option>
+            <option value="">category 2</option>
+            <option value="">category 3</option>
+        </select>
+        <br>
+        <button>APPLY FILTER</button>
+    </fieldset>
+
+    <br>
+    <table>
+        <tr>
+            <th>DATUM</th>
+            <th>PRSN</th>
+            <th>OPIS</th>
+            <th>KATEGORIJA</th>
+            <th>IZNOS</th>
+        </tr>
+        <tr>
+            <td><input type="date" name="row1" id="input" value="2023-03-02" disabled></td>
+            <td><input type="text" name="row1" id="input" value="ivan" disabled></td>
+            <td><input type="text" name="row1" id="" value="content 1" disabled></td>
+            <td>
+                <select name="row1" id="" disabled>
+                    <option value="">category 1</option>
+                    <option value="">category 2</option>
+                    <option value="" selected>category 3</option>
+                </select>
+            </td>
+            <td><input type="number" name="row1" id="" value=97.54 disabled></td>
+            <td><button onclick='enableInput("row1")'>EDIT</button></td>
+            <td><button style="color: rgb(213, 48, 48);">DELETE</button></td>
+        </tr>
+        <tr id="row2">
+            <td><input type="date" name="row2" id="" value="2023-03-02" disabled></td>
+            <td><input type="text" name="row2" id="input" value="ivan" disabled></td>
+            <td><input type="text" name="row2" id="" value="content 2" disabled></td>
+            <td>
+                <select name="row2" id="" disabled>
+                    <option value="">category 1</option>
+                    <option value="" selected>category 2</option>
+                    <option value="">category 3</option>
+                </select>
+            </td>
+            <td><input type="number" name="row2" id="" value=43.54 disabled></td>
+            <td><button onclick='enableInput("row2")'>EDIT</button></td>
+            <td><button style="color: rgb(213, 48, 48);">DELETE</button></td>
+        </tr>
+        <tr>
+            <td><input type="date" name="row3" id="" value="2023-03-02" disabled></td>
+            <td><input type="text" name="row2" id="input" value="ivan" disabled></td>
+            <td><input type="text" name="row3" id="" value="content 3" disabled></td>
+            <td>
+                <select name="row3" id="" disabled>
+                    <option value="">category 1</option>
+                    <option value="" selected>category 2</option>
+                    <option value="">category 3</option>
+                </select>
+            </td>
+            <td><input type="number" name="row3" id="" value=213.54 disabled></td>
+            <td><button onclick='enableInput("row3")'>EDIT</button></td>
+            <td><button style="color: rgb(213, 48, 48);">DELETE</button></td>
+        </tr>
+    </table>
+    <button>CREATE NEW</button>
+
+    <script type="text/javascript">
+        function enableInput(className) {
+            console.log(className);
+            // document.getElementById("input").disabled = false;
+            let get = document.getElementsByName(className)
+            get.forEach(item => {
+                item.disabled ? item.disabled = false : item.disabled = true;
+            });
+        }
+    </script>
+</body>
+
+</html>

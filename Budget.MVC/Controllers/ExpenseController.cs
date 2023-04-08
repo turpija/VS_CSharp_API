@@ -95,8 +95,10 @@ namespace Budget.MVC.Controllers
             ViewBag.TotalPages = expenseResult.TotalPages;
             ViewBag.TotalCount = expenseResult.TotalCount;
             ViewBag.ItemsPerPage = expenseResult.ItemsPerPage;
-            ViewBag.PageNumber = expenseResult.PageNumber; 
+            ViewBag.PageNumber = expenseResult.PageNumber;
             ViewBag.Category = new SelectList(await Service.GetCategoriesAsync(), "Id", "Name");
+            //ViewBag.Category = await Service.GetCategoriesAsync();
+
 
 
             return View(expensesView);
