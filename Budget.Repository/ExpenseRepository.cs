@@ -15,6 +15,7 @@ using System.Threading.Tasks;
 using System.Web.UI.WebControls;
 using System.Xml.Linq;
 using PagedList;
+using AutoMapper;
 
 namespace Budget.Repository
 {
@@ -22,9 +23,12 @@ namespace Budget.Repository
     {
         // injected DB Context
         protected BudgetV2Context Context { get; set; }
-        public ExpenseRepository(BudgetV2Context context)
+        protected IMapper Mapper{ get; set; }
+
+        public ExpenseRepository(BudgetV2Context context, IMapper mapper)
         {
             Context = context;
+            Mapper = mapper;
         }
 
         // map Entity model and return DTO
@@ -83,6 +87,11 @@ namespace Budget.Repository
                 if (result != null)
                 {
                     return MapExpenseDTO(result);
+
+                    //automapper 
+                    ExpenseDTO expenseDTO = Mapper.Map<ExpenseDTO>(result);
+                    return expenseDTO;
+
                 }
                 return null;
             }
@@ -171,6 +180,9 @@ namespace Budget.Repository
                 foreach (var item in query)
                 {
                     expensesDTO.Add(MapExpenseDTO(item));
+
+                    //automapper 
+                    //expensesDTO.Add(Mapper.Map<ExpenseDTO>(item));
                 }
 
                 result.Expenses = expensesDTO;

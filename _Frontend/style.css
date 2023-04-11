@@ -3,7 +3,7 @@
 }
 
 table {
-    border: rgb(195, 195, 195) 1px solid;
+    border: rgb(214, 214, 214) 1px solid;
 }
 
 button {
@@ -12,7 +12,7 @@ button {
 }
 
 button:hover{
-    border: solid 1px white;
-    background-color: rgb(255, 255, 255);
+    /* border: solid 1px white; */
+    background-color: rgb(255, 254, 247);
     cursor: pointer;
 }

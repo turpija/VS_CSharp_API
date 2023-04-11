@@ -1,4 +1,5 @@
-﻿using Budget.Common;
+﻿using AutoMapper;
+using Budget.Common;
 using Budget.Model;
 using Budget.Models;
 using Budget.Service;
@@ -24,11 +25,13 @@ namespace Budget.Controllers
     {
 
 
-        // injected service
+        // injected service, automapper
         protected IExpenseService Service { get; set; }
-        public ExpensesController(IExpenseService service)
+        private IMapper Mapper { get; set; }
+        public ExpensesController(IExpenseService service, IMapper mapper)
         {
             Service = service;
+            Mapper = mapper;
         }
 
         // map DTO to Rest model
@@ -59,16 +62,16 @@ namespace Budget.Controllers
         }
 
         // map Rest to DTO model
-        private ExpenseDTO MapExpense(ExpenseInputRest expenseInputRest)
+        private ExpenseDTO MapExpense(ExpenseRest expenseRest)
         {
             ExpenseDTO expense = new ExpenseDTO()
             {
-                Name = expenseInputRest.Name,
-                Description = expenseInputRest.Description,
-                Date = expenseInputRest.Date,
-                Cost = expenseInputRest.Cost,
-                PersonId = expenseInputRest.PersonId,
-                CategoryId = expenseInputRest.CategoryId,
+                Name = expenseRest.Name,
+                Description = expenseRest.Description,
+                Date = expenseRest.Date,
+                Cost = expenseRest.Cost,
+                PersonId = expenseRest.PersonId,
+                CategoryId = expenseRest.CategoryId,
             };
             return expense;
         }
@@ -94,8 +97,12 @@ namespace Budget.Controllers
             foreach (ExpenseDTO item in expenseResult.Expenses)
             {
                 // map ExpenseRest item ...
-                expensesRestView.Add(MapExpenseRest(item));
+                //expensesRestView.Add(MapExpenseRest(item));
+
+                // automapper version ...
+                expensesRestView.Add(Mapper.Map<ExpenseRest>(item));
             };
+
 
             return Request.CreateResponse(HttpStatusCode.OK, expensesRestView);
         }
@@ -115,7 +122,12 @@ namespace Budget.Controllers
             {
                 return Request.CreateResponse(HttpStatusCode.NotFound, "no content");
             }
-            ExpenseRest expenseRestView = MapExpenseRest(expense);
+
+            // manual mapping
+            //ExpenseRest expenseRestView = MapExpenseRest(expense);
+
+            // automapper version
+            ExpenseRest expenseRestView = Mapper.Map<ExpenseRest>(expense);
 
             return Request.CreateResponse(HttpStatusCode.OK, expenseRestView);
         }
@@ -128,9 +140,13 @@ namespace Budget.Controllers
         [Route("api/expense/")]
         [HttpPost]
 
-        public async Task<HttpResponseMessage> PostAsync(ExpenseInputRest expenseInputRest)
+        public async Task<HttpResponseMessage> PostAsync(ExpenseRest expenseRest)
         {
-            ExpenseDTO expense = MapExpense(expenseInputRest);
+            //ExpenseDTO expense = MapExpense(expenseRest);
+
+            //automapper
+            ExpenseDTO expense = Mapper.Map<ExpenseDTO>(expenseRest);
+
 
             if (!ModelState.IsValid)
             {
@@ -170,9 +186,13 @@ namespace Budget.Controllers
 
         [HttpPut]
         [Route("api/expense/{id}")]
-        public async Task<HttpResponseMessage> UpdateByIdAsync(Guid id, ExpenseInputRest expenseInputRest)
+        public async Task<HttpResponseMessage> UpdateByIdAsync(Guid id, ExpenseRest expenseRest)
         {
-            ExpenseDTO expense = MapExpense(expenseInputRest);
+            //ExpenseDTO expense = MapExpense(expenseRest);
+            
+            //automapper
+            ExpenseDTO expense = Mapper.Map<ExpenseDTO>(expenseRest);
+
 
             bool updateSuccess = await Service.UpdateByIdAsync(id, expense);
             if (!updateSuccess)

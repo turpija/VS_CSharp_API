@@ -1,5 +1,6 @@
 ﻿using Autofac;
 using Autofac.Integration.WebApi;
+using AutoMapper;
 using Budget.DAL;
 using Budget.Models;
 using Budget.Repository;
@@ -29,12 +30,24 @@ namespace Budget.App_Start
             builder.RegisterType<CategoryService>().As<ICategoryService>();
 
             // --- repositories ---
-            builder.RegisterType<ExpenseRepository>().As<IExpenseRepository>().InstancePerLifetimeScope(); 
+            builder.RegisterType<ExpenseRepository>().As<IExpenseRepository>().InstancePerLifetimeScope();
             builder.RegisterType<IncomeRepository>().As<IIncomeRepository>().InstancePerLifetimeScope();
             builder.RegisterType<CategoryRepository>().As<ICategoryRepository>().InstancePerLifetimeScope();
 
             // --- db context ---
             builder.RegisterType<BudgetV2Context>().InstancePerLifetimeScope();
+
+
+            // --- auto mapper ---
+            builder.Register(context => new MapperConfiguration(cfg =>
+                 {
+                     cfg.AddProfile<AutoMapperProfile>();
+                 })).AsSelf().SingleInstance();
+
+            builder.Register(context => context.Resolve<MapperConfiguration>().CreateMapper())
+                .As<IMapper>()
+                .InstancePerLifetimeScope();
+
             var container = builder.Build();
             config.DependencyResolver = new AutofacWebApiDependencyResolver(container);
         }

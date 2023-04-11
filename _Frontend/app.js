@@ -24,12 +24,12 @@ async function showData(data) {
     // Loop to access all rows 
     for (let index = 0; index < data.length; index++) {
         tab += `<tr> 
-        <td>${data[index].Id} </td>
-        <td>${data[index].Name}</td>
-        <td>${data[index].Person.Username}</td> 
-        <td>${data[index].Category.Name}</td>          
-        <td>${data[index].Cost}</td>          
-        <td>${data[index].Date}</td>     
+        <td><input type="text" name="row1" id="" value=${data[index].Id} disabled></td>
+        <td><input type="text" name="row1" id="" value=${data[index].Name} disabled></td>
+        <td><input type="text" name="row1" id="" value=${data[index].Person.Username} disabled></td> 
+        <td><input type="text" name="row1" id="" value=${data[index].Category.Name} disabled></td>          
+        <td><input type="numer" name="row1" id="" value=${data[index].Cost} disabled></td>          
+        <td><input type="string" name="row1" id="" value=${data[index].Date} disabled></td>   
         <td><a href='https://localhost:44375/api/expense/${data[index].Id}'>details</a></td>
     </tr>`;
     }

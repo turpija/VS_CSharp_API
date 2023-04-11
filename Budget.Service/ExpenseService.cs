@@ -16,7 +16,7 @@ namespace Budget.Service
 {
     public class ExpenseService : IExpenseService
     {
-        // Injected repository
+        // Injected repository, automapper
         protected IExpenseRepository Repository { get; set; }
         public ICategoryService CategoryService { get; set; }
         public ExpenseService(IExpenseRepository repository, ICategoryService categoryService)
