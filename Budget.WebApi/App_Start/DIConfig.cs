@@ -1,6 +1,7 @@
 ﻿using Autofac;
 using Autofac.Integration.WebApi;
 using AutoMapper;
+using Budget.Controllers;
 using Budget.DAL;
 using Budget.Models;
 using Budget.Repository;
@@ -24,8 +25,11 @@ namespace Budget.App_Start
             var config = GlobalConfiguration.Configuration;
             builder.RegisterApiControllers(Assembly.GetExecutingAssembly());
 
+            // --- modules ---
+            builder.RegisterModule(new ControllerModule());
+
             // --- services ---
-            builder.RegisterType<ExpenseService>().As<IExpenseService>();
+            //builder.RegisterType<ExpenseService>().As<IExpenseService>();
             builder.RegisterType<IncomeService>().As<IIncomeService>();
             builder.RegisterType<CategoryService>().As<ICategoryService>();
 

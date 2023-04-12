@@ -189,7 +189,7 @@ namespace Budget.Controllers
         public async Task<HttpResponseMessage> UpdateByIdAsync(Guid id, ExpenseRest expenseRest)
         {
             //ExpenseDTO expense = MapExpense(expenseRest);
-            
+
             //automapper
             ExpenseDTO expense = Mapper.Map<ExpenseDTO>(expenseRest);
 
